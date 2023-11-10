@@ -33,6 +33,9 @@ target/
 /api/.springBeans
 /api/.sts4-cache
 
+### mariadb ###
+/mariadb/*
+
 
 # Created by https://www.gitignore.io/api/git,java,maven,eclipse,windows
 
