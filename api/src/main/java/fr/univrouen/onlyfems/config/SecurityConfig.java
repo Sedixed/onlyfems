@@ -1,4 +1,4 @@
-package fr.univrouen.onlyfems;
+package fr.univrouen.onlyfems.config;
 
 import fr.univrouen.onlyfems.services.CustomUserDetailsServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +20,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsServices userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/admin").hasRole("ADMIN");
-            auth.requestMatchers("/user").hasRole("USER");
-            auth.anyRequest().authenticated();
+        return http.authorizeHttpRequests(authorize -> {
+            authorize.requestMatchers("/login").permitAll();
+            authorize.requestMatchers("/admin").hasRole("ADMIN");
+            authorize.requestMatchers("/user").hasRole("USER");
+            authorize.anyRequest().authenticated();
         }).formLogin(Customizer.withDefaults()).build();
     }
 
