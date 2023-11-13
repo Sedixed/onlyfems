@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CustomUserDetailsServices implements UserDetailsService {
+public class CustomUserDetailsServices /*implements UserDetailsService*/ {
 
     @Autowired
     UserRepository userRepository;
@@ -28,18 +28,9 @@ public class CustomUserDetailsServices implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
 
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), getGrantedAuthorities(user.getRole()));
-    }
-
-    /**
-     * Allow to get a list of authorization.
-     *
-     * @param role Role of a user.
-     * @return List of authorization.
-     */
-    private List<GrantedAuthority> getGrantedAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-        return authorities;
+        return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .build();
     }
 }

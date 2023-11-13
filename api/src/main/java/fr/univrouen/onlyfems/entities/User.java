@@ -3,21 +3,21 @@ package fr.univrouen.onlyfems.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true)
-    private String name;
+    private String username;
 
     private String password;
 
     private String role;
 
-    public User(String name, String password, String role) {
-        this.name = name;
+    public User(String username, String password, String role) {
+        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -32,12 +32,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -58,6 +58,6 @@ public class User {
 
     @Override
     public String toString() {
-        return name;
+        return username;
     }
 }
