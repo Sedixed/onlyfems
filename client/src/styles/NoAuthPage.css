@@ -6,6 +6,10 @@
   background-size: cover;
 }
 
+.no-auth-page .u-cant-c-me {
+  opacity: 0.005;
+}
+
 .no-auth-page .presentation {
   margin-left: 10%;
   width: fit-content;

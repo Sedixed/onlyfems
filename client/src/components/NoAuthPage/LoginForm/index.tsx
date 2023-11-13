@@ -2,16 +2,26 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import LoginType from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
+import { AxiosError, AxiosResponse } from "axios";
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const { mutate } = useMutation(loginMutation);
+  const loginMut = useMutation(
+    async (payload: LoginType) => {
+      return await loginMutation(payload);
+    },
+    {
+      onSuccess: () => console.log('t login frr'),
+      onError: () => console.log('nan t nul')
+    }
+  )
 
   const login = () => {
     // TODO
-    mutate({username, password} as LoginType);
+    loginMut.mutate({username, password} as LoginType);
+    console.log(loginMut.data)
     console.log(username);
     console.log(password);
   }

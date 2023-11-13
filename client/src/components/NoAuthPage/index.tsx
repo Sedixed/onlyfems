@@ -22,22 +22,22 @@ const NoAuthPage = () => {
     <div className="no-auth-page flex">
       <div className="presentation flex">
         <h1 className="title">OnlyFems</h1>
-        <p className="abstract">Un portfolio de ZINZIN</p>
+        <p className="abstract">Un portfolio de ZINZIN <span className="u-cant-c-me">(chokbar de bz)</span></p>
         <div className="buttons-group flex">
           <button onClick={setLoginTrue}>Connexion</button>
           <button onClick={setRegisterTrue}>Inscription</button>
         </div>
       </div>
-        {
-          displayLogin ?
-          <LoginForm /> :
-          null
-        }
-        {
-          displayRegister ?
-          <RegisterForm /> :
-          null
-        }
+      {
+        displayLogin ?
+        <LoginForm /> :
+        null
+      }
+      {
+        displayRegister ?
+        <RegisterForm /> :
+        null
+      }
     </div>
   );
 };

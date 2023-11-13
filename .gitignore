@@ -11,6 +11,9 @@
 # production
 /client/build
 
+/client/node_modules
+/client/package-lock.json
+
 # misc
 /client/.DS_Store
 /client/.env.local
