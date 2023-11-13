@@ -1,10 +1,9 @@
 package fr.univrouen.onlyfems.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import fr.univrouen.onlyfems.constants.APIEndpoints;
+import jakarta.servlet.ServletException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,12 +15,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -29,22 +27,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/login").permitAll()
-                //.requestMatchers("/logout").permitAll()
+                .requestMatchers("/logout").permitAll()
                 .anyRequest().permitAll()
         );
 
-        /*http.logout((logout) -> logout.logoutSuccessUrl("/logout")
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-                .clearAuthentication(true)
-        );*/
-
+        http.logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher(APIEndpoints.LOGOUT_URL))
+                .invalidateHttpSession( true )
+                .deleteCookies("JSESSIONID")
+        );
         http.httpBasic(Customizer.withDefaults());
-        http.formLogin(AbstractHttpConfigurer::disable);
-        http.cors(Customizer.withDefaults());
-        http.csrf(AbstractHttpConfigurer::disable);
-        //http.anonymous(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
@@ -65,13 +60,17 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
+        UserDetails user = User.builder()
                 .username("user")
-                .password("password")
+                .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(passwordEncoder().encode("password"))
+                .roles("USER", "ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean
