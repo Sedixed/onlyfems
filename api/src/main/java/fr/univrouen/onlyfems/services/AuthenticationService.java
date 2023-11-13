@@ -1,30 +1,45 @@
 package fr.univrouen.onlyfems.services;
 
-import fr.univrouen.onlyfems.controllers.AuthenticationController;
-import fr.univrouen.onlyfems.entities.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service
 public class AuthenticationService {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    private AuthenticationManager authenticationManager;
+
+    public AuthenticationService(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     /**
      * Login a user provided a login request.
      *
-     * @param loginRequest The login request containing the username and the password.
      */
-    public void login(AuthenticationController.LoginRequest loginRequest) {
-
-    }
-
-    /**
-     * Logout the user logged.
-     */
-    public void logout() {
-
+    public void login(String username, String password, HttpServletRequest req) {
+        UsernamePasswordAuthenticationToken authReq
+                = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication auth = authenticationManager.authenticate(authReq);
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = req.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
     /**
@@ -32,9 +47,20 @@ public class AuthenticationService {
      *
      * @return A boolean.
      */
-    public boolean isAuthenticated() {
+    public Map<String, Object> isAuthenticated() {
+        Map<String, Object> response = new HashMap<>();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return true;
+        if (authentication != null && authentication.isAuthenticated()) {
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                response.put("authenticated", false);
+            } else {
+                response.put("authenticated", true);
+            }
+        } else {
+            response.put("authenticated", false);
+        }
+        return response;
     }
 
     /**
@@ -43,9 +69,13 @@ public class AuthenticationService {
      *
      * @return The user.
      */
-    public User getAuthenticatedUser() {
+    public Map<String, Object> getAuthenticatedUser() {
+        Map<String, Object> response = new HashMap<>();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        response.put("username", authentication.getName());
+        response.put("role", authentication.getAuthorities().toString());
 
-        return null;
+        return response;
     }
 }

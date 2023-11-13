@@ -1,7 +1,5 @@
 package fr.univrouen.onlyfems.constants;
 
-import java.util.Set;
-
 /**
  * Enum that contains API endpoints constants and associated permissions.
  */

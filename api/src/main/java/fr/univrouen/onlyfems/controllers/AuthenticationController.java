@@ -1,31 +1,25 @@
 package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
+import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.Map;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @CrossOrigin("*")
 public class AuthenticationController {
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
+    public AuthenticationController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -44,13 +38,7 @@ public class AuthenticationController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public void login(@RequestBody LoginRequest loginRequest, HttpServletRequest req) {
-        UsernamePasswordAuthenticationToken authReq
-            = new UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password);
-        Authentication auth = authenticationManager.authenticate(authReq);
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+        authenticationService.login(loginRequest.username, loginRequest.password, req);
     }
 
     /**
@@ -67,19 +55,7 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Map<String, Object>> authenticated() {
-        Map<String, Object> response = new HashMap<>();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            if (authentication instanceof AnonymousAuthenticationToken) {
-                response.put("authenticated", false);
-            } else {
-                response.put("authenticated", true);
-            }
-        } else {
-            response.put("authenticated", false);
-        }
-
+        Map<String, Object> response = authenticationService.isAuthenticated();
         return ResponseEntity.ok(response);
     }
 
@@ -98,11 +74,8 @@ public class AuthenticationController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Map<String, Object>> getUserAuthenticated() {
-        Map<String, Object> response = new HashMap<>();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> response = authenticationService.getAuthenticatedUser();
 
-        response.put("username", authentication.getName());
-        response.put("role", authentication.getAuthorities().toString());
 
         return ResponseEntity.ok(response);
     }
