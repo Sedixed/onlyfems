@@ -21,4 +21,19 @@ public class APIEndpoints {
      * URL to get the current user logged if there is one.
      */
     public final static String IS_AUTHENTICATED_URL = "/isauth";
+
+    /**
+     * Front page of the portfolio URL
+     */
+    public final static String PORTFOLIO_URL = "/portfolio";
+
+    /**
+     * URL to get all the images
+     */
+    public final static String IMAGES_URL = "/images";
+
+    /**
+     * URL to get/modify/add/delete an image by its id
+     */
+    public final static String IMAGE_URL = "/image";
 }
