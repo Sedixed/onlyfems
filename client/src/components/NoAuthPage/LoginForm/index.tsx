@@ -2,31 +2,49 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import LoginType from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
-import { AxiosError, AxiosResponse } from "axios";
 
-const LoginForm = () => {
+type LoginFormPropsTypes = {
+  setIsLoading: (state: boolean) => void
+};
+
+const LoginForm: React.FC<LoginFormPropsTypes> = ({ 
+  setIsLoading
+}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  
+
+  const handleLoginSuccess = () => {
+    setIsLoading(false);
+    console.log('t login frr');
+  }
+
+  const handleLoginFailure = () => {
+    setIsLoading(false);
+    console.log('t nul frr');
+  }
 
   const loginMut = useMutation(
     async (payload: LoginType) => {
       return await loginMutation(payload);
     },
     {
-      onSuccess: () => console.log('t login frr'),
-      onError: () => console.log('nan t nul')
+      onSuccess: handleLoginSuccess,
+      onError: handleLoginFailure
     }
   )
 
   const login = () => {
     // TODO
     loginMut.mutate({username, password} as LoginType);
+    setIsLoading(true);
     console.log(loginMut.data)
     console.log(username);
     console.log(password);
   }
 
   return (
+    
     <div className="login-form flex">
       <p className="form-title">Connexion</p>
       <label htmlFor="username">Pseudonyme</label>

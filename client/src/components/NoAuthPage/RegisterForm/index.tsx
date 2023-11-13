@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const RegisterForm = () => {
+type RegisterFormPropsTypes = {
+  setIsLoading: (state: boolean) => void
+};
+
+const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
+  setIsLoading
+}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 

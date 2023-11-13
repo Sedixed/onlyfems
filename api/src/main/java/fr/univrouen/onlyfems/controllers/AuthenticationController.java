@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;

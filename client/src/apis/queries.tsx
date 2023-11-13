@@ -3,7 +3,7 @@ import api from "./api";
 
 export const loginMutation = async (credentials: LoginType) => {
   const res = await api.post(
-    '/login',
+    '/authentication/login',
     credentials
   )
   console.log(res);
