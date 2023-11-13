@@ -29,11 +29,6 @@ public class AuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
-    @RequestMapping(
-            value = APIEndpoints.LOGIN_URL,
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
     /**
      * Login route.
      *
@@ -43,6 +38,11 @@ public class AuthenticationController {
      *     "password":"password"
      * }
      */
+    @RequestMapping(
+            value = APIEndpoints.LOGIN_URL,
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public void login(@RequestBody LoginRequest loginRequest, HttpServletRequest req) {
         UsernamePasswordAuthenticationToken authReq
             = new UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password);
@@ -53,11 +53,6 @@ public class AuthenticationController {
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
-    @RequestMapping(
-            value = APIEndpoints.IS_AUTHENTICATED_URL,
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
     /**
      * Route that returns true if a user is authenticated.
      *
@@ -66,6 +61,11 @@ public class AuthenticationController {
      *     "authenticated": true
      * }
      */
+    @RequestMapping(
+            value = APIEndpoints.IS_AUTHENTICATED_URL,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Map<String, Object>> authenticated() {
         Map<String, Object> response = new HashMap<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -83,11 +83,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(
-            value = APIEndpoints.GET_AUTHENTICATED_USER,
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
     /**
      * Route that returns the current user authenticated.
      *
@@ -97,6 +92,11 @@ public class AuthenticationController {
      *     "username": "user"
      * }
      */
+    @RequestMapping(
+            value = APIEndpoints.GET_AUTHENTICATED_USER,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Map<String, Object>> getUserAuthenticated() {
         Map<String, Object> response = new HashMap<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -107,6 +107,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Contains the username and the password for a login request.
+     *
+     * @param username Username of a user.
+     * @param password Password of a user.
+     */
     public record LoginRequest(String username, String password) {
     }
 }
