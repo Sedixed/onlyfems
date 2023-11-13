@@ -1,0 +1,29 @@
+package fr.univrouen.onlyfems.constants;
+
+import java.util.Set;
+
+/**
+ * Enum that contains API endpoints constants and associated permissions.
+ */
+public class APIEndpoints {
+
+    /**
+     * Login URL
+     */
+    public final static String LOGIN_URL = "/authentication/login";
+
+    /**
+     * Logout URL
+     */
+    public final static String LOGOUT_URL = "/authentication/logout";
+
+    /**
+     * URL to get the info on the current user logged or not.
+     */
+    public final static String IS_AUTHENTICATED_URL = "/authentication/authenticated";
+
+    /**
+     * URL to get the current user logged.
+     */
+    public final static String GET_AUTHENTICATED_USER = "/authentication/user/get";
+}
