@@ -1,13 +1,11 @@
 package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
-import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
