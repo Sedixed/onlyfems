@@ -2,6 +2,8 @@ package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.entities.Image;
 import fr.univrouen.onlyfems.repositories.ImageRepository;
+import fr.univrouen.onlyfems.services.ImageService;
+import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,10 +18,12 @@ import java.util.Optional.*;
 public class ImageController {
 
     private final ImageRepository imageRepository;
+    private final ImageService imageService;
 
     @Autowired
-    public ImageController(ImageRepository imageRepository) {
+    public ImageController(ImageRepository imageRepository, ImageService imageService) {
         this.imageRepository = imageRepository;
+        this.imageService = imageService;
     }
     
     /**
@@ -74,14 +78,13 @@ public class ImageController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> addImage(@RequestBody Image image) {
+    public ResponseEntity<Image> addImage(@RequestParam("file") MultipartFile file) {
         // Si l'utilisateur n'est pas connecté, on renvoie une erreur
         // if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
         //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         // }
 
-        // On ajoute l'image à la base de données
-        imageRepository.save(image);
+        Image image = imageService.saveImage(file);
 
         return ResponseEntity.ok(image);
     }
@@ -136,7 +139,7 @@ public class ImageController {
         imageToUpdate.setName(image.getName());
         imageToUpdate.setEncodedImage(image.getEncodedImage());
         imageToUpdate.setDescription(image.getDescription());
-        imageToUpdate.setIsPublic(image.getIsPublic());
+        imageToUpdate.setPublicity(image.getPublicity());
 
         // On met à jour l'image dans la base de données
         imageRepository.save(imageToUpdate);

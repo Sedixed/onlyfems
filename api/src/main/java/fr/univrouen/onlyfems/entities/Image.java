@@ -10,23 +10,25 @@ public class Image {
     private Integer id;
 
     private String name;
-
-    private String encodedImage;
+    
+    @Lob
+    @Column(name = "encoded_image")
+    private byte[] encodedImage;
 
     private String description;
 
-    private boolean isPublic;
+    private boolean publicity;
 
     public Image(
         String name, 
-        String encodedImage, 
+        byte[] encodedImage, 
         String description, 
-        boolean isPublic
+        boolean publicity
     ) {
         this.name = name;
         this.encodedImage = encodedImage;
         this.description = description;
-        this.isPublic = isPublic;
+        this.publicity = publicity;
     }
 
     public Image() {}
@@ -39,19 +41,19 @@ public class Image {
         this.id = id;
     }
 
-    public boolean getIsPublic() {
-        return isPublic;
+    public boolean getPublicity() {
+        return publicity;
     }
 
-    public void setIsPublic(boolean isPublic) {
-        this.isPublic = isPublic;
+    public void setPublicity(boolean publicity) {
+        this.publicity = publicity;
     }
 
-    public String getEncodedImage() {
+    public byte[] getEncodedImage() {
         return encodedImage;
     }
 
-    public void setEncodedImage(String encodedImage) {
+    public void setEncodedImage(byte[] encodedImage) {
         this.encodedImage = encodedImage;
     }
 
@@ -63,7 +65,7 @@ public class Image {
         return name;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
@@ -73,7 +75,7 @@ public class Image {
 
     @Override
     public String toString() {
-        String result = "Image [id=" + id + ", name=" + name + ", description=" + description + ", isPublic=" + isPublic + "]";
+        String result = "Image [id=" + id + ", name=" + name + ", description=" + description + ", publicity=" + publicity + "]";
         return result;
     }
 }

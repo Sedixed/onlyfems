@@ -17,26 +17,26 @@ class ImageButtons extends React.Component {
         axios.get("https://source.unsplash.com/random")
             .then((res) => {
                 // On met à jour le state avec le nom de l'image et son base64
-                this.setState({
-                    imageName: res.request.responseURL.split("/")[3],
-                    imageBody: res.data
+                axios.post("http://localhost:8080/image", {
+                    name: res.request.responseURL,
+                    encodedImage: res.data,
+                    publicity: true,
+                    description: "Random image from Unsplash"
+                })
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    console.log("Add image error");
+                    console.log(err.stack);
                 });
             })
             .catch((err) => {
                 console.log(err);
-            });
-        
-        // Puis on ajoute l'image à la DB
-        axios.post("http://localhost:8080/images", {
-            name: this.state.imageName,
-            body: this.state.imageBody
-        })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+                console.log("Get random image error");
+                console.log(err.stack);
+            });        
     }
 
     handleAddClick = () => {
