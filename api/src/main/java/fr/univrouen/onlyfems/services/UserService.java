@@ -38,25 +38,21 @@ public class UserService {
     }
 
     /**
+     * Create or update a user in database.
+     *
+     * @param user The user to create or update.
+     * @return The user created or updated.
+     */
+    public User createOrUpdateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    /**
      * Delete a user in database using an ID.
      *
      * @param id ID of a user.
      */
     public void deleteUserWithId(int id) {
         userRepository.deleteById(id);
-    }
-
-    /**
-     * Update a user in database.
-     *
-     * @param user User to update with updated values.
-     * @return The user updated.
-     */
-    public User updateUser(User user) {
-        User userToUpdate = getUserById(user.getId());
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setPassword(userToUpdate.getPassword());
-        userToUpdate.setRole(userToUpdate.getRole());
-        return userRepository.save(userToUpdate);
     }
 }

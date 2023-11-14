@@ -1,5 +1,6 @@
 package fr.univrouen.onlyfems.services;
 
+import fr.univrouen.onlyfems.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,23 +10,30 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
+/**
+ * Service containing all methods bound to authentication.
+ */
 @Service
 public class AuthenticationService {
 
     @Autowired
     private UserService userService;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationService(AuthenticationManager authenticationManager) {
+    public AuthenticationService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -40,6 +48,20 @@ public class AuthenticationService {
         sc.setAuthentication(auth);
         HttpSession session = req.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+    }
+
+    /**
+     * Register a new User and log it.
+     *
+     * @param username Username of the user.
+     * @param password Password of the user.
+     * @param roles Roles of the user.
+     * @return The user created.
+     */
+    public User register(String username, String password, List<String> roles, HttpServletRequest req) {
+        User user = userService.createOrUpdateUser(new User(username, passwordEncoder.encode(password), roles));
+        login(username, password, req);
+        return user;
     }
 
     /**

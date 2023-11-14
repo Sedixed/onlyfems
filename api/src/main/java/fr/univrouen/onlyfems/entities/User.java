@@ -2,6 +2,8 @@ package fr.univrouen.onlyfems.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -14,12 +16,13 @@ public class User {
 
     private String password;
 
-    private String role;
+    @ElementCollection
+    private List<String> roles;
 
-    public User(String username, String password, String role) {
+    public User(String username, String password, List<String> roles) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
     }
 
     public User() {}
@@ -48,12 +51,12 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     @Override
