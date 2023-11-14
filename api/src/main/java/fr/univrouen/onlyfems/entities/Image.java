@@ -15,13 +15,13 @@ public class Image {
 
     private String description;
 
-    private Bool isPublic;
+    private boolean isPublic;
 
     public Image(
         String name, 
         String encodedImage, 
         String description, 
-        Bool isPublic
+        boolean isPublic
     ) {
         this.name = name;
         this.encodedImage = encodedImage;
@@ -39,11 +39,11 @@ public class Image {
         this.id = id;
     }
 
-    public Bool getIsPublic() {
+    public boolean getIsPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(Bool isPublic) {
+    public void setIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 
@@ -74,5 +74,6 @@ public class Image {
     @Override
     public String toString() {
         String result = "Image [id=" + id + ", name=" + name + ", description=" + description + ", isPublic=" + isPublic + "]";
+        return result;
     }
 }
