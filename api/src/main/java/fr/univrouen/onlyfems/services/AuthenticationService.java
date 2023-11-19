@@ -96,7 +96,7 @@ public class AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         response.put("username", authentication.getName());
-        response.put("role", authentication.getAuthorities().toString());
+        response.put("roles", authentication.getAuthorities());
 
         return response;
     }

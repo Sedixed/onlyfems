@@ -5,7 +5,13 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import LoadingCircle from "../LoadingCircle";
 
-const NoAuthPage = () => {
+type NoAuthPagePropsType = {
+  refetch: () => void
+}
+
+const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
+  refetch
+}) => {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [displayRegister, setDisplayRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,12 +43,12 @@ const NoAuthPage = () => {
       </div>
       {
         displayLogin ?
-        <LoginForm setIsLoading={setLoadingState} /> :
+        <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch} /> :
         null
       }
       {
         displayRegister ?
-        <RegisterForm setIsLoading={setLoadingState} /> :
+        <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} /> :
         null
       }
     </div>

@@ -12,5 +12,5 @@ export default interface LoginType {
 export default interface RegisterType {
   username: string,
   password: string,
-  role: string
+  roles: string[]
 }

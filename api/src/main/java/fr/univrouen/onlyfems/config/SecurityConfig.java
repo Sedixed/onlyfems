@@ -2,6 +2,9 @@ package fr.univrouen.onlyfems.config;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import fr.univrouen.onlyfems.services.CustomUserDetailsService;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +18,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +34,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/logout").permitAll()
@@ -34,11 +43,13 @@ public class SecurityConfig {
         );
 
         http.logout(logout -> logout
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 .logoutRequestMatcher(new AntPathRequestMatcher(APIEndpoints.LOGOUT_URL))
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
+                
         );
-        http.httpBasic(Customizer.withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint()));
         return http.build();
     }
 
@@ -59,5 +70,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.applyPermitDefaultValues();
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "DELETE", "PATCH", "PUT"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+ 
+        return source;
     }
 }

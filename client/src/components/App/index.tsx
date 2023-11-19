@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import '../../styles/App.css';
@@ -7,10 +7,19 @@ import Navbar from "../Navbar";
 import useIsAuthenticated from "../../hooks/useIsAuthenticated";
 import NoAuthPage from "../NoAuthPage";
 import { QueryClient, QueryClientProvider } from 'react-query';
+import LoadingCircle from "../LoadingCircle";
+import SnackMessage from "../SnackMessage";
+import { SnackMessageType } from "../../types/entityType";
 
 const App = () => {
   const queryClient = new QueryClient();
-  const authenticated = useIsAuthenticated();
+  const { authenticated, refetch } = useIsAuthenticated()!;
+  const [snackMessage, setSnackMessage] = useState<SnackMessageType | null>(null);
+
+  if (authenticated === null) {
+    return <LoadingCircle />
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="app">
@@ -18,7 +27,16 @@ const App = () => {
           { authenticated ?
             (
               <React.Fragment>
-                <Navbar />
+                <Navbar refetch={() => refetch({})} setSnack={setSnackMessage} />
+
+                { snackMessage ? 
+                  <SnackMessage 
+                    message={snackMessage}
+                    closeAction={() => setSnackMessage(null)} 
+                  /> : 
+                  null
+                }
+
                 <div className="content">
                   <Routes>
                     <Route path={clientPath.LOGIN} element={<></>} />
@@ -27,7 +45,7 @@ const App = () => {
                   </div>
               </React.Fragment>
             ) : (
-              <NoAuthPage />
+              <NoAuthPage refetch={() => refetch({})} />
             )
           } 
         </BrowserRouter>

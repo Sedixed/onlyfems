@@ -1,20 +1,18 @@
 package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
-import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
     @Autowired
@@ -34,6 +32,7 @@ public class AuthenticationController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @CrossOrigin(allowCredentials = "true", exposedHeaders = {"Set-Cookie"})
     public void login(@RequestBody LoginRequest loginRequest, HttpServletRequest req) {
         authenticationService.login(loginRequest.username, loginRequest.password, req);
     }
@@ -105,6 +104,7 @@ public class AuthenticationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @CrossOrigin(allowCredentials = "true", exposedHeaders = {"Access-Control-Allow-Credentials"})
     public ResponseEntity<Map<String, Object>> getUserAuthenticated() {
         Map<String, Object> response = authenticationService.getAuthenticatedUser();
         return ResponseEntity.ok(response);

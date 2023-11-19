@@ -1,0 +1,7 @@
+.snack-message {
+  position: absolute;
+  top: calc(var(--navbar-height) + 5px);
+  right: 5px;
+  padding: 8px 12px;
+  background-color: aqua;
+}
