@@ -4,13 +4,16 @@ import '../../styles/NoAuthPage.css';
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import LoadingCircle from "../LoadingCircle";
+import { SnackMessageType } from "../../types/entityType";
 
 type NoAuthPagePropsType = {
-  refetch: () => void
+  refetch: () => void,
+  setSnack: (smt: SnackMessageType) => void
 }
 
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
-  refetch
+  refetch,
+  setSnack
 }) => {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [displayRegister, setDisplayRegister] = useState(false);
@@ -48,7 +51,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
       }
       {
         displayRegister ?
-        <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} /> :
+        <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} setSnack={setSnack} /> :
         null
       }
     </div>

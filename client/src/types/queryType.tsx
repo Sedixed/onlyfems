@@ -1,7 +1,7 @@
 /**
  * Login type.
  */
-export default interface LoginType {
+export interface LoginType {
   username: string,
   password: string
 }
@@ -9,7 +9,7 @@ export default interface LoginType {
 /**
  * Register type.
  */
-export default interface RegisterType {
+export interface RegisterType {
   username: string,
   password: string,
   roles: string[]
