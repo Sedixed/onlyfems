@@ -1,23 +1,51 @@
 import React, { useState } from "react";
+import { useMutation } from "react-query";
+import { RegisterType } from "../../../types/queryType";
+import { registerMutation } from "../../../apis/queries";
+import { SnackMessageType } from "../../../types/entityType";
 
 type RegisterFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
-  refetchLogin: () => void
+  refetchLogin: () => void,
+  setSnack: (smt: SnackMessageType) => void
 };
 
 const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
   setIsLoading,
-  refetchLogin
+  refetchLogin,
+  setSnack,
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLoginSuccess = () => {
+    setIsLoading(false);
+    refetchLogin();
+    setSnack({
+      type: 'success',
+      message: 'Inscription réalisée avec succès'
+    })
+  }
+
+  const handleLoginFailure = () => {
+    setIsLoading(false);
+    console.log('t nul frr');
+  }
+
+  const registerMut = useMutation(
+    async (payload: RegisterType) => {
+      return await registerMutation(payload);
+    },
+    {
+      onSuccess: handleLoginSuccess,
+      onError: handleLoginFailure
+    }
+  )
+
   const register = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    // TODO
-    console.log(username);
-    console.log(password);
-    refetchLogin();
+    registerMut.mutate({ username, password, roles: ['USER_ROLE']} as RegisterType);
+    setIsLoading(true);
   }
 
   return (

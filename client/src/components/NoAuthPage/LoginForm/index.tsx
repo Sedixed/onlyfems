@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
-import LoginType from "../../../types/queryType";
+import { LoginType } from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
 
 type LoginFormPropsTypes = {

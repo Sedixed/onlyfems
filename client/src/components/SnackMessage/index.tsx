@@ -13,7 +13,12 @@ const SnackMessage: React.FC<SnackMessageTypeProps> = ({
   closeAction
 }) => {
   return (
-    <div className="snack-message">
+    <div className={`snack-message ${message.type}`}>
+      <div className="btn-container">
+        <div className="close-btn" onClick={closeAction}>
+          <i className="fa fa-times"></i>
+        </div>
+      </div>
       <p>{message.message}</p>
     </div>
   );

@@ -45,7 +45,7 @@ const App = () => {
                   </div>
               </React.Fragment>
             ) : (
-              <NoAuthPage refetch={() => refetch({})} />
+              <NoAuthPage refetch={() => refetch({})} setSnack={setSnackMessage}/>
             )
           } 
         </BrowserRouter>
