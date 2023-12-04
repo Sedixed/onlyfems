@@ -9,7 +9,7 @@ export default interface RoleType {
  * User type.
  */
 export default interface UserType {
-  username: string,
+  email: string,
   roles: RoleType[]
 }
 
