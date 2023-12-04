@@ -4,9 +4,12 @@ import fr.univrouen.onlyfems.constants.APIEndpoints;
 import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +37,21 @@ public class AuthenticationController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @CrossOrigin(allowCredentials = "true", exposedHeaders = {"Set-Cookie"})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void login(@RequestBody LoginRequest loginRequest, HttpServletRequest req) {
         authenticationService.login(loginRequest.username, loginRequest.password, req);
+    }
+
+    /**
+     * Logout route.
+     */
+    @RequestMapping(
+            value = APIEndpoints.LOGOUT_URL,
+            method = RequestMethod.POST
+    )
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void logout() {
+        SecurityContextHolder.clearContext();
     }
 
     /**

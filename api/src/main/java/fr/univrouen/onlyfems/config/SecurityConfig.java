@@ -49,11 +49,12 @@ public class SecurityConfig {
         );
 
         http.logout(logout ->
-                logout.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-                        .logoutRequestMatcher(new AntPathRequestMatcher(APIEndpoints.LOGOUT_URL))
-                        .invalidateHttpSession(true).deleteCookies("JSESSIONID")
+            logout.logoutUrl(APIEndpoints.LOGOUT_URL)
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
         );
-
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint()));
         return http.build();
     }
