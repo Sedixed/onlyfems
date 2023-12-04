@@ -17,7 +17,7 @@ const App = () => {
   const [snackMessage, setSnackMessage] = useState<SnackMessageType | null>(null);
 
   if (authenticated === null) {
-    return <LoadingCircle />
+    return  <LoadingCircle fullscreen /> 
   }
 
   return (

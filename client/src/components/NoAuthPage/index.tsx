@@ -32,7 +32,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
 
   return (
     <div className="no-auth-page flex">
-      { isLoading ? <LoadingCircle /> : null }
+      { isLoading ? <LoadingCircle fullscreen /> : null }
       <div className="presentation flex">
         <h1 className="title">OnlyFems</h1>
         <p className="abstract">Un portfolio de ZINZIN <span className="u-cant-c-me">(chokbar de bz)</span></p>
