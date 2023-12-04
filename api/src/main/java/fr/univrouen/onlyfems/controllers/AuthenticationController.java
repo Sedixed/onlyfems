@@ -1,6 +1,7 @@
 package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,11 @@ public class AuthenticationController {
 
     /**
      * Login route.
-     *
+     * <p>
      * Need a request body, example below :
      * {
-     *     "username":"user",
-     *     "password":"password"
+     * "username":"user",
+     * "password":"password"
      * }
      */
     @RequestMapping(
@@ -39,23 +40,23 @@ public class AuthenticationController {
 
     /**
      * Register route.
-     *
+     * <p>
      * Need a request body, example below :
      * {
-     *     "username": "username",
-     *     "password": "password",
-     *     "roles": ["ROLE_USER"]
+     * "username": "username",
+     * "password": "password",
+     * "roles": ["ROLE_USER"]
      * }
      *
      * @return The user created.
      * Response example :
      * {
-     *     "id": 1,
-     *     "username": "username",
-     *     "password": "$2a$10$m7pwqKM45wJVnLt9p1lv0uUPyT4EMH4N7k/YZ0DOWYqIsxMSyE9fe",
-     *     "roles": [
-     *         "ROLE_USER"
-     *     ]
+     * "id": 1,
+     * "username": "username",
+     * "password": "$2a$10$m7pwqKM45wJVnLt9p1lv0uUPyT4EMH4N7k/YZ0DOWYqIsxMSyE9fe",
+     * "roles": [
+     * "ROLE_USER"
+     * ]
      * }
      */
     @RequestMapping(
@@ -74,10 +75,10 @@ public class AuthenticationController {
 
     /**
      * Route that returns true if a user is authenticated.
-     *
+     * <p>
      * Response example :
      * {
-     *     "authenticated": true
+     * "authenticated": true
      * }
      */
     @RequestMapping(
@@ -92,11 +93,11 @@ public class AuthenticationController {
 
     /**
      * Route that returns the current user authenticated.
-     *
+     * <p>
      * Response example :
      * {
-     *     "roles": [ "[ROLE_USER]" ],
-     *     "username": "user"
+     * "roles": [ "[ROLE_USER]" ],
+     * "username": "user"
      * }
      */
     @RequestMapping(
@@ -124,9 +125,8 @@ public class AuthenticationController {
      *
      * @param username Username of a user.
      * @param password Password of a user.
-     * @param roles Roles of a user.
+     * @param roles    Roles of a user.
      */
-    public record RegisterRequest(String username, String password, List<String> roles) {
-
+    public record RegisterRequest(String username, String password, List<Roles> roles) {
     }
 }

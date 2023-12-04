@@ -1,5 +1,6 @@
 package fr.univrouen.onlyfems.entities;
 
+import fr.univrouen.onlyfems.constants.Roles;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,16 +17,17 @@ public class User {
 
     private String password;
 
-    @ElementCollection
-    private List<String> roles;
+    @Enumerated(EnumType.ORDINAL)
+    private List<Roles> roles;
 
-    public User(String username, String password, List<String> roles) {
+    public User(String username, String password, List<Roles> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public Integer getId() {
         return id;
@@ -51,11 +53,11 @@ public class User {
         this.password = password;
     }
 
-    public List<String> getRoles() {
+    public List<Roles> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Roles> roles) {
         this.roles = roles;
     }
 

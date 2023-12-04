@@ -6,22 +6,18 @@ package fr.univrouen.onlyfems.constants;
 public enum Roles {
 
     /**
-     * role of a user that is not authenticated.
+     * Role of a user connected with administrator permissions.
      */
-    ANONYMOUS,
+    ROLE_ADMIN,
+
 
     /**
      * Role of a lambda user connected.
      */
-    USER,
+    ROLE_USER,
 
     /**
-     * Role of a user connected with administrator permissions.
+     * role of a user that is not authenticated.
      */
-    ADMIN,
-
-    /**
-     * All type of users.
-     */
-    ALL
+    ROLE_ANONYMOUS
 }

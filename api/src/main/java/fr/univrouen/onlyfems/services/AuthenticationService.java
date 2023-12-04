@@ -1,5 +1,6 @@
 package fr.univrouen.onlyfems.services;
 
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -38,7 +39,6 @@ public class AuthenticationService {
 
     /**
      * Login a user provided a login request.
-     *
      */
     public void login(String username, String password, HttpServletRequest req) {
         UsernamePasswordAuthenticationToken authReq
@@ -55,10 +55,10 @@ public class AuthenticationService {
      *
      * @param username Username of the user.
      * @param password Password of the user.
-     * @param roles Roles of the user.
+     * @param roles    Roles of the user.
      * @return The user created.
      */
-    public User register(String username, String password, List<String> roles, HttpServletRequest req) {
+    public User register(String username, String password, List<Roles> roles, HttpServletRequest req) {
         User user = userService.createOrUpdateUser(new User(username, passwordEncoder.encode(password), roles));
         login(username, password, req);
         return user;
