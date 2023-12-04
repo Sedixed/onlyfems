@@ -46,7 +46,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
       </div>
       {
         displayLogin ?
-        <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch} /> :
+        <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch}/> :
         null
       }
       {

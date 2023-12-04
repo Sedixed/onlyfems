@@ -128,17 +128,45 @@
   background-color: transparent;
 }
 
+.no-auth-page .register-form button:disabled {
+  border: solid rgb(123, 123, 123) 2px;
+  background-color: rgba(41, 41, 41, 0.8);
+  cursor: not-allowed;
+}
+
 .no-auth-page .login-form button {
   background-color: white;
   color: rgb(5, 2, 31);
 }
 
 .no-auth-page .login-form button:hover,
-.no-auth-page .register-form button:hover {
+.no-auth-page .register-form button:not(:disabled):hover {
   transform: scale(1.05);
 }
 
 .no-auth-page .form-title {
   align-self: center;
   font-size: 200%;
+}
+
+.no-auth-page .register-form .criterias {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.no-auth-page .register-form .criteria {
+  gap: 5px;
+  align-items: baseline;
+}
+
+.no-auth-page .register-form .criteria p {
+  margin: 0;
+}
+
+.no-auth-page .register-form .criteria .fa-check {
+  color: rgb(1, 222, 1);
+}
+
+.no-auth-page .register-form .criteria .fa-xmark {
+  color: red; 
 }

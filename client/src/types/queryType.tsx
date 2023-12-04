@@ -2,7 +2,7 @@
  * Login type.
  */
 export interface LoginType {
-  username: string,
+  email: string,
   password: string
 }
 
@@ -10,7 +10,7 @@ export interface LoginType {
  * Register type.
  */
 export interface RegisterType {
-  username: string,
+  email: string,
   password: string,
   roles: string[]
 }

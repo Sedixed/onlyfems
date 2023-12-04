@@ -5,25 +5,23 @@ import { loginMutation } from "../../../apis/queries";
 
 type LoginFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
-  refetchLogin: () => void
+  refetchLogin: () => void,
 };
 
 const LoginForm: React.FC<LoginFormPropsTypes> = ({ 
   setIsLoading,
-  refetchLogin
+  refetchLogin,
 }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
   const handleLoginSuccess = () => {
     setIsLoading(false);
-    console.log('t login frr');
     refetchLogin();
   }
 
   const handleLoginFailure = () => {
     setIsLoading(false);
-    console.log('t nul frr');
   }
 
   const loginMut = useMutation(
@@ -38,7 +36,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
 
   const login = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginMut.mutate({username, password} as LoginType);
+    loginMut.mutate({email, password} as LoginType);
     setIsLoading(true);
   }
 
@@ -47,11 +45,11 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
     <div className="login-form-container flex">
       <p className="form-title">Connexion</p>
         <form className="login-form flex" action="" onSubmit={e => login(e)}>
-          <label htmlFor="username">Pseudonyme</label>
-          <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label htmlFor="email">Email</label>
+          <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
           <label htmlFor="password">Mot de passe</label>
-          <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           
           <button type="submit">Se connecter</button>
         </form>
