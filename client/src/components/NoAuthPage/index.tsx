@@ -44,16 +44,18 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
           <button onClick={setRegisterTrue}>Inscription</button>
         </div>
       </div>
-      {
-        displayLogin ?
-        <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch}/> :
-        null
-      }
-      {
-        displayRegister ?
-        <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} setSnack={setSnack} /> :
-        null
-      }
+      <div className="forms flex">
+        {
+          displayLogin ?
+          <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch}/> :
+          null
+        }
+        {
+          displayRegister ?
+          <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} setSnack={setSnack} /> :
+          null
+        }
+      </div>
     </div>
   );
 };

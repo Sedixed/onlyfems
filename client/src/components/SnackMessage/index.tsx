@@ -4,22 +4,22 @@ import { SnackMessageType } from "../../types/entityType";
 import '../../styles/SnackMessage.css';
 
 type SnackMessageTypeProps = {
-  message: SnackMessageType,
+  snackMessage: SnackMessageType,
   closeAction: () => void
 }
 
 const SnackMessage: React.FC<SnackMessageTypeProps> = ({
-  message,
+  snackMessage,
   closeAction
 }) => {
   return (
-    <div className={`snack-message ${message.type}`}>
+    <div className={`snack-message ${snackMessage.type}`}>
       <div className="btn-container">
         <div className="close-btn" onClick={closeAction}>
           <i className="fa fa-times"></i>
         </div>
       </div>
-      <p>{message.message}</p>
+      <p>{snackMessage.message}</p>
     </div>
   );
 }

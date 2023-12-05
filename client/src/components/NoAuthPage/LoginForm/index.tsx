@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { LoginType } from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
+import LoginFormError from "./LoginFormError";
 
 type LoginFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
@@ -14,6 +15,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
 }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   
   const handleLoginSuccess = () => {
     setIsLoading(false);
@@ -22,6 +24,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
 
   const handleLoginFailure = () => {
     setIsLoading(false);
+    setErrorMessage('Erreur : email ou mot de passe incorrect');
   }
 
   const loginMut = useMutation(
@@ -41,7 +44,12 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
   }
 
   return (
-    
+    <div className="flex">
+    {
+      errorMessage !== '' ?
+      <LoginFormError message={errorMessage} /> :
+      null
+    }
     <div className="login-form-container flex">
       <p className="form-title">Connexion</p>
         <form className="login-form flex" action="" onSubmit={e => login(e)}>
@@ -53,6 +61,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
           
           <button type="submit">Se connecter</button>
         </form>
+    </div>
     </div>
   )
 }

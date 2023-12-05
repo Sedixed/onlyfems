@@ -31,7 +31,7 @@ const App = () => {
 
                 { snackMessage ? 
                   <SnackMessage 
-                    message={snackMessage}
+                    snackMessage={snackMessage}
                     closeAction={() => setSnackMessage(null)} 
                   /> : 
                   null

@@ -24,6 +24,7 @@ export default function useIsAuthenticated() {
   }, [shouldRefetch])
 
   return {
+    // put the ! before parenthèse
     authenticated: user ? !(user.roles.length === 1 && user.roles[0].authority === 'ROLE_ANONYMOUS') : null, 
     refetch: refetch
   };

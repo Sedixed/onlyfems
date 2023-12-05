@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   height: 100vh;
+  width: 100vw;
   background-image: url('../../public/assets/no_auth_bg_img.svg');
   background-size: cover;
 }
@@ -11,10 +12,10 @@
 }
 
 .no-auth-page .presentation {
-  margin-left: 10%;
-  width: fit-content;
+  width: 50%;
   flex-direction: column;
   justify-content: center;
+  padding-left: 5%;
   gap: 20px;
 }
 
@@ -63,13 +64,20 @@
   background-color: white;
 }
 
+.no-auth-page .forms {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+
 .no-auth-page .login-form-container,
 .no-auth-page .register-form-container {
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
-  right: 0;
-  transform: translateY(-50%);
   padding: 0 30px 50px 30px;
   color: white;
   background: rgba(0, 7, 12, 0.72);
@@ -90,10 +98,12 @@
 @keyframes slideFromRight {
   from {
     right: -40%;
+    transform: translateY(-50%);
   }
 
   to {
-    right: 15%;
+    right: 50%;
+    transform: translate(50%, -50%);
   }
 }
 
@@ -169,4 +179,18 @@
 
 .no-auth-page .register-form .criteria .fa-xmark {
   color: red; 
+}
+
+.no-auth-page .login-form-error {
+  margin-top: 10px;
+  background-color: #f3f0f0;
+  color: rgb(117, 16, 16);
+  border: solid 2px rgb(117, 16, 16);
+  height: fit-content;
+  border-radius: 6px;
+}
+
+.no-auth-page .login-form-error p {
+  margin: 0;
+  padding: 6px 10px;
 }
