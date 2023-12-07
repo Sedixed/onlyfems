@@ -1,6 +1,8 @@
 package fr.univrouen.onlyfems.services;
 
-import fr.univrouen.onlyfems.constants.Roles;
+import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
+import fr.univrouen.onlyfems.dto.user.CreateOrUpdateUserDTO;
+import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -9,14 +11,15 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
@@ -40,9 +43,9 @@ public class AuthenticationService {
     /**
      * Login a user provided a login request.
      */
-    public void login(String username, String password, HttpServletRequest req) {
+    public void login(LoginDTO loginDTO, HttpServletRequest req) {
         UsernamePasswordAuthenticationToken authReq
-                = new UsernamePasswordAuthenticationToken(username, password);
+                = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
         Authentication auth = authenticationManager.authenticate(authReq);
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
@@ -53,14 +56,30 @@ public class AuthenticationService {
     /**
      * Register a new User and log it.
      *
-     * @param username Username of the user.
-     * @param password Password of the user.
-     * @param roles    Roles of the user.
+     * @param userDTO Email of the user.
      * @return The user created.
      */
-    public User register(String username, String password, List<Roles> roles, HttpServletRequest req) {
-        User user = userService.createOrUpdateUser(new User(username, passwordEncoder.encode(password), roles));
-        login(username, password, req);
+    public User register(CreateOrUpdateUserDTO userDTO, HttpServletRequest req) {
+        if (!verifyEmail(userDTO.getEmail())) {
+            throw new IllegalArgumentException("Email is not well formed.");
+        }
+
+        if (!verifyPassword(userDTO.getPassword())) {
+            throw new IllegalArgumentException("Password is not well formed.");
+        }
+
+        if (userService.getUserByEmail(userDTO.getEmail()) != null) {
+            throw new IllegalArgumentException("Email " + userDTO.getEmail() + " already exists");
+        }
+
+        User user = new User(
+                userDTO.getEmail(),
+                userDTO.getUsername(),
+                passwordEncoder.encode(userDTO.getPassword()),
+                userDTO.getRoles()
+        );
+        User userCreated = userService.createOrUpdateUser(user);
+        login(new LoginDTO(userCreated.getEmail(), userDTO.getPassword()), req);
         return user;
     }
 
@@ -91,13 +110,51 @@ public class AuthenticationService {
      *
      * @return The user.
      */
-    public Map<String, Object> getAuthenticatedUser() {
-        Map<String, Object> response = new HashMap<>();
+    public UserDTO getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        response.put("username", authentication.getName());
-        response.put("roles", authentication.getAuthorities());
+        // TODO : FINIR CA
+        UserDTO userDTO;
+        if ((Boolean) isAuthenticated().get("authenticated")) {
+            userDTO = new UserDTO(
+                    authentication.getName(),
+                    userService.getUserByEmail(authentication.getName()).getUsername(),
+                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
+            );
+        } else {
+            userDTO = new UserDTO(
+                    null,
+                    null,
+                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
+            );
+        }
 
-        return response;
+        return userDTO;
+    }
+
+    /**
+     * Private method to check if a string in parameter is an email.
+     *
+     * @param email Email to check.
+     * @return true if parameter is an email, false otherwise.
+     */
+    private boolean verifyEmail(String email) {
+        String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
+        return email.matches(regex);
+    }
+
+    /**
+     * Private method to check if a password contains at least one letter, one number,
+     * and has at least 8 characters.
+     *
+     * @param password The password to check.
+     * @return true if password is correct, false otherwise.
+     */
+    private boolean verifyPassword(String password) {
+        return password.matches(".*[A-Za-z].*")
+                && password.matches(".*[0-9].*")
+                && password.length() >= 8;
     }
 }

@@ -13,6 +13,8 @@ public class User {
     private Integer id;
 
     @Column(unique = true)
+    private String email;
+
     private String username;
 
     private String password;
@@ -20,7 +22,8 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private List<Roles> roles;
 
-    public User(String username, String password, List<Roles> roles) {
+    public User(String email, String username, String password, List<Roles> roles) {
+        this.email = email;
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -35,6 +38,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String username) {
+        this.email = username;
     }
 
     public String getUsername() {
@@ -63,6 +74,6 @@ public class User {
 
     @Override
     public String toString() {
-        return username;
+        return email;
     }
 }
