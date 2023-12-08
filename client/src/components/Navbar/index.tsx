@@ -3,22 +3,36 @@ import React from "react";
 import '../../styles/Navbar.css';
 import { logoutQuery } from "../../apis/queries";
 import { SnackMessageType } from "../../types/entityType";
+import { Link, useNavigate } from "react-router-dom";
+import useGetUser from "../../hooks/useGetUser";
+import { isAdmin, isAuthenticated } from "../../utils/user";
+import LoadingCircle from "../LoadingCircle";
+import clientPath from "../../utils/clientPath";
 
 type NavbarPropsType = {
-  refetch: () => void,
   setSnack: (smt: SnackMessageType) => void
 }
 
 const Navbar: React.FC<NavbarPropsType> = ({
-  refetch,
   setSnack
 }) => {
+  const navigate = useNavigate();
+  const { user, refetch } = useGetUser();
+
+  if (!user) {
+    return <LoadingCircle />
+  }
+
+  const authenticated = isAuthenticated(user)
+
+  console.log(user)
+  console.log(isAuthenticated(user))
 
   const logout = async () => {
     const res = await logoutQuery();
     console.log(res);
     if (res.status === 200) {
-      refetch();
+      refetch({});
     } else {
       setSnack({
         message: 'Une erreur est survenue lors de votre déconnexion',
@@ -29,12 +43,35 @@ const Navbar: React.FC<NavbarPropsType> = ({
 
   return (
     <div className="navbar flex">
-      <p>OnlyFems</p>
-      <p>Un lien</p>
-      <p>Un autre lien</p>
-      <p>Encore un autre lien</p>
+      <p className="title">OnlyFems</p>
+      <div className="links flex">
+        {
+          isAdmin(user) ?
+          <Link to={clientPath.ADMIN}>Administration</Link> :
+          null
+        }
+        
+        <p>Un lien</p>
+        <p>Un autre lien</p>
+        <p>Encore un autre lien</p>
+      </div>
+      
 
-      <button className="logout-btn" onClick={logout}>Déconnexion</button>
+      <div className="btns flex">
+        {
+          authenticated ?
+          (
+            <div className="profile btn flex" onClick={() => navigate(clientPath.PROFILE)}>
+              Profil
+              <i className="fa fa-user"></i>
+            </div>
+          ) : 
+          null
+        }
+        <div className="action btn" onClick={authenticated ? logout : () => navigate(clientPath.HOME)}>
+          <i className={`fa fa-sign-${authenticated ? 'out' : 'in'}`}></i>
+        </div>
+      </div>
     </div>
   )
 };

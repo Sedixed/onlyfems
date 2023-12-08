@@ -3,23 +3,25 @@ import { useMutation } from "react-query";
 import { LoginType } from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
 import LoginFormError from "./LoginFormError";
+import { useNavigate } from "react-router-dom";
+import clientPath from "../../../utils/clientPath";
 
 type LoginFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
-  refetchLogin: () => void,
 };
 
 const LoginForm: React.FC<LoginFormPropsTypes> = ({ 
   setIsLoading,
-  refetchLogin,
 }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const navigate = useNavigate();
   
   const handleLoginSuccess = () => {
     setIsLoading(false);
-    refetchLogin();
+    navigate(clientPath.TEST)
   }
 
   const handleLoginFailure = () => {

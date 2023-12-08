@@ -3,9 +3,9 @@ import api from "../apis/api";
 import UserType from "../types/entityType";
 
 /**
- * Used to detect if the current user is authenticated or not.
+ * Used to get the current user.
  */
-export default function useIsAuthenticated() {
+export default function useGetUser() {
   const [user, setUser] = useState<UserType | null>(null);
   const [shouldRefetch, refetch] = useState<{}>({});
 
@@ -24,8 +24,7 @@ export default function useIsAuthenticated() {
   }, [shouldRefetch])
 
   return {
-    // put the ! before parenthèse
-    authenticated: user ? !(user.roles.length === 1 && user.roles[0].authority === 'ROLE_ANONYMOUS') : null, 
+    user: user,
     refetch: refetch
   };
 }

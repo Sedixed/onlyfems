@@ -3,16 +3,16 @@ import { useMutation } from "react-query";
 import { RegisterType } from "../../../types/queryType";
 import { registerMutation } from "../../../apis/queries";
 import { SnackMessageType } from "../../../types/entityType";
+import { useNavigate } from "react-router-dom";
+import clientPath from "../../../utils/clientPath";
 
 type RegisterFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
-  refetchLogin: () => void,
   setSnack: (smt: SnackMessageType) => void
 };
 
 const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
   setIsLoading,
-  refetchLogin,
   setSnack,
 }) => {
   const [email, setEmail] = useState('');
@@ -21,9 +21,11 @@ const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
   const [pwdDigitValid, setPwdDigitValid] = useState(false);
   const [pwdCharValid, setPwdCharValid] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleRegisterSuccess = () => {
     setIsLoading(false);
-    refetchLogin();
+    navigate(clientPath.TEST)
     setSnack({
       type: 'success',
       message: 'Inscription réalisée avec succès'

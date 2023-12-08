@@ -38,6 +38,8 @@
 .no-auth-page .presentation .buttons-group {
   gap: 20px;
   margin-left: 5px;
+  flex-wrap: wrap;
+  width: 70%;
 }
 
 .no-auth-page .presentation .buttons-group button {
@@ -52,7 +54,7 @@
   transform: scale(1.05);
 }
 
-.no-auth-page .presentation .buttons-group button:last-child {
+.no-auth-page .presentation .buttons-group button:nth-child(2) {
   border: solid white 2px;
   color: white;
   background-color: transparent;
@@ -62,6 +64,10 @@
   border: solid white 2px;
   color: #001220;
   background-color: white;
+}
+
+.no-auth-page .presentation .buttons-group button:last-child {
+  padding: 5px 29px;
 }
 
 .no-auth-page .forms {

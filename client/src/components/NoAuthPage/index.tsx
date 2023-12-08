@@ -5,19 +5,21 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import LoadingCircle from "../LoadingCircle";
 import { SnackMessageType } from "../../types/entityType";
+import { useNavigate } from "react-router-dom";
+import clientPath from "../../utils/clientPath";
 
 type NoAuthPagePropsType = {
-  refetch: () => void,
   setSnack: (smt: SnackMessageType) => void
 }
 
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
-  refetch,
   setSnack
 }) => {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [displayRegister, setDisplayRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const setLoginTrue = () => {
     setDisplayLogin(true);
@@ -31,7 +33,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
 
   const setLoadingState = (state: boolean): void => {
     setIsLoading(state);
-  } 
+  }
 
   return (
     <div className="no-auth-page flex">
@@ -42,17 +44,18 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
         <div className="buttons-group flex">
           <button onClick={setLoginTrue}>Connexion</button>
           <button onClick={setRegisterTrue}>Inscription</button>
+          <button onClick={() => navigate(clientPath.TEST)}>Accéder sans s'authentifier</button>
         </div>
       </div>
       <div className="forms flex">
         {
           displayLogin ?
-          <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch}/> :
+          <LoginForm setIsLoading={setLoadingState} /> :
           null
         }
         {
           displayRegister ?
-          <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} setSnack={setSnack} /> :
+          <RegisterForm setIsLoading={setLoadingState} setSnack={setSnack} /> :
           null
         }
       </div>
