@@ -8,6 +8,10 @@
   border: solid 3px;
 }
 
+.snack-message.full-top {
+  top: 5px;
+}
+
 .snack-message.success {
   background-color: palegreen;
   border-color: rgb(91, 180, 91);

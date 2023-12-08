@@ -55,7 +55,12 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
         }
         {
           displayRegister ?
-          <RegisterForm setIsLoading={setLoadingState} setSnack={setSnack} /> :
+          <RegisterForm 
+            removeRegisterCallback={() => setDisplayRegister(false)}
+            putLoginCallback={() => setDisplayLogin(true)}
+            setIsLoading={setLoadingState} 
+            setSnack={setSnack} 
+          /> :
           null
         }
       </div>

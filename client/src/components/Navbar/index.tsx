@@ -30,8 +30,8 @@ const Navbar: React.FC<NavbarPropsType> = ({
 
   const logout = async () => {
     const res = await logoutQuery();
-    console.log(res);
     if (res.status === 200) {
+      navigate(clientPath.HOME)
       refetch({});
     } else {
       setSnack({

@@ -1,16 +1,10 @@
 /**
- * User role type.
- */
-export default interface RoleType {
-  authority: string,
-}
-
-/**
  * User type.
  */
 export default interface UserType {
   email: string,
-  roles: RoleType[]
+  username: string
+  roles: string[]
 }
 
 /**
@@ -18,5 +12,6 @@ export default interface UserType {
  */
 export type SnackMessageType = {
   type: string,
+  fullTop?: boolean,
   message: string
 }

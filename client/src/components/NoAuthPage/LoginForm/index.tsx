@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { LoginType } from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
-import LoginFormError from "./LoginFormError";
+import FormError from "../FormError";
 import { useNavigate } from "react-router-dom";
 import clientPath from "../../../utils/clientPath";
 
@@ -49,7 +49,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
     <div className="flex">
     {
       errorMessage !== '' ?
-      <LoginFormError message={errorMessage} /> :
+      <FormError message={errorMessage} /> :
       null
     }
     <div className="login-form-container flex">

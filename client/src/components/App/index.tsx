@@ -37,6 +37,7 @@ const App = () => {
             { snackMessage ? 
               <SnackMessage 
                 snackMessage={snackMessage}
+                fullTop
                 closeAction={() => setSnackMessage(null)} 
               /> : 
               null
