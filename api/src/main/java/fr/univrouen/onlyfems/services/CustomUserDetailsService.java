@@ -1,5 +1,6 @@
 package fr.univrouen.onlyfems.services;
 
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @return UserDetails object.
      */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userRepo = userRepository.findByUsername(username);
+        User userRepo = userRepository.findByEmail(username);
         org.springframework.security.core.userdetails.User userResponse = new org.springframework.security.core.userdetails.User(
-                userRepo.getUsername(),
+                userRepo.getEmail(),
                 userRepo.getPassword(),
                 getAuthorities(userRepo.getRoles())
         );
@@ -45,10 +46,10 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @param roles The list of roles to convert.
      * @return The roles converted in GrantedAuthority.
      */
-    private List<GrantedAuthority> getAuthorities(List<String> roles) {
+    private List<GrantedAuthority> getAuthorities(List<Roles> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role));
+        for (Roles role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.name()));
         }
         return authorities;
     }
