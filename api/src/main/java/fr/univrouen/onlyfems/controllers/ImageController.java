@@ -2,7 +2,10 @@ package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.entities.Image;
 import fr.univrouen.onlyfems.repositories.ImageRepository;
+import fr.univrouen.onlyfems.services.FileSystemStorageService;
+import fr.univrouen.onlyfems.services.IStorageService;
 import fr.univrouen.onlyfems.services.ImageService;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,80 +20,88 @@ import java.util.Optional.*;
 @CrossOrigin("*")
 public class ImageController {
 
-    private final ImageRepository imageRepository;
+    private final IStorageService storageService;
     private final ImageService imageService;
 
     @Autowired
-    public ImageController(ImageRepository imageRepository, ImageService imageService) {
-        this.imageRepository = imageRepository;
+    public ImageController(FileSystemStorageService storageService, ImageService imageService) {
+        this.storageService = storageService;
         this.imageService = imageService;
     }
     
     /**
-     *  Récupérer toutes les images du portfolio 
-     * ( Donc les images publiques et privées dans le cas où l'utilisateur est connecté )
+     *  Retrieve all images.
      */
-    @RequestMapping(
+    /*@RequestMapping(
         value = APIEndpoints.IMAGES_URL,
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Iterable<Image>> getImages() {
-        // // Si l'utilisateur à des privilèges ou est l'admin, on renvoie toutes les images
-        // if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-        //     return ResponseEntity.ok(imageRepository.findAll());
-        // }
-        // // Sinon, on renvoie seulement les images publiques
-        // return ResponseEntity.ok(imageRepository.findByPublicity(true));
-
+    public ResponseEntity<Iterable<Image>> getAllImages() {
         // On stocke les images dans une variable
-        Iterable<Image> images = imageRepository.findAll();      
-        
         // Si il n'y a pas d'images, on renvoie une erreur
-        if (images == null) {
-            return ResponseEntity.notFound().build();
-        }
+        //return ResponseEntity.notFound().build();
 
         // On renvoie les images
-        return ResponseEntity.ok(images);
-    }
+        //return ResponseEntity.ok(images);
+
+    }*/
 
     // Récupérer une image précise en fonction de son id
-    @RequestMapping(
+    /*@RequestMapping(
         value = APIEndpoints.IMAGE_URL + "/{id}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Image> getImage(@PathVariable Integer id) {
-        Image image = imageRepository.findById(id).orElse(null);
+        //Image image = imageRepository.findById(id).orElse(null);
 
         if (image == null) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(image);
-    }
+    }*/
 
-    // Ajouter une image au portfolio
+    /**
+     * Upload an image on the API.
+     *
+     * @param file Image to upload.
+     * @return The image uploaded.
+     */
     @RequestMapping(
         value = APIEndpoints.IMAGE_URL,
         method = RequestMethod.POST,
-        consumes = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> addImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Image> uploadImage(@RequestPart("file") MultipartFile file) {
         // Si l'utilisateur n'est pas connecté, on renvoie une erreur
         // if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
         //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         // }
 
-        Image image = imageService.saveImage(file);
+        //Image image = imageService.saveImage(file);
 
-        return ResponseEntity.ok(image);
+        System.out.println(file.getName());
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.isEmpty());
+        System.out.println(file.getSize());
+        System.out.println(file.getContentType());
+
+        try {
+            storageService.store(file);
+            System.out.println("ui");
+            //System.out.println(storageService.loadAll());
+        } catch (Exception e) {
+            //System.out.println(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(new Image());
     }
 
     // Retirer une image du portfolio
-    @RequestMapping(
+    /*@RequestMapping(
         value = APIEndpoints.IMAGE_URL + "/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -113,9 +124,9 @@ public class ImageController {
         imageRepository.deleteById(image.getId());
 
         return ResponseEntity.ok(image);
-    }
+    }*/
 
-    @RequestMapping(
+    /*@RequestMapping(
         value = APIEndpoints.IMAGE_URL + "/{id}",
         method = RequestMethod.PUT,
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -145,6 +156,6 @@ public class ImageController {
         imageRepository.save(imageToUpdate);
 
         return ResponseEntity.ok(imageToUpdate);
-    }
+    }*/
 
 }

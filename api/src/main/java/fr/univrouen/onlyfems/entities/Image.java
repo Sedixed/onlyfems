@@ -11,24 +11,19 @@ public class Image {
 
     private String name;
     
-    @Lob
     @Column(name = "encoded_image")
-    private byte[] encodedImage;
+    private String encodedImage;
 
     private String description;
 
-    private boolean publicity;
+    private boolean privacy;
 
-    public Image(
-        String name, 
-        byte[] encodedImage, 
-        String description, 
-        boolean publicity
-    ) {
+    public Image(Integer id, String name, String encodedImage, String description, boolean privacy) {
+        this.id = id;
         this.name = name;
         this.encodedImage = encodedImage;
         this.description = description;
-        this.publicity = publicity;
+        this.privacy = privacy;
     }
 
     public Image() {}
@@ -41,41 +36,41 @@ public class Image {
         this.id = id;
     }
 
-    public boolean getPublicity() {
-        return publicity;
-    }
-
-    public void setPublicity(boolean publicity) {
-        this.publicity = publicity;
-    }
-
-    public byte[] getEncodedImage() {
-        return encodedImage;
-    }
-
-    public void setEncodedImage(byte[] encodedImage) {
-        this.encodedImage = encodedImage;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public String getEncodedImage() {
+        return encodedImage;
+    }
+
+    public void setEncodedImage(String encodedImage) {
+        this.encodedImage = encodedImage;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    @Override
+    public boolean isPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(boolean privacy) {
+        this.privacy = privacy;
+    }
+
+    /*@Override
     public String toString() {
         String result = "Image [id=" + id + ", name=" + name + ", description=" + description + ", publicity=" + publicity + "]";
         return result;
-    }
+    }*/
 }
