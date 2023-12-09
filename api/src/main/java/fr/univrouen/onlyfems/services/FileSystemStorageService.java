@@ -2,7 +2,7 @@ package fr.univrouen.onlyfems.services;
 
 import fr.univrouen.onlyfems.exceptions.StorageException;
 import fr.univrouen.onlyfems.exceptions.StorageFileNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -18,44 +18,33 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+/**
+ * Service that manage the file system.
+ */
 @Service
 public class FileSystemStorageService implements IStorageService {
 
     private final Path rootLocation;
-
-    /*public FileSystemStorageService(StorageProperties properties) {
-
-        if(properties.getLocation().trim().length() == 0){
-            throw new StorageException("File upload location can not be Empty.");
-        }
-
-        this.rootLocation = Paths.get(properties.getLocation());
-    }*/
 
     public FileSystemStorageService() {
         this.rootLocation = Paths.get("upload/");
     }
 
     @Override
-    public void store(MultipartFile file) throws StorageException {
+    public void store(MultipartFile file, String filename) throws StorageException {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
-            System.out.println("ui");
             Path destinationFile = this.rootLocation.resolve(
-                            Paths.get(file.getOriginalFilename()))
+                            Paths.get(filename))
                     .normalize().toAbsolutePath();
-            System.out.println("ui2");
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check
                 throw new StorageException(
                         "Cannot store file outside current directory.");
             }
-            System.out.println("ui3");
             try (InputStream inputStream = file.getInputStream()) {
-                System.out.println("ui4");
-                System.out.println(inputStream);
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImageRepository extends CrudRepository<Image, Integer> {
     Image findByName(String name);
-    Image findByPublicity(boolean isPublic);
+    Image findByPrivacy(boolean isPublic);
 }

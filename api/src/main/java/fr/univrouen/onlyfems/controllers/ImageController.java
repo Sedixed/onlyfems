@@ -1,31 +1,25 @@
 package fr.univrouen.onlyfems.controllers;
 
-import fr.univrouen.onlyfems.entities.Image;
-import fr.univrouen.onlyfems.repositories.ImageRepository;
-import fr.univrouen.onlyfems.services.FileSystemStorageService;
-import fr.univrouen.onlyfems.services.IStorageService;
+import fr.univrouen.onlyfems.dto.DTO;
+import fr.univrouen.onlyfems.dto.error.ErrorDTO;
+import fr.univrouen.onlyfems.dto.image.ImageDTO;
 import fr.univrouen.onlyfems.services.ImageService;
-import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional.*;
 
 @RestController
 @CrossOrigin("*")
 public class ImageController {
 
-    private final IStorageService storageService;
     private final ImageService imageService;
 
     @Autowired
-    public ImageController(FileSystemStorageService storageService, ImageService imageService) {
-        this.storageService = storageService;
+    public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
     
@@ -75,29 +69,13 @@ public class ImageController {
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> uploadImage(@RequestPart("file") MultipartFile file) {
-        // Si l'utilisateur n'est pas connecté, on renvoie une erreur
-        // if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        // }
-
-        //Image image = imageService.saveImage(file);
-
-        System.out.println(file.getName());
-        System.out.println(file.getOriginalFilename());
-        System.out.println(file.isEmpty());
-        System.out.println(file.getSize());
-        System.out.println(file.getContentType());
-
+    public ResponseEntity<DTO> uploadImage(@RequestPart("image") MultipartFile file) {
         try {
-            storageService.store(file);
-            System.out.println("ui");
-            //System.out.println(storageService.loadAll());
+            ImageDTO imageDTO = new ImageDTO(imageService.saveImage(file));
+            return ResponseEntity.ok(imageDTO);
         } catch (Exception e) {
-            //System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
-
-        return ResponseEntity.ok().body(new Image());
     }
 
     // Retirer une image du portfolio
