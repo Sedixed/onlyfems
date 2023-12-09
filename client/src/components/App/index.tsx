@@ -11,10 +11,17 @@ import SnackMessage from "../SnackMessage";
 import { SnackMessageType } from "../../types/entityType";
 import Profile from "../Profile";
 import Administration from "../Administration";
+import useGetUser from "../../hooks/useGetUser";
 
 const App = () => {
   const queryClient = new QueryClient();
   const [snackMessage, setSnackMessage] = useState<SnackMessageType | null>(null);
+
+  const {user, refetch} = useGetUser();
+
+  if (!user) {
+    return <LoadingCircle />
+  }
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -26,13 +33,14 @@ const App = () => {
               element={
                 <NoAuthPage 
                   setSnack={setSnackMessage}
+                  refetchCallback={() => refetch({})}
                 />
               } 
             />
           </Routes>
 
           <>
-            <Navbar setSnack={setSnackMessage} />
+            <Navbar setSnack={setSnackMessage} user={user} refetch={() => refetch({})} />
 
             { snackMessage ? 
               <SnackMessage 

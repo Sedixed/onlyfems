@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 import clientPath from "../../utils/clientPath";
 
 type NoAuthPagePropsType = {
-  setSnack: (smt: SnackMessageType) => void
+  setSnack: (smt: SnackMessageType) => void,
+  refetchCallback: () => void,
 }
 
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
-  setSnack
+  setSnack,
+  refetchCallback,
 }) => {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [displayRegister, setDisplayRegister] = useState(false);
@@ -50,7 +52,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
       <div className="forms flex">
         {
           displayLogin ?
-          <LoginForm setIsLoading={setLoadingState} /> :
+          <LoginForm setIsLoading={setLoadingState} refetchCallback={refetchCallback} /> :
           null
         }
         {

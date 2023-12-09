@@ -2,7 +2,7 @@ import React from "react";
 
 import '../../styles/Navbar.css';
 import { logoutQuery } from "../../apis/queries";
-import { SnackMessageType } from "../../types/entityType";
+import UserType, { SnackMessageType } from "../../types/entityType";
 import { Link, useNavigate } from "react-router-dom";
 import useGetUser from "../../hooks/useGetUser";
 import { isAdmin, isAuthenticated } from "../../utils/user";
@@ -10,14 +10,17 @@ import LoadingCircle from "../LoadingCircle";
 import clientPath from "../../utils/clientPath";
 
 type NavbarPropsType = {
-  setSnack: (smt: SnackMessageType) => void
+  setSnack: (smt: SnackMessageType) => void,
+  user: UserType,
+  refetch: () => void
 }
 
 const Navbar: React.FC<NavbarPropsType> = ({
-  setSnack
+  setSnack,
+  user,
+  refetch
 }) => {
   const navigate = useNavigate();
-  const { user, refetch } = useGetUser();
 
   if (!user) {
     return <LoadingCircle />
@@ -26,13 +29,12 @@ const Navbar: React.FC<NavbarPropsType> = ({
   const authenticated = isAuthenticated(user)
 
   console.log(user)
-  console.log(isAuthenticated(user))
 
   const logout = async () => {
     const res = await logoutQuery();
     if (res.status === 200) {
       navigate(clientPath.HOME)
-      refetch({});
+      refetch();
     } else {
       setSnack({
         message: 'Une erreur est survenue lors de votre déconnexion',
@@ -61,7 +63,7 @@ const Navbar: React.FC<NavbarPropsType> = ({
         {
           authenticated ?
           (
-            <div className="profile btn flex" onClick={() => navigate(clientPath.PROFILE)}>
+            <div className="profile-btn btn flex" onClick={() => navigate(clientPath.PROFILE)}>
               Profil
               <i className="fa fa-user"></i>
             </div>

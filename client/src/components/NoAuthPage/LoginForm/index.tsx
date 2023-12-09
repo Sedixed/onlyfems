@@ -8,10 +8,12 @@ import clientPath from "../../../utils/clientPath";
 
 type LoginFormPropsTypes = {
   setIsLoading: (state: boolean) => void,
+  refetchCallback: () => void,
 };
 
 const LoginForm: React.FC<LoginFormPropsTypes> = ({ 
   setIsLoading,
+  refetchCallback
 }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +23,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
   
   const handleLoginSuccess = () => {
     setIsLoading(false);
+    refetchCallback()
     navigate(clientPath.TEST)
   }
 

@@ -1,7 +1,7 @@
 .navbar {
   height: var(--navbar-height);
   align-items: last baseline;
-  background-color: rgb(228, 227, 227);
+  background-color: white;
   border-bottom: solid rgb(148, 147, 147) 1px;
 }
 
@@ -29,11 +29,10 @@
 }
 
 .navbar .btns .btn:hover {
-  transform: scale(1.05);
-  color: rgb(0, 102, 255);
+  color: rgb(255, 72, 0);
 }
 
-.navbar .btns .profile.btn {
+.navbar .btns .profile-btn.btn {
   gap: 5px;
   align-items: first baseline;
 }
