@@ -3,7 +3,9 @@ package fr.univrouen.onlyfems.controllers;
 import fr.univrouen.onlyfems.dto.DTO;
 import fr.univrouen.onlyfems.dto.error.ErrorDTO;
 import fr.univrouen.onlyfems.dto.image.ImageDTO;
+import fr.univrouen.onlyfems.dto.image.UploadImageDTO;
 import fr.univrouen.onlyfems.services.ImageService;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
 import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,7 @@ public class ImageController {
     /**
      * Upload an image on the API.
      *
-     * @param file Image to upload.
+     * @param request Upload request to save the image.
      * @return The image uploaded.
      */
     @RequestMapping(
@@ -71,9 +73,9 @@ public class ImageController {
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<DTO> uploadImage(@RequestPart("image") MultipartFile file) {
+    public ResponseEntity<DTO> uploadImage(@ModelAttribute UploadImageDTO request) {
         try {
-            ImageDTO imageDTO = new ImageDTO(imageService.saveImage(file));
+            ImageDTO imageDTO = new ImageDTO(imageService.saveImage(request));
             return ResponseEntity.ok(imageDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
@@ -83,7 +85,7 @@ public class ImageController {
     /**
      * Update an image.
      *
-     * @param file Uploaded file.
+     * @param request Upload request to update the image.
      * @param id ID of the file to update.
      * @return The image DTO of the updated image.
      */
@@ -93,9 +95,9 @@ public class ImageController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<DTO> updateImage(@RequestPart("image") MultipartFile file, @PathVariable Integer id) {
+    public ResponseEntity<DTO> updateImage(@ModelAttribute UploadImageDTO request, @PathVariable Integer id) {
         try {
-            ImageDTO imageDTO = new ImageDTO(imageService.updateImage(file, id));
+            ImageDTO imageDTO = new ImageDTO(imageService.updateImage(request, id));
             return ResponseEntity.ok(imageDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));

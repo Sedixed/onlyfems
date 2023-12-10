@@ -1,6 +1,7 @@
 package fr.univrouen.onlyfems.services;
 
 import fr.univrouen.onlyfems.dto.image.ImageDTO;
+import fr.univrouen.onlyfems.dto.image.UploadImageDTO;
 import fr.univrouen.onlyfems.entities.Image;
 import fr.univrouen.onlyfems.exceptions.StorageException;
 import fr.univrouen.onlyfems.exceptions.StorageFileNotFoundException;
@@ -73,15 +74,19 @@ public class ImageService {
     /**
      * Create an image in database and in upload/ directory.
      *
-     * @param file File to save.
+     * @param saveRequest Request containing image information and file.
      * @return The image saved.
      * @throws StorageException
      */
     @Transactional
-    public Image saveImage(MultipartFile file) throws StorageException, IOException {
+    public Image saveImage(UploadImageDTO saveRequest) throws StorageException, IOException {
+        MultipartFile file = saveRequest.getFile();
         if (isFileValid(file)) {
             Image image = new Image();
             image.setName(file.getOriginalFilename());
+
+            image.setDescription(saveRequest.getDescription());
+            image.setPrivacy(saveRequest.isPrivacy());
 
             Image newImage = imageRepository.save(image);
             storageService.store(file, getFileName(newImage));
@@ -97,21 +102,29 @@ public class ImageService {
     /**
      * Update the image in database and the file.
      *
-     * @param file File to save.
+     * @param updateRequest Request containing image information and file.
      * @param id ID of the image to update.
      * @return The image updated.
      * @throws StorageException
      * @throws IOException
      */
     @Transactional
-    public Image updateImage(MultipartFile file, int id) throws StorageException, IOException {
+    public Image updateImage(UploadImageDTO updateRequest, int id) throws StorageException, IOException {
+        MultipartFile file = updateRequest.getFile();
         if (isFileValid(file)) {
             Optional<Image> imageOptional = imageRepository.findById(id);
 
             if (imageOptional.isPresent()) {
                 Image image = imageOptional.get();
+
+                image.setDescription(updateRequest.getDescription());
+                image.setPrivacy(updateRequest.isPrivacy());
+
+                imageRepository.save(image);
                 storageService.store(file, getFileName(image));
+
                 Resource imageResource = storageService.loadAsResource(getFileName(image));
+
                 image.setBase64Encoded(getBase64Encoded(imageResource));
                 return image;
             } else {
@@ -150,8 +163,9 @@ public class ImageService {
      * @return true if the file is valid, false otherwise.
      */
     private boolean isFileValid(MultipartFile file) {
-        // Verify if file is an image and if file is not empty.
-        if (!file.getName().equals("image") || file.isEmpty()) {
+        // Verify if file is not empty.
+
+        if (file.isEmpty()) {
             return false;
         }
 
