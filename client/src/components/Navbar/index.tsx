@@ -4,7 +4,6 @@ import '../../styles/Navbar.css';
 import { logoutQuery } from "../../apis/queries";
 import UserType, { SnackMessageType } from "../../types/entityType";
 import { Link, useNavigate } from "react-router-dom";
-import useGetUser from "../../hooks/useGetUser";
 import { isAdmin, isAuthenticated } from "../../utils/user";
 import LoadingCircle from "../LoadingCircle";
 import clientPath from "../../utils/clientPath";
@@ -27,8 +26,6 @@ const Navbar: React.FC<NavbarPropsType> = ({
   }
 
   const authenticated = isAuthenticated(user)
-
-  console.log(user)
 
   const logout = async () => {
     const res = await logoutQuery();

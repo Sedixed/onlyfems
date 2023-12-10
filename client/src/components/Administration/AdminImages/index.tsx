@@ -3,7 +3,7 @@ import React from "react"
 const AdminImages = () => {
   return (
     <div className="admin-images">
-      IMAGES
+      <input type="file" name="new-file-input" accept="image/png, image/jpeg" />
     </div>
   )
 }
