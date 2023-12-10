@@ -14,7 +14,11 @@ public class Image {
 
     private String description = "";
 
+    // true : public | false : private
     private boolean privacy = true;
+
+    @Transient
+    private String base64Encoded = null;
 
     public Image(String name, String description, boolean privacy) {
         this.name = name;
@@ -48,11 +52,18 @@ public class Image {
         this.description = description;
     }
 
-    public boolean isPrivacy() {
+    public boolean isPrivate() {
         return privacy;
     }
 
     public void setPrivacy(boolean privacy) {
         this.privacy = privacy;
+    }
+
+    public String getBase64Encoded() {
+        return base64Encoded;
+    }
+    public void setBase64Encoded(String base64Encoded) {
+        this.base64Encoded = base64Encoded;
     }
 }

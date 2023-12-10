@@ -98,6 +98,23 @@ public class FileSystemStorageService implements IStorageService {
     }
 
     @Override
+    public void delete(String filename) throws StorageException {
+        try {
+            Path filePath = this.rootLocation.resolve(filename).normalize().toAbsolutePath();
+            if (!filePath.startsWith(this.rootLocation.toAbsolutePath())) {
+                // This is a security check
+                throw new StorageException(
+                        "Cannot delete file outside current directory.");
+            }
+
+            Files.delete(filePath);
+        } catch (Exception e) {
+            throw new StorageException("Failed to delete file: " + filename, e);
+        }
+    }
+
+
+    @Override
     public void init() throws StorageException {
         try {
             Files.createDirectories(rootLocation);

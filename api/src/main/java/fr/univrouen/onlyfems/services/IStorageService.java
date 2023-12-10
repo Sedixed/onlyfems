@@ -58,4 +58,11 @@ public interface IStorageService {
      * Delete all files.
      */
     void deleteAll();
+
+    /**
+     * Delete a file.
+     *
+     * @param filename Name of the file to delete.
+     */
+    void delete(String filename) throws StorageException;
 }

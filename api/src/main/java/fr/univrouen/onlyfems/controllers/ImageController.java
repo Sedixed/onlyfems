@@ -4,13 +4,14 @@ import fr.univrouen.onlyfems.dto.DTO;
 import fr.univrouen.onlyfems.dto.error.ErrorDTO;
 import fr.univrouen.onlyfems.dto.image.ImageDTO;
 import fr.univrouen.onlyfems.services.ImageService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -22,40 +23,41 @@ public class ImageController {
     public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
-    
+
     /**
-     *  Retrieve all images.
+     * Find an image using its ID.
+     *
+     * @param id ID of the image.
+     * @return The image found.
      */
-    /*@RequestMapping(
-        value = APIEndpoints.IMAGES_URL,
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Iterable<Image>> getAllImages() {
-        // On stocke les images dans une variable
-        // Si il n'y a pas d'images, on renvoie une erreur
-        //return ResponseEntity.notFound().build();
-
-        // On renvoie les images
-        //return ResponseEntity.ok(images);
-
-    }*/
-
-    // Récupérer une image précise en fonction de son id
-    /*@RequestMapping(
+    @RequestMapping(
         value = APIEndpoints.IMAGE_URL + "/{id}",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> getImage(@PathVariable Integer id) {
-        //Image image = imageRepository.findById(id).orElse(null);
-
-        if (image == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<DTO> getImage(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(new ImageDTO(imageService.findById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
+    }
 
-        return ResponseEntity.ok(image);
-    }*/
+    /**
+     *  Retrieve all images.
+     */
+    @RequestMapping(
+            value = APIEndpoints.IMAGES_URL,
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> getAllImages() {
+        try {
+            return ResponseEntity.ok(imageService.findALl());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
+        }
+    }
 
     /**
      * Upload an image on the API.
@@ -78,62 +80,33 @@ public class ImageController {
         }
     }
 
-    // Retirer une image du portfolio
-    /*@RequestMapping(
-        value = APIEndpoints.IMAGE_URL + "/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE
+    @RequestMapping(
+            value = APIEndpoints.IMAGE_URL + "/{id}",
+            method = RequestMethod.PATCH,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> deleteImage(@PathVariable Integer id) {
-        // Si l'utilisateur n'est pas connecté, on renvoie une erreur
-        // if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        // }
-
-        // On récupère l'image
-        Image image = imageRepository.findById(id).orElse(null);
-
-        // Si l'image n'existe pas, on renvoie une erreur
-        if (image == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<DTO> updateImage(@RequestPart("image") MultipartFile file, @PathVariable Integer id) {
+        try {
+            ImageDTO imageDTO = new ImageDTO(imageService.updateImage(file, id));
+            return ResponseEntity.ok(imageDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
+    }
 
-        // On supprime l'image de la base de données
-        imageRepository.deleteById(image.getId());
-
-        return ResponseEntity.ok(image);
-    }*/
-
-    /*@RequestMapping(
-        value = APIEndpoints.IMAGE_URL + "/{id}",
-        method = RequestMethod.PUT,
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
+    @RequestMapping(
+            value = APIEndpoints.IMAGE_URL + "/{id}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Image> updateImage(@PathVariable Integer id, @RequestBody Image image) {
-        // Si l'utilisateur n'est pas connecté, on renvoie une erreur
-        // if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        // }
-
-        // On récupère l'image
-        Image imageToUpdate = imageRepository.findById(id).orElse(null);
-
-        // Si l'image n'existe pas, on renvoie une erreur
-        if (imageToUpdate == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteImage(@PathVariable Integer id) {
+        try {
+            imageService.deleteImage(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
-
-        // On met à jour l'image
-        imageToUpdate.setName(image.getName());
-        imageToUpdate.setEncodedImage(image.getEncodedImage());
-        imageToUpdate.setDescription(image.getDescription());
-        imageToUpdate.setPublicity(image.getPublicity());
-
-        // On met à jour l'image dans la base de données
-        imageRepository.save(imageToUpdate);
-
-        return ResponseEntity.ok(imageToUpdate);
-    }*/
+    }
 
 }
