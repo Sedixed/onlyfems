@@ -80,6 +80,13 @@ public class ImageController {
         }
     }
 
+    /**
+     * Update an image.
+     *
+     * @param file Uploaded file.
+     * @param id ID of the file to update.
+     * @return The image DTO of the updated image.
+     */
     @RequestMapping(
             value = APIEndpoints.IMAGE_URL + "/{id}",
             method = RequestMethod.PATCH,
@@ -95,6 +102,12 @@ public class ImageController {
         }
     }
 
+    /**
+     * Delete an image.
+     *
+     * @param id ID of the image to delete.
+     * @return 204.
+     */
     @RequestMapping(
             value = APIEndpoints.IMAGE_URL + "/{id}",
             method = RequestMethod.DELETE,
