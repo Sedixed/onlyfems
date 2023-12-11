@@ -45,7 +45,7 @@ const App = () => {
             { snackMessage ? 
               <SnackMessage 
                 snackMessage={snackMessage}
-                fullTop
+                fullTop={snackMessage.fullTop ?? false}
                 closeAction={() => setSnackMessage(null)} 
               /> : 
               null
@@ -55,7 +55,7 @@ const App = () => {
               <Routes>
                 <Route path={clientPath.TEST} element={<LoadingCircle />} />
                 <Route path={clientPath.PROFILE} element={<Profile />} />
-                <Route index path={clientPath.ADMIN} element={<Administration />} />
+                <Route index path={clientPath.ADMIN} element={<Administration setSnack={setSnackMessage} />} />
               </Routes>
             </div>
           </>

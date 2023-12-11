@@ -1,8 +1,15 @@
 import React from "react"
 
 import '../../../styles/Admin/Download.css'
+import { SnackMessageType } from "../../../types/entityType"
 
-const AdminDownload = () => {
+type AdminDownloadPropsType = {
+  setSnack: (snackMessage: SnackMessageType) => void
+}
+
+const AdminDownload: React.FC<AdminDownloadPropsType> = ({
+  setSnack,
+}) => {
   const download = () => {
     // TODO
   }

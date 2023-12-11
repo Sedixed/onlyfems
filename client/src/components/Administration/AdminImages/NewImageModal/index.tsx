@@ -1,4 +1,8 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { useMutation } from "react-query";
+import { NewImageType } from "../../../../types/queryType";
+import { newImageMutation } from "../../../../apis/queries";
+import { toBase64 } from "../../../../utils/file";
 
 type NewImageModalPropsType = {
   closeCallback: () => void
@@ -9,7 +13,6 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState('');
-  const [privacy, setPrivacy] = useState(false);
 
   const newImageRef = useRef<HTMLInputElement>(null);
   const privacyRef = useRef<HTMLInputElement>(null);
@@ -20,13 +23,39 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
     }
   }
 
-  const addNewImage = (e : FormEvent<HTMLFormElement>) => {
+  const addNewImage = async (e : FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!image) {
       return
     }
-    console.log(image)
+    // TODO : fix quand mathieu aura fini
+    const isPrivate = privacyRef.current?.checked as boolean;
+    const base64image =  await toBase64(image) as string
+    console.log(base64image)
+    newImageMut.mutate({
+      description,
+      privacy: isPrivate,
+      file: base64image
+    })
   }
+
+  const handleNewImageSuccess = () => {
+    console.log('success')
+  }
+
+  const handleNewImageFailure = () => {
+    console.log('failure');
+  }
+
+  const newImageMut = useMutation(
+    async (payload: NewImageType) => {
+      return await newImageMutation(payload)
+    },
+    {
+      onSuccess: handleNewImageSuccess,
+      onError: handleNewImageFailure
+    }
+  )
 
   return (
     <div className="fullscreen-dimmer flex">

@@ -10,8 +10,15 @@ import AdminImages from "./AdminImages";
 import AdminDownload from "./AdminDownload";
 
 import '../../styles/Admin/Index.css'
+import { SnackMessageType } from "../../types/entityType";
 
-const Administration = () => {
+type AdministrationPropsType = {
+  setSnack: (snackMessage: SnackMessageType) => void
+}
+
+const Administration: React.FC<AdministrationPropsType> = ({
+  setSnack,
+}) => {
   const { user } = useGetUser();
   const navigate = useNavigate();
 
@@ -28,9 +35,9 @@ const Administration = () => {
     <div className="administration flex">
       <AdminSidebar />
       <Routes>
-        <Route path={clientPath.ADMIN_USERS} element={<AdminUsers />} />
-        <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages />} />
-        <Route path={clientPath.ADMIN_DOWNLOAD} element={<AdminDownload />} />
+        <Route path={clientPath.ADMIN_USERS} element={<AdminUsers setSnack={setSnack} />} />
+        <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages setSnack={setSnack} />} />
+        <Route path={clientPath.ADMIN_DOWNLOAD} element={<AdminDownload setSnack={setSnack} />} />
       </Routes>
     </div>
   )

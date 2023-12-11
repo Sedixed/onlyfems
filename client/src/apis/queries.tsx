@@ -1,3 +1,4 @@
+import { ImageType } from "../types/entityType";
 import { LoginType, NewImageType, RegisterType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
@@ -38,6 +39,26 @@ export const newImageMutation = async (newImagePayload: NewImageType) => {
   const res = await api.post(
     apiRoute.IMAGES,
     newImagePayload,
+    {
+      withCredentials: true
+    }
+  )
+  return res;
+}
+
+export const allImagesQuery = async () => {
+  const res = await api.get<ImageType[]>(
+    apiRoute.IMAGES,
+    {
+      withCredentials: true
+    }
+  )
+  return res;
+}
+
+export const deleteImageQuery = async (imageId: number) => {
+  const res = await api.delete(
+    `${apiRoute.IMAGE}/${imageId}`,
     {
       withCredentials: true
     }

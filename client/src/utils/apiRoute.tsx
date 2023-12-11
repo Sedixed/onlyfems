@@ -9,6 +9,8 @@ const apiRoute = {
   AUTH_LOGOUT: '/authentication/logout',
   // Images
   IMAGES: '/images',
+  // Tmp image
+  IMAGE: '/image',
 }
 
 export default apiRoute

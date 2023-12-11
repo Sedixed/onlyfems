@@ -15,3 +15,11 @@ export type SnackMessageType = {
   fullTop?: boolean,
   message: string
 }
+
+export type ImageType = {
+  id: number,
+  name: string,
+  description: string,
+  public: boolean, 
+  base64Encoded: string
+}

@@ -62,7 +62,7 @@ const Profile = () => {
           </div>
 
           <div className="buttons flex">
-            <button className="cancel" onClick={resetFields}>Annuler</button>
+            <button className="cancel" onClick={resetFields}>Annuler les modifications</button>
             <button className="submit" type="submit">Enregistrer</button>
           </div>
         </form>
