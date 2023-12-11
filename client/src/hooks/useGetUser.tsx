@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../apis/api";
 import UserType from "../types/entityType";
+import apiRoute from "../utils/apiRoute";
 
 /**
  * Used to get the current user.
@@ -11,7 +12,7 @@ export default function useGetUser() {
 
   const getUser = async () => {
     const { data } = await api.get(
-      '/authentication/user',
+      apiRoute.AUTH_USER,
       { withCredentials: true }
     );
     return data as UserType;

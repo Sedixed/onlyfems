@@ -15,3 +15,12 @@ export interface RegisterType {
   password: string,
   roles: string[]
 }
+
+/**
+ * New image type
+ */
+export interface NewImageType {
+  description: string,
+  privacy: boolean,
+  file: string
+}

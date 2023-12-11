@@ -1,9 +1,10 @@
-import { LoginType, RegisterType } from "../types/queryType";
+import { LoginType, NewImageType, RegisterType } from "../types/queryType";
+import apiRoute from "../utils/apiRoute";
 import api from "./api";
 
 export const loginMutation = async (credentials: LoginType) => {
   const res = await api.post(
-    '/authentication/login',
+    apiRoute.AUTH_LOGIN,
     credentials,
     {
       withCredentials: true
@@ -14,7 +15,7 @@ export const loginMutation = async (credentials: LoginType) => {
 
 export const registerMutation = async (registerPayload: RegisterType) => {
   const res = await api.post(
-    '/authentication/register',
+    apiRoute.AUTH_REGISTER,
     registerPayload,
     {
       withCredentials: true
@@ -25,7 +26,18 @@ export const registerMutation = async (registerPayload: RegisterType) => {
 
 export const logoutQuery = async () => {
   const res = await api.get(
-    '/authentication/logout',
+    apiRoute.AUTH_LOGOUT,
+    {
+      withCredentials: true
+    }
+  )
+  return res;
+}
+
+export const newImageMutation = async (newImagePayload: NewImageType) => {
+  const res = await api.post(
+    apiRoute.IMAGES,
+    newImagePayload,
     {
       withCredentials: true
     }

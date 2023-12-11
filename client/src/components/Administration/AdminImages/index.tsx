@@ -1,9 +1,20 @@
-import React from "react"
+import React, { useState } from "react"
+
+import '../../../styles/Admin/Images.css'
+import NewImageModal from "./NewImageModal";
 
 const AdminImages = () => {
+  const [showNewImageModal, setShowNewImageModal] = useState(false);
+
+
   return (
-    <div className="admin-images">
-      <input type="file" name="new-file-input" accept="image/png, image/jpeg" />
+    <div className="admin-images flex">
+      {
+        showNewImageModal ?
+        <NewImageModal closeCallback={() => setShowNewImageModal(false)} /> : 
+        null
+      }
+      <button onClick={() => setShowNewImageModal(true)}>cc</button>
     </div>
   )
 }
