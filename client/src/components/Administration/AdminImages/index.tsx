@@ -34,7 +34,7 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
   }
 
   const deleteImage = async (image: ImageType) => {
-    const res = await deleteImageQuery(image.id);
+    await deleteImageQuery(image.id);
     refetchAllImages()
     setSnack({
       type: 'success',
@@ -59,28 +59,37 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
         <NewImageModal closeCallback={() => setShowNewImageModal(false)} /> : 
         null
       }
-      <div className="show-modal-btn-container">
-        <button 
-          className="show-modal-btn"
-          onClick={() => setShowNewImageModal(true)}
-        >
-          Nouvelle image
-        </button>
-      </div>
-      
-      {
+
+{
         renderedImages.length > 0 ?
-        (
-          <div className="images flex">
-            {renderedImages}
-          </div>
+        ( 
+          <>
+            <div className="show-modal-btn-container">
+              <button 
+                className="show-modal-btn"
+                onClick={() => setShowNewImageModal(true)}
+              >
+                Nouvelle image
+              </button>
+            </div>
+            <div className="images flex">
+              {renderedImages}
+            </div>
+          </>
         ) : (
-          <div className="no-images">
-            <p>Pas d'images</p>
+          <div className="no-images flex">
+            <img src={`${process.env.PUBLIC_URL}/assets/admin-no-content.png`} alt="no-content" />
+            <p className="title">Vous n'avez aucun élément dans votre portfolio !</p>
+            <p className="subtitle">Commencez dès à présent à ajouter des images en cliquant sur le bouton ci-dessous</p>
+            <button 
+              className="show-modal-btn"
+              onClick={() => setShowNewImageModal(true)}
+            >
+              Nouvelle image
+            </button>
           </div>
         )
       }
-
     </div>
   )
 }
