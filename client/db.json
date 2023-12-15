@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "sedixed@gmail.com",
+      "username": "Sedixed",
+      "roles": [
+        "ROLE_USER"
+      ]
+    },
+    {
+      "id": 2,
+      "email": "jeanbonbeurre@gmail.com",
+      "username": "Jean-Bon",
+      "roles": [
+        "ROLE_USER"
+      ]
+    },
+    {
+      "id": 3,
+      "email": "sebguerrier@gmail.com",
+      "username": "Neuskan",
+      "roles": [
+        "ROLE_USER"
+      ]
+    },
+    {
+      "id": 4,
+      "email": "JOEelie@gmail.com",
+      "username": "KinderCoincoin",
+      "roles": [
+        "ROLE_USER"
+      ]
+    },
+    {
+      "id": 5,
+      "email": "CHARLITO@gmail.com",
+      "username": "Louchz",
+      "roles": [
+        "ROLE_USER"
+      ]
+    },
+    {
+      "id": 6,
+      "email": "mariokart@gmail.com",
+      "username": "MARIOOOOO",
+      "roles": [
+        "ROLE_USER"
+      ]
+    }
+  ]
+}

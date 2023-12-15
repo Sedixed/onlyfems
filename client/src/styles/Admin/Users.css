@@ -1,26 +1,47 @@
 .admin-users {
   flex-direction: column;
-  overflow-y: scroll;
-  width: 85%;
+  width: 100%;
+  align-items: center;
+  padding-bottom: 3vh;
+  overflow-y: auto;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
+.admin-users .show-modal-btn-container {
+  margin-top: 3vh;
+  width: 90%;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #959595; 
-  border-radius: 16px;
+.admin-users .show-modal-btn {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #008CBA;
+  color: white;
   transition: all ease 0.3s;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #7d7c7c; 
+.admin-users .show-modal-btn:hover {
+  background-color: #006f94;
+  transform: scale(1.05);
+}
+
+.admin-users .fullscreen-dimmer {
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.admin-users .users {
+  gap: 30px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 90%;
+  margin-top: 3vh;
 }

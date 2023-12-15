@@ -2,6 +2,7 @@
  * User type.
  */
 export default interface UserType {
+  id: number,
   email: string,
   username: string
   roles: string[]

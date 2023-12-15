@@ -2,6 +2,8 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
+  padding-bottom: 3vh;
+  overflow-y: auto;
 }
 
 /**
@@ -210,6 +212,7 @@ Image card
 .admin-images .image-card .image-container img {
   height: 200px;
   width: auto;
+  border-radius: 5px 5px 0 0;
 }
 
 .admin-images .image-card .image-name {

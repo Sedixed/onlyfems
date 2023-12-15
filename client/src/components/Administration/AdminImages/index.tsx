@@ -60,7 +60,7 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
         null
       }
 
-{
+      {
         renderedImages.length > 0 ?
         ( 
           <>
