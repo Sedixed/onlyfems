@@ -51,23 +51,11 @@ Modal
   animation: dropdown forwards 0.5s ease-out;
 }
 
-@keyframes dropdown {
-  from {
-    margin-top: -50%;
-    opacity: 0;
-  }
-  to {
-    margin-top: 0;
-    opacity: 1;
-  }
-}
-
 .admin-images .new-image-modal .top-bar {
   border-bottom: solid #b1b1b1 2px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  
 }
 
 .admin-images .new-image-modal .top-bar p {
@@ -163,7 +151,7 @@ Modal
 }
 
 .admin-images .new-image-modal .buttons .upload {
-  background-color: rgb(116, 231, 116);
+  background-color: rgb(49, 235, 49);
 }
 
 .admin-images .new-image-modal .buttons .upload:disabled {
@@ -172,7 +160,7 @@ Modal
 }
 
 .admin-images .new-image-modal .buttons .upload:not(:disabled):hover {
-  background-color: rgb(103, 214, 103);
+  background-color: rgb(31, 182, 31);
 }
 
 /**

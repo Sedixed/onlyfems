@@ -186,17 +186,3 @@
 .no-auth-page .register-form .criteria .fa-xmark {
   color: red; 
 }
-
-.no-auth-page .form-error {
-  margin-top: 10px;
-  background-color: #f3f0f0;
-  color: rgb(117, 16, 16);
-  border: solid 2px rgb(117, 16, 16);
-  height: fit-content;
-  border-radius: 6px;
-}
-
-.no-auth-page .form-error p {
-  margin: 0;
-  padding: 6px 10px;
-}

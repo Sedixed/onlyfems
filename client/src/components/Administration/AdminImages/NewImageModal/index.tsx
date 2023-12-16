@@ -40,11 +40,11 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
   }
 
   const handleNewImageSuccess = () => {
-    console.log('success')
+    console.log('TODO : success')
   }
 
   const handleNewImageFailure = () => {
-    console.log('failure');
+    console.log('TODO : failure');
   }
 
   const newImageMut = useMutation(

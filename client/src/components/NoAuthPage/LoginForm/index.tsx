@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { LoginType } from "../../../types/queryType";
 import { loginMutation } from "../../../apis/queries";
-import FormError from "../FormError";
+import FormError from "../../FormError";
 import { useNavigate } from "react-router-dom";
 import clientPath from "../../../utils/clientPath";
 
@@ -24,7 +24,7 @@ const LoginForm: React.FC<LoginFormPropsTypes> = ({
   const handleLoginSuccess = () => {
     setIsLoading(false);
     refetchCallback()
-    navigate(clientPath.TEST)
+    navigate(clientPath.GALLERY)
   }
 
   const handleLoginFailure = () => {

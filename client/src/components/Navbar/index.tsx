@@ -4,22 +4,21 @@ import '../../styles/Navbar.css';
 import { logoutQuery } from "../../apis/queries";
 import UserType, { SnackMessageType } from "../../types/entityType";
 import { Link, useNavigate } from "react-router-dom";
-import { isAdmin, isAuthenticated } from "../../utils/user";
+import { isAdmin, isAuthenticated, isVIP } from "../../utils/user";
 import LoadingCircle from "../LoadingCircle";
 import clientPath from "../../utils/clientPath";
+import useGetUser from "../../hooks/useGetUser";
 
 type NavbarPropsType = {
   setSnack: (smt: SnackMessageType) => void,
-  user: UserType,
-  refetch: () => void
 }
 
 const Navbar: React.FC<NavbarPropsType> = ({
   setSnack,
-  user,
-  refetch
 }) => {
   const navigate = useNavigate();
+  
+  const { user, refetch } = useGetUser()
 
   if (!user) {
     return <LoadingCircle />
@@ -42,20 +41,12 @@ const Navbar: React.FC<NavbarPropsType> = ({
 
   return (
     <div className="navbar flex">
-      <p className="title">OnlyFems</p>
       <div className="links flex">
-        {
-          isAdmin(user) ?
-          <Link to={clientPath.ADMIN}>Administration</Link> :
-          null
-        }
-        
-        <p>Un lien</p>
-        <p>Un autre lien</p>
-        <p>Encore un autre lien</p>
+        <Link className="title-link" to={clientPath.GALLERY}>OnlyFems</Link>
+        {isAdmin(user) && <Link className="link" to={clientPath.ADMIN}>Administration</Link>}
+        {isVIP(user) && <Link className="link" to={clientPath.VIP_GALLERY}>Section VIP</Link>}
       </div>
       
-
       <div className="btns flex">
         {
           authenticated ?

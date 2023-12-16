@@ -6,6 +6,7 @@ import { useQuery } from "react-query"
 import { allUsersQuery } from "../../../apis/queries"
 import LoadingCircle from "../../LoadingCircle"
 import { verboseHighestRole } from "../../../utils/user"
+import NewUserModal from "./NewUserModal"
 
 type AdminUsersPropsType = {
   setSnack: (snackMessage: SnackMessageType) => void
@@ -25,10 +26,12 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
   })
 
   if (!allUsers) {
-    return <LoadingCircle fullscreen />
+    return (
+      <div className="empty flex">
+        <LoadingCircle />
+      </div>
+    ) 
   }
-
-  console.log(allUsers)
 
   const editUser = (user: UserType) => {
     console.log('TODO : édition')
@@ -51,6 +54,12 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
         <td>{user.username}</td>
         <td>{user.email}</td>
         <td>{verboseHighestRole(user)}</td>
+        <td>
+          <div className="actions flex">
+            <i className="fa fa-pen" onClick={() => editUser(user)}></i>
+            <i className="fa fa-trash" onClick={() => deleteUser(user)}></i>
+          </div>
+        </td>
       </tr>
     )
   )
@@ -59,7 +68,7 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
     <div className="admin-users flex">
       {
         showNewUserModal ?
-        null : // le modal plus tard TODO
+        <NewUserModal closeCallback={() => setShowUserImageModal(false)} setSnack={setSnack} /> :
         null
       }
 

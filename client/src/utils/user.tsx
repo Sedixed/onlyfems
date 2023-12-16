@@ -7,12 +7,17 @@ export const isAdmin = (user: UserType) => (
   user.roles.find(role => role === 'ROLE_ADMIN')
 )
 
+export const isVIP = (user: UserType) => (
+  isAuthenticated(user) && 
+  user.roles.find(role => role === 'ROLE_PRIVILEGED_USER')
+)
+
 export const verboseHighestRole = (user: UserType) => {
   if (user.roles.find(role => role === 'ROLE_ADMIN')) {
     return 'Administrateur'
   }
   if (user.roles.find(role => role === 'ROLE_PRIVILEGED_USER')) {
-    return 'Utilisateur avec privilèges'
+    return 'Utilisateur VIP'
   }
   if (user.roles.find(role => role === 'ROLE_USER')) {
     return 'Utilisateur'

@@ -7,9 +7,9 @@ export interface LoginType {
 }
 
 /**
- * Register type.
+ * New user type.
  */
-export interface RegisterType {
+export interface NewUserType {
   email: string,
   username: string,
   password: string,

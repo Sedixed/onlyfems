@@ -26,7 +26,11 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
   })
 
   if (!allImages) {
-    return <LoadingCircle fullscreen />
+    return (
+      <div className="empty flex">
+        <LoadingCircle />
+      </div>
+    ) 
   }
   
   const editImage = (image: ImageType) => {

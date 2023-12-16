@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import '../../styles/App.css';
@@ -12,16 +12,14 @@ import { SnackMessageType } from "../../types/entityType";
 import Profile from "../Profile";
 import Administration from "../Administration";
 import useGetUser from "../../hooks/useGetUser";
+import AdminUsers from "../Administration/AdminUsers";
+import AdminImages from "../Administration/AdminImages";
+import AdminDownload from "../Administration/AdminDownload";
+import Gallery from "../Gallery";
 
 const App = () => {
   const queryClient = new QueryClient();
   const [snackMessage, setSnackMessage] = useState<SnackMessageType | null>(null);
-
-  const {user, refetch} = useGetUser();
-
-  if (!user) {
-    return <LoadingCircle />
-  }
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -33,14 +31,13 @@ const App = () => {
               element={
                 <NoAuthPage 
                   setSnack={setSnackMessage}
-                  refetchCallback={() => refetch({})}
                 />
               } 
             />
           </Routes>
 
           <>
-            <Navbar setSnack={setSnackMessage} user={user} refetch={() => refetch({})} />
+            <Navbar setSnack={setSnackMessage} />
 
             { snackMessage ? 
               <SnackMessage 
@@ -53,9 +50,14 @@ const App = () => {
 
             <div className="content">
               <Routes>
-                <Route path={clientPath.TEST} element={<LoadingCircle />} />
+                <Route path={clientPath.GALLERY} element={<Gallery />} />
+                <Route path={clientPath.VIP_GALLERY} element={<Gallery vipContent />} />
                 <Route path={clientPath.PROFILE} element={<Profile />} />
-                <Route index path={clientPath.ADMIN} element={<Administration setSnack={setSnackMessage} />} />
+                <Route path={clientPath.ADMIN} element={<Administration />}>
+                  <Route path={clientPath.ADMIN_USERS} element={<AdminUsers setSnack={setSnackMessage} />} />
+                  <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages setSnack={setSnackMessage} />} />
+                  <Route path={clientPath.ADMIN_DOWNLOAD} element={<AdminDownload setSnack={setSnackMessage} />} />
+                </Route>
               </Routes>
             </div>
           </>

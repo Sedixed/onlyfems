@@ -1,18 +1,32 @@
 .navbar {
   height: var(--navbar-height);
-  align-items: last baseline;
+  align-items: center;
   background-color: white;
   border-bottom: solid rgb(148, 147, 147) 1px;
 }
 
-.navbar .title {
-  font-size: 160%;
-  font-weight: 600;
-  margin: 0 20px;
-}
-
 .navbar .links {
   gap: 20px;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar .links .title-link {
+  font-size: 160%;
+  font-weight: 600;
+  color: black;
+  margin: 0 30px;
+  text-decoration: none;
+}
+
+.navbar .links .link {
+  color: black;
+  text-decoration: none;
+  transition: all ease 0.3s;
+}
+
+.navbar .links .link:hover {
+  color: rgb(255, 72, 0);
 }
 
 .navbar .btns {

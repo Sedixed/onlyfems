@@ -39,7 +39,6 @@ const Profile = () => {
     <div className="profile flex">
       <div className="content flex">
         <h1>Votre profil</h1>
-        <p className="permissions">Rôle le plus élevé : {verboseHighestRole(user)}</p>
         <form className="profile-form flex" onSubmit={e => editProfile(e)}>
           <div className="field">
             <label htmlFor="email">Email</label>

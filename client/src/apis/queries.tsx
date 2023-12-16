@@ -1,5 +1,5 @@
 import UserType, { ImageType } from "../types/entityType";
-import { LoginType, NewImageType, RegisterType } from "../types/queryType";
+import { LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
 import temporaryApi from "./temporaryApi";
@@ -15,10 +15,10 @@ export const loginMutation = async (credentials: LoginType) => {
   return res;
 }
 
-export const registerMutation = async (registerPayload: RegisterType) => {
+export const newUserMutation = async (newUserPayload: NewUserType) => {
   const res = await api.post(
     apiRoute.AUTH_REGISTER,
-    registerPayload,
+    newUserPayload,
     {
       withCredentials: true
     }

@@ -26,6 +26,6 @@ export default function useGetUser() {
 
   return {
     user: user,
-    refetch: refetch
+    refetch: () => refetch({})
   };
 }

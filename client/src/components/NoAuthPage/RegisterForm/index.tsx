@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useMutation } from "react-query";
-import { RegisterType } from "../../../types/queryType";
-import { registerMutation } from "../../../apis/queries";
+import { NewUserType } from "../../../types/queryType";
+import { newUserMutation } from "../../../apis/queries";
 import { SnackMessageType } from "../../../types/entityType";
-import FormError from "../FormError";
+import FormError from "../../FormError";
 
 type RegisterFormPropsTypes = {
   removeRegisterCallback: () => void,
@@ -43,8 +43,8 @@ const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
   }
 
   const registerMut = useMutation(
-    async (payload: RegisterType) => {
-      return await registerMutation(payload);
+    async (payload: NewUserType) => {
+      return await newUserMutation(payload);
     },
     {
       onSuccess: handleRegisterSuccess,
@@ -54,7 +54,7 @@ const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
 
   const register = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerMut.mutate({ email, username, password, roles: ['ROLE_USER']} as RegisterType);
+    registerMut.mutate({ email, username, password, roles: ['ROLE_USER']} as NewUserType);
     setIsLoading(true);
   }
 
@@ -83,7 +83,7 @@ const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
           <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
 
           <label htmlFor="password">Mot de passe</label>
-          <input type="text" name="password" value={password} onChange={(e) => updatePassword(e.target.value)} required />
+          <input type="password" name="password" value={password} onChange={(e) => updatePassword(e.target.value)} required />
 
           <div className="criterias flex">
             <div className="criteria flex">
@@ -107,7 +107,9 @@ const RegisterForm: React.FC<RegisterFormPropsTypes> = ({
             disabled={!(
               pwdLengthValid &&
               pwdCharValid &&
-              pwdDigitValid
+              pwdDigitValid &&
+              email !== '' && 
+              username !== ''
             )}
           >
             S'inscrire

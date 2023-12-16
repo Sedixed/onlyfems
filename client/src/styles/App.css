@@ -47,3 +47,33 @@ body {
   display: grid;
 }
 
+.empty {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+@keyframes dropdown {
+  from {
+    margin-top: -50%;
+    opacity: 0;
+  }
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
+}
+
+.form-error {
+  margin-top: 10px;
+  background-color: #f3f0f0;
+  color: rgb(117, 16, 16);
+  border: solid 2px rgb(117, 16, 16);
+  height: fit-content;
+  border-radius: 6px;
+}
+
+.form-error p {
+  margin: 0;
+  padding: 6px 10px;
+}

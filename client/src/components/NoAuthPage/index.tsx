@@ -7,21 +7,31 @@ import LoadingCircle from "../LoadingCircle";
 import { SnackMessageType } from "../../types/entityType";
 import { useNavigate } from "react-router-dom";
 import clientPath from "../../utils/clientPath";
+import { isAuthenticated } from "../../utils/user";
+import useGetUser from "../../hooks/useGetUser";
 
 type NoAuthPagePropsType = {
   setSnack: (smt: SnackMessageType) => void,
-  refetchCallback: () => void,
 }
 
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
   setSnack,
-  refetchCallback,
 }) => {
   const [displayLogin, setDisplayLogin] = useState(false);
   const [displayRegister, setDisplayRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { user, refetch } = useGetUser()
+  
+  if (!user) {
+    return <LoadingCircle fullscreen />
+  }
+
+  // Redirects to gallery to avoid multiple login etc
+  if (isAuthenticated(user)) {
+    navigate(clientPath.GALLERY)
+  }
 
   const setLoginTrue = () => {
     setDisplayLogin(true);
@@ -46,13 +56,13 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
         <div className="buttons-group flex">
           <button onClick={setLoginTrue}>Connexion</button>
           <button onClick={setRegisterTrue}>Inscription</button>
-          <button onClick={() => navigate(clientPath.TEST)}>Accéder sans s'authentifier</button>
+          <button onClick={() => navigate(clientPath.GALLERY)}>Accéder sans s'authentifier</button>
         </div>
       </div>
       <div className="forms flex">
         {
           displayLogin ?
-          <LoginForm setIsLoading={setLoadingState} refetchCallback={refetchCallback} /> :
+          <LoginForm setIsLoading={setLoadingState} refetchCallback={refetch} /> :
           null
         }
         {

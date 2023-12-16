@@ -12,7 +12,7 @@ export default interface UserType {
  * Snack message type.
  */
 export type SnackMessageType = {
-  type: string,
+  type: 'success' | 'info' | 'warning' | 'error',
   fullTop?: boolean,
   message: string
 }
