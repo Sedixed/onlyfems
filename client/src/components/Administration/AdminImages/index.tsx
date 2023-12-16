@@ -7,6 +7,7 @@ import { ImageType, SnackMessageType } from "../../../types/entityType";
 import { allImagesQuery, deleteImageQuery } from "../../../apis/queries";
 import LoadingCircle from "../../LoadingCircle";
 import ImageCard from "./ImageCard";
+import EditImageModal from "./EditImageModal";
 
 type AdminImagesPropsType = {
   setSnack: (snackMessage: SnackMessageType) => void
@@ -16,6 +17,8 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
   setSnack,
 }) => {
   const [showNewImageModal, setShowNewImageModal] = useState(false);
+  const [showEditImageModal, setShowEditImageModal] = useState(false);
+  const [imageToEdit, setImageToEdit] = useState<ImageType | null>(null);
 
   const { data: allImages, refetch: refetchAllImages } = useQuery<ImageType[]>({
     queryKey: ['all-images'],
@@ -34,7 +37,13 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
   }
   
   const editImage = (image: ImageType) => {
-    console.log('TODO : édition')
+    setShowEditImageModal(true)
+    setImageToEdit(image)
+  }
+
+  const removeEditImageModal = () => {
+    setShowEditImageModal(false)
+    setImageToEdit(null)
   }
 
   const deleteImage = async (image: ImageType) => {
@@ -58,11 +67,8 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
 
   return (
     <div className="admin-images flex">
-      {
-        showNewImageModal ?
-        <NewImageModal closeCallback={() => setShowNewImageModal(false)} /> : 
-        null
-      }
+      {showNewImageModal && <NewImageModal closeCallback={() => setShowNewImageModal(false)} />}
+      {showEditImageModal && <EditImageModal image={imageToEdit as ImageType} closeCallback={removeEditImageModal} />}
 
       {
         renderedImages.length > 0 ?

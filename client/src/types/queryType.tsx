@@ -17,10 +17,19 @@ export interface NewUserType {
 }
 
 /**
- * New image type
+ * New image type.
  */
 export interface NewImageType {
   description: string,
   privacy: boolean,
   file: string
+}
+
+/**
+ * Edit image type.
+ */
+export interface EditImageType {
+  description?: string,
+  privacy?: boolean,
+  file?: string
 }

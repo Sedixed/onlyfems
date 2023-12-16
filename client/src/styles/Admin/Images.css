@@ -42,7 +42,8 @@ Modal
   right: 0;
 }
 
-.admin-images .new-image-modal {
+.admin-images .new-image-modal,
+.admin-images .edit-image-modal {
   flex-direction: column;
   width: 40%;
   gap: 20px;
@@ -51,67 +52,80 @@ Modal
   animation: dropdown forwards 0.5s ease-out;
 }
 
-.admin-images .new-image-modal .top-bar {
+.admin-images .new-image-modal .top-bar,
+.admin-images .edit-image-modal .top-bar {
   border-bottom: solid #b1b1b1 2px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
 }
 
-.admin-images .new-image-modal .top-bar p {
+.admin-images .new-image-modal .top-bar p,
+.admin-images .edit-image-modal .top-bar p {
   margin: 10px;
 }
 
-.admin-images .new-image-modal .top-bar i {
+.admin-images .new-image-modal .top-bar i,
+.admin-images .edit-image-modal .top-bar i {
   margin: 5px;
   padding: 5px;
   cursor: pointer;
   transition: all ease 0.3s;
 }
 
-.admin-images .new-image-modal .top-bar i:hover {
+.admin-images .new-image-modal .top-bar i:hover,
+.admin-images .edit-image-modal .top-bar i:hover {
   color: rgb(172, 0, 0);
   transform: scale(1.35);
 }
 
-.admin-images .new-image-modal .new-image-form {
+.admin-images .new-image-modal .new-image-form,
+.admin-images .edit-image-modal .edit-image-form {
   flex-direction: column;
   gap: 20px;
   margin: 0 0 20px 5%;
 }
 
-.admin-images .new-image-modal .new-image-form .field label + textarea {
+.admin-images .new-image-modal .new-image-form .field label + textarea,
+.admin-images .edit-image-modal .edit-image-form .field label + textarea {
   display: block;
   margin-top: 5px;
 }
 
-.admin-images .new-image-modal .image-input {
+.admin-images .new-image-modal .image-input,
+.admin-images .edit-image-modal .image-input {
   gap: 10px;
   align-items: center;
 }
 
-.admin-images .new-image-modal .image-input .new-image-input {
+.admin-images .new-image-modal .image-input .new-image-input,
+.admin-images .edit-image-modal .image-input .edit-image-input {
   display: none;
 }
 
-.admin-images .new-image-modal .image-input .image-name {
+.admin-images .new-image-modal .image-input .image-name,
+.admin-images .edit-image-modal .image-input .image-name {
   margin: 0;
   overflow: hidden;
   max-width: 75%;
 }
 
-.admin-images .new-image-modal .privacy-field {
+.admin-images .new-image-modal .privacy-field,
+.admin-images .edit-image-modal .privacy-field {
   align-items: flex-end;
 }
 
-.admin-images .new-image-modal .buttons {
+.admin-images .new-image-modal .buttons,
+.admin-images .edit-image-modal .buttons {
   align-self: flex-end;
   margin-right: 8%;
   gap: 20px;
 }
 
 .admin-images .new-image-modal .buttons button, 
-.admin-images .new-image-modal .image-input .import-image-button {
+.admin-images .new-image-modal .image-input .import-image-button,
+.admin-images .edit-image-modal .buttons button,
+.admin-images .edit-image-modal .image-input .import-image-button {
   padding: 12px 16px;
   border: none;
   border-radius: 4px;
@@ -120,20 +134,25 @@ Modal
 }
 
 .admin-images .new-image-modal .buttons button:not(:disabled):hover,
-.admin-images .new-image-modal .image-input .import-image-button:not(:disabled):hover {
+.admin-images .new-image-modal .image-input .import-image-button:not(:disabled):hover,
+.admin-images .edit-image-modal .buttons button:not(:disabled):hover,
+.admin-images .edit-image-modal .image-input .import-image-button:not(:disabled):hover {
   transform: scale(1.05);
 }
 
-.admin-images .new-image-modal .image-input .import-image-button {
+.admin-images .new-image-modal .image-input .import-image-button,
+.admin-images .edit-image-modal .image-input .import-image-button {
   background-color: #008CBA;
   color: white;
 }
 
-.admin-images .new-image-modal .image-input .import-image-button:hover {
+.admin-images .new-image-modal .image-input .import-image-button:hover,
+.admin-images .edit-image-modal .image-input .import-image-button:hover {
   background-color: #006f94;
 }
 
-.admin-images .new-image-modal .image-input .new-image-button {
+.admin-images .new-image-modal .image-input .new-image-button,
+.admin-images .edit-image-modal .image-input .new-image-button {
   padding: 10px 12px;
   border-radius: 50%;
   font-size: 100%;
@@ -141,25 +160,30 @@ Modal
   transition: all ease 0.3s;
 }
 
-.admin-images .new-image-modal .image-input .new-image-button:hover {
+.admin-images .new-image-modal .image-input .new-image-button:hover,
+.admin-images .edit-image-modal .image-input .new-image-button:hover {
   background-color: rgb(187, 187, 187);
 }
 
-.admin-images .new-image-modal .buttons .cancel {
+.admin-images .new-image-modal .buttons .cancel,
+.admin-images .edit-image-modal .buttons .cancel {
   background-color: black;
   color: white;
 }
 
-.admin-images .new-image-modal .buttons .upload {
+.admin-images .new-image-modal .buttons .upload,
+.admin-images .edit-image-modal .buttons .update {
   background-color: rgb(49, 235, 49);
 }
 
-.admin-images .new-image-modal .buttons .upload:disabled {
+.admin-images .new-image-modal .buttons .upload:disabled,
+.admin-images .edit-image-modal .buttons .update:disabled {
   background-color: #b1b1b1;
   cursor: not-allowed;
 }
 
-.admin-images .new-image-modal .buttons .upload:not(:disabled):hover {
+.admin-images .new-image-modal .buttons .upload:not(:disabled):hover,
+.admin-images .edit-image-modal .buttons .update:not(disabled):hover {
   background-color: rgb(31, 182, 31);
 }
 
