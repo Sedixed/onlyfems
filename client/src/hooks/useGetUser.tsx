@@ -8,7 +8,6 @@ import apiRoute from "../utils/apiRoute";
  */
 export default function useGetUser() {
   const [user, setUser] = useState<UserType | null>(null);
-  const [shouldRefetch, refetch] = useState<{}>({});
 
   const getUser = async () => {
     const { data } = await api.get(
@@ -22,10 +21,9 @@ export default function useGetUser() {
     getUser().then(
       user => setUser(user)
     );
-  }, [shouldRefetch])
+  }, [])
 
   return {
     user: user,
-    refetch: () => refetch({})
   };
 }

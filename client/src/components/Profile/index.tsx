@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import useGetUser from "../../hooks/useGetUser"
-import { isAuthenticated, verboseHighestRole } from "../../utils/user"
+import { isAuthenticated } from "../../utils/user"
 import { useNavigate } from "react-router-dom"
 import clientPath from "../../utils/clientPath"
 import LoadingCircle from "../LoadingCircle"

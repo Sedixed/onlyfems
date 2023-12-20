@@ -17,12 +17,12 @@ type NoAuthPagePropsType = {
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
   setSnack,
 }) => {
-  const [displayLogin, setDisplayLogin] = useState(false);
+  const [displayLogin, setDisplayLogin] = useState(true);
   const [displayRegister, setDisplayRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { user, refetch } = useGetUser()
+  const { user } = useGetUser()
   
   if (!user) {
     return <LoadingCircle fullscreen />
@@ -62,7 +62,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
       <div className="forms flex">
         {
           displayLogin ?
-          <LoginForm setIsLoading={setLoadingState} refetchCallback={refetch} /> :
+          <LoginForm setIsLoading={setLoadingState} /> :
           null
         }
         {

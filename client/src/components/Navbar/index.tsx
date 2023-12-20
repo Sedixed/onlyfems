@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import '../../styles/Navbar.css';
 import { logoutQuery } from "../../apis/queries";
-import UserType, { SnackMessageType } from "../../types/entityType";
+import { SnackMessageType } from "../../types/entityType";
 import { Link, useNavigate } from "react-router-dom";
 import { isAdmin, isAuthenticated, isVIP } from "../../utils/user";
 import LoadingCircle from "../LoadingCircle";
@@ -16,10 +16,11 @@ type NavbarPropsType = {
 const Navbar: React.FC<NavbarPropsType> = ({
   setSnack,
 }) => {
-  const navigate = useNavigate();
-  
-  const { user, refetch } = useGetUser()
+  const navigate = useNavigate()
+  const { user } = useGetUser()
 
+  useEffect(() => {}, [user])
+  
   if (!user) {
     return <LoadingCircle />
   }
@@ -30,7 +31,6 @@ const Navbar: React.FC<NavbarPropsType> = ({
     const res = await logoutQuery();
     if (res.status === 200) {
       navigate(clientPath.HOME)
-      refetch();
     } else {
       setSnack({
         message: 'Une erreur est survenue lors de votre déconnexion',

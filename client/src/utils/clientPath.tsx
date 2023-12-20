@@ -2,14 +2,14 @@ const clientPath = {
   // Home page (authentication).
   HOME: "/",
   // Profile page.
-  PROFILE: "/profile",
+  PROFILE: "profile",
   // Public gallery page.
-  GALLERY: "/gallery",
+  GALLERY: "gallery",
   // VIP gallery page.
-  VIP_GALLERY: "/gallery/vip",
+  VIP_GALLERY: "gallery/vip",
 
   // Admin page.
-  ADMIN: "/admin",
+  ADMIN: "admin",
   // Admin users management page.
   ADMIN_USERS: "users",
   // Admin images management page.

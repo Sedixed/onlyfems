@@ -3,19 +3,16 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import '../../styles/App.css';
 import clientPath from '../../utils/clientPath';
-import Navbar from "../Navbar";
 import NoAuthPage from "../NoAuthPage";
 import { QueryClient, QueryClientProvider } from 'react-query';
-import LoadingCircle from "../LoadingCircle";
-import SnackMessage from "../SnackMessage";
 import { SnackMessageType } from "../../types/entityType";
 import Profile from "../Profile";
 import Administration from "../Administration";
-import useGetUser from "../../hooks/useGetUser";
 import AdminUsers from "../Administration/AdminUsers";
 import AdminImages from "../Administration/AdminImages";
 import AdminDownload from "../Administration/AdminDownload";
 import Gallery from "../Gallery";
+import NavbarContainer from "../NavbarContainer";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -26,7 +23,7 @@ const App = () => {
       <div className="app">
         <BrowserRouter>
           <Routes>
-            <Route 
+            <Route
               path={clientPath.HOME} 
               element={
                 <NoAuthPage 
@@ -34,23 +31,8 @@ const App = () => {
                 />
               } 
             />
-          </Routes>
-
-          <>
-            <Navbar setSnack={setSnackMessage} />
-
-            { snackMessage ? 
-              <SnackMessage 
-                snackMessage={snackMessage}
-                fullTop={snackMessage.fullTop ?? false}
-                closeAction={() => setSnackMessage(null)} 
-              /> : 
-              null
-            }
-
-            <div className="content">
-              <Routes>
-                <Route path={clientPath.GALLERY} element={<Gallery />} />
+            <Route path={clientPath.HOME} element={<NavbarContainer snackMessage={snackMessage} setSnack={setSnackMessage} />}>
+              <Route index path={clientPath.GALLERY} element={<Gallery />} />
                 <Route path={clientPath.VIP_GALLERY} element={<Gallery vipContent />} />
                 <Route path={clientPath.PROFILE} element={<Profile />} />
                 <Route path={clientPath.ADMIN} element={<Administration />}>
@@ -58,9 +40,8 @@ const App = () => {
                   <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages setSnack={setSnackMessage} />} />
                   <Route path={clientPath.ADMIN_DOWNLOAD} element={<AdminDownload setSnack={setSnackMessage} />} />
                 </Route>
-              </Routes>
-            </div>
-          </>
+            </Route>
+          </Routes>
         </BrowserRouter>
       </div>
     </QueryClientProvider>
