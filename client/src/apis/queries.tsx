@@ -1,5 +1,5 @@
 import UserType, { ImageType } from "../types/entityType";
-import { EditImageType, LoginType, NewImageType, NewUserType } from "../types/queryType";
+import { EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
 import temporaryApi from "./temporaryApi";
@@ -45,9 +45,33 @@ export const newUserMutation = async (newUserPayload: NewUserType) => {
   return res;
 }
 
+export const editUserMutation = async (
+  userId: number,
+  editUserPayload: EditUserType
+) => {
+  const res = await api.patch(
+    `${apiRoute.USERS}/${userId}`,
+    editUserPayload,
+    {
+      withCredentials: true
+    }
+  )
+  return res;
+}
+
 export const allUsersQuery = async () => {
   const res = await temporaryApi.get<UserType[]>(
     apiRoute.USERS,
+    {
+      withCredentials: true
+    }
+  )
+  return res;
+}
+
+export const deleteUserQuery = async (userId: number) => {
+  const res = await api.delete(
+    `${apiRoute.USERS}/${userId}`,
     {
       withCredentials: true
     }

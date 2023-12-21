@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": 18,
       "email": "sedixed@gmail.com",
       "username": "Sedixed",
       "roles": [
@@ -46,6 +46,15 @@
       "username": "MARIOOOOO",
       "roles": [
         "ROLE_USER"
+      ]
+    },
+    {
+      "id": 1,
+      "email": "root@root.fr",
+      "username": "root",
+      "roles": [
+        "ROLE_USER",
+        "ROLE_ADMIN"
       ]
     }
   ]

@@ -3,10 +3,12 @@ import React, { useState } from "react"
 import '../../../styles/Admin/Users.css'
 import UserType, { SnackMessageType } from "../../../types/entityType"
 import { useQuery } from "react-query"
-import { allUsersQuery } from "../../../apis/queries"
+import { allUsersQuery, deleteUserQuery } from "../../../apis/queries"
 import LoadingCircle from "../../LoadingCircle"
 import { verboseHighestRole } from "../../../utils/user"
 import NewUserModal from "./NewUserModal"
+import EditUserModal from "./EditUserModal"
+import useGetUser from "../../../hooks/useGetUser"
 
 type AdminUsersPropsType = {
   setSnack: (snackMessage: SnackMessageType) => void
@@ -15,7 +17,11 @@ type AdminUsersPropsType = {
 const AdminUsers: React.FC<AdminUsersPropsType> = ({
   setSnack,
 }) => {
-  const [showNewUserModal, setShowUserImageModal] = useState(false);
+  const [showNewUserModal, setShowNewUserModal] = useState(false)
+  const [showEditUserModal, setShowEditUserModal] = useState(false)
+  const [userToEdit, setUserToEdit] = useState<UserType | null>(null)
+
+  const { user } = useGetUser()
 
   const { data: allUsers, refetch: refetchAllUsers } = useQuery<UserType[]>({
     queryKey: ['all-users'],
@@ -25,7 +31,7 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
     }
   })
 
-  if (!allUsers) {
+  if (!allUsers || !user) {
     return (
       <div className="empty flex">
         <LoadingCircle />
@@ -34,17 +40,25 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
   }
 
   const editUser = (user: UserType) => {
-    console.log('TODO : édition')
+    setShowEditUserModal(true)
+    setUserToEdit(user)
   }
+  
+  const deleteUser = async (userToDelete: UserType) => {
+    // TODO revérifier si on récup bien l'id avec le usegetuser
+    if (userToDelete.id === user.id && userToDelete.email === user.email) {
+      setSnack({
+        type: 'warning',
+        message: 'Vous ne pouvez pas vous supprimer vous-même !',
+      })
+      return
+    } 
 
-  const deleteUser = async (user: UserType) => {
-    console.log('TODO : suppression en vérifiant que c pa lui mem');
-    //await deleteImageQuery(image.id);
+    await deleteUserQuery(user.id);
     refetchAllUsers()
     setSnack({
       type: 'success',
       message: 'Utilisateur supprimé avec succès !',
-      fullTop: false
     })
   }
 
@@ -68,14 +82,19 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
     <div className="admin-users flex">
       {
         showNewUserModal ?
-        <NewUserModal closeCallback={() => setShowUserImageModal(false)} setSnack={setSnack} /> :
+        <NewUserModal closeCallback={() => setShowNewUserModal(false)} setSnack={setSnack} /> :
+        null
+      }
+      {
+        showEditUserModal ?
+        <EditUserModal closeCallback={() => setShowEditUserModal(false)} setSnack={setSnack} user={userToEdit as UserType} refetchUsers={refetchAllUsers} /> :
         null
       }
 
       <div className="show-modal-btn-container">
         <button 
           className="show-modal-btn" 
-          onClick={() => setShowUserImageModal(true)}
+          onClick={() => setShowNewUserModal(true)}
         >
           Nouvel utilisateur
         </button>

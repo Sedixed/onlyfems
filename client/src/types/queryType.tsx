@@ -17,6 +17,16 @@ export interface NewUserType {
 }
 
 /**
+ * Edit user type.
+ */
+export interface EditUserType {
+  email?: string,
+  username?: string,
+  password?: string,
+  roles?: string[]
+}
+
+/**
  * New image type.
  */
 export interface NewImageType {
