@@ -12,7 +12,7 @@ const apiRoute = {
   // Tmp image
   IMAGE: '/image',
   // Users
-  USERS: 'users',
+  USERS: '/users',
 }
 
 export default apiRoute

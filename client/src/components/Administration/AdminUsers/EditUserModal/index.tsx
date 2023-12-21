@@ -71,7 +71,11 @@ const EditUserModal: React.FC<EditUserModalPropsType> = ({
   }
 
   const handleEditUserFailure = () => {
-    setErrorMessage('Adresse email déjà utilisée !');
+    setErrorMessage(
+      email === user.email ? 
+      'Une erreur est survenue.' :
+      'Adresse email déjà utilisée !'
+    );
   }
 
   const editUserMut = useMutation(
