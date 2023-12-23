@@ -32,7 +32,9 @@ export interface EditUserType {
 export interface NewImageType {
   description: string,
   privacy: boolean,
-  file: string
+  file: string,
+  fileName: string,
+  type: string
 }
 
 /**
@@ -41,5 +43,7 @@ export interface NewImageType {
 export interface EditImageType {
   description?: string,
   privacy?: boolean,
-  file?: string
+  file?: string,
+  fileName?: string,
+  type?: string,
 }

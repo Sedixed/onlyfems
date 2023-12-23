@@ -31,12 +31,15 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
     // TODO : fix quand mathieu aura fini
     const isPrivate = privacyRef.current?.checked as boolean;
     const base64image =  await toBase64(image) as string
-    console.log(base64image)
+    
     newImageMut.mutate({
       description,
       privacy: isPrivate,
-      file: base64image
+      file: base64image,
+      fileName: image.name,
+      type: image.type
     })
+    
   }
 
   const handleNewImageSuccess = () => {

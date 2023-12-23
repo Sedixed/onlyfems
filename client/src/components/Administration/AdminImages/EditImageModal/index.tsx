@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { useMutation } from "react-query";
-import { EditImageType, NewImageType } from "../../../../types/queryType";
-import { editImageMutation, newImageMutation } from "../../../../apis/queries";
+import { EditImageType } from "../../../../types/queryType";
+import { editImageMutation } from "../../../../apis/queries";
 import { toBase64 } from "../../../../utils/file";
 import { ImageType } from "../../../../types/entityType";
 
@@ -40,6 +40,8 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     if (newImage) {
       const base64image =  await toBase64(newImage) as string
       body.file = base64image
+      body.fileName = newImage.name
+      body.type = newImage.type
     }
     editImageMut.mutate(body)
   }
