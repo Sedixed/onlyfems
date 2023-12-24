@@ -2,7 +2,7 @@ package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
-import fr.univrouen.onlyfems.dto.user.CreateOrUpdateUserDTO;
+import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,12 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
+    private final AuthenticationService authenticationService;
+
     @Autowired
-    private AuthenticationService authenticationService;
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     /**
      * Login route.
@@ -80,41 +84,16 @@ public class AuthenticationController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> register(@RequestBody CreateOrUpdateUserDTO registerRequest, HttpServletRequest req) {
+    public ResponseEntity<Object> register(@RequestBody SaveUserDTO registerRequest, HttpServletRequest req) {
         try {
             return ResponseEntity.ok(authenticationService.register(registerRequest, req));
         } catch (Exception e) {
-            // TODO : ErrorDTO
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     /**
-     * Route that returns true if a user is authenticated.
-     * <p>
-     * Response example :
-     * {
-     * "authenticated": true
-     * }
-     */
-    @RequestMapping(
-            value = APIEndpoints.IS_AUTHENTICATED_URL,
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Map<String, Object>> authenticated() {
-        Map<String, Object> response = authenticationService.isAuthenticated();
-        return ResponseEntity.ok(response);
-    }
-
-    /**
      * Route that returns the current user authenticated.
-     * <p>
-     * Response example :
-     * {
-     * "roles": [ "[ROLE_USER]" ],
-     * "username": "user"
-     * }
      */
     @RequestMapping(
             value = APIEndpoints.GET_AUTHENTICATED_USER,

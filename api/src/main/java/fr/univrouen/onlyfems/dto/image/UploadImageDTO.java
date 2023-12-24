@@ -1,27 +1,61 @@
 package fr.univrouen.onlyfems.dto.image;
 
-import org.springframework.web.multipart.MultipartFile;
 
 public class UploadImageDTO {
-    private String description = "";
-    private boolean privacy = true;
-    private MultipartFile file;
 
-    public UploadImageDTO(String description, boolean privacy, MultipartFile file) {
+    private String fileName;
+    private String description;
+    private Boolean privacy;
+    private String contentType;
+    private  String base64;
+
+    public UploadImageDTO(String fileName, String description, Boolean privacy, String contentType, String base64) {
+        this.fileName = fileName;
         this.description = description;
         this.privacy = privacy;
-        this.file = file;
+        this.contentType = contentType;
+        this.base64 = base64;
+    }
+
+    //public UploadImageDTO() {}
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public boolean isPrivacy() {
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getPrivacy() {
         return privacy;
     }
 
-    public MultipartFile getFile() {
-        return file;
+    public void setPrivacy(Boolean privacy) {
+        this.privacy = privacy;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getBase64() {
+        return base64;
+    }
+
+    public void setBase64(String base64) {
+        this.base64 = base64;
     }
 }

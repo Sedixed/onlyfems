@@ -1,11 +1,14 @@
 package fr.univrouen.onlyfems.entities;
 
 import jakarta.persistence.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.util.Base64;
 
 @Entity
 @Table(name = "images")
-public class Image {
+public class Image implements MultipartFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,18 +18,30 @@ public class Image {
     private String description = "";
 
     // true : public | false : private
-    private boolean privacy = true;
+    private Boolean privacy = true;
+
+    private String contentType = "";
 
     @Transient
-    private String base64Encoded = null;
+    private byte[] base64 = new byte[]{};
 
-    public Image(String name, String description, boolean privacy) {
+    @Transient
+    private String base64String = "";
+
+    public Image(String name, String description, boolean privacy, String contentType, String base64) {
         this.name = name;
         this.description = description;
         this.privacy = privacy;
+        this.contentType = contentType;
+
+        this.base64String = base64;
+        this.base64 = Base64.getDecoder().decode(base64);
     }
 
     public Image() {}
+
+
+    // GETTERS & SETTERS
 
     public Integer getId() {
         return id;
@@ -41,7 +56,9 @@ public class Image {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null && !name.equals("")) {
+            this.name = name;
+        }
     }
 
     public String getDescription() {
@@ -49,21 +66,79 @@ public class Image {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null && !description.equals("")) {
+            this.description = description;
+        }
     }
 
-    public boolean isPrivate() {
+    public Boolean getPrivacy() {
         return privacy;
     }
 
-    public void setPrivacy(boolean privacy) {
-        this.privacy = privacy;
+    public void setPrivacy(Boolean privacy) {
+        if (privacy != null) {
+            this.privacy = privacy;
+        }
     }
 
-    public String getBase64Encoded() {
-        return base64Encoded;
+    public void setContentType(String contentType) {
+        if (contentType != null && !contentType.equals("")) {
+            this.contentType = contentType;
+        }
     }
-    public void setBase64Encoded(String base64Encoded) {
-        this.base64Encoded = base64Encoded;
+
+    public String getBase64String() {
+        return base64String;
+    }
+
+    public void setBase64(String base64) {
+        if (base64 != null && !base64.equals("")) {
+            this.base64String = base64;
+            this.base64 = Base64.getDecoder().decode(base64);
+        }
+    }
+
+    public void setBase64(byte[] base64) {
+        if (base64 != null && base64.length > 0) {
+            this.base64 = base64;
+            this.base64String = Base64.getEncoder().encodeToString(base64);
+        }
+    }
+
+    // MultipartFile Methods
+
+    @Override
+    public String getOriginalFilename() {
+        return this.name;
+    }
+
+    @Override
+    public String getContentType() {
+        return contentType;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return (base64 == null || base64.length == 0);
+    }
+
+    @Override
+    public long getSize() {
+        return base64.length;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return base64;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(base64);
+    }
+
+    @Override
+    public void transferTo(File dest) throws IOException, IllegalStateException {
+        new FileOutputStream(dest).write(base64);
     }
 }

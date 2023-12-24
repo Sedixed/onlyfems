@@ -1,8 +1,6 @@
 package fr.univrouen.onlyfems.dto.error;
 
-import fr.univrouen.onlyfems.dto.DTO;
-
-public class ErrorDTO implements DTO {
+public class ErrorDTO {
     String error;
 
     public ErrorDTO(String error) {

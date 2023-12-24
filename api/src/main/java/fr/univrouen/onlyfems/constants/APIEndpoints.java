@@ -8,40 +8,30 @@ public class APIEndpoints {
     /**
      * Login URL
      */
-    public final static String LOGIN_URL = "/authentication/login";
+    public static final String LOGIN_URL = "/authentication/login";
 
     /**
      * Logout URL
      */
-    public final static String LOGOUT_URL = "/authentication/logout";
+    public static final String LOGOUT_URL = "/authentication/logout";
 
     /**
      * Register URL
      */
-    public final static String REGISTER_URL = "authentication/register";
-
-    /**
-     * URL to get the info on the current user logged or not.
-     */
-    public final static String IS_AUTHENTICATED_URL = "/authentication/authenticated";
+    public static final String REGISTER_URL = "authentication/register";
 
     /**
      * URL to get the current user logged.
      */
-    public final static String GET_AUTHENTICATED_USER = "/authentication/user";
+    public static final String GET_AUTHENTICATED_USER = "/authentication/user";
 
     /**
-     * Front page of the portfolio URL
+     * URL to create and list images.
      */
-    public final static String PORTFOLIO_URL = "/portfolio";
+    public static final String IMAGES_URL = "/images";
 
     /**
-     * URL to get all the images
+     * URL to get, update or delete an image by its ID.
      */
-    public final static String IMAGES_URL = "/images";
-
-    /**
-     * URL to get/modify/add/delete an image by its id
-     */
-    public final static String IMAGE_URL = "/image";
+    public static final String IMAGES_ID_URL = IMAGES_URL + "/{id}";
 }

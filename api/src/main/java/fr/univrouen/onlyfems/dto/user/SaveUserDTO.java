@@ -7,13 +7,13 @@ import java.util.List;
 /**
  * DTO used to create or update users.
  */
-public class CreateOrUpdateUserDTO {
+public class SaveUserDTO {
     private final String email;
     private final String username;
     private final String password;
     private final List<Roles> roles;
 
-    public CreateOrUpdateUserDTO(String email, String username, String password, List<Roles> roles) {
+    public SaveUserDTO(String email, String username, String password, List<Roles> roles) {
         this.email = email;
         this.username = username;
         this.password = password;

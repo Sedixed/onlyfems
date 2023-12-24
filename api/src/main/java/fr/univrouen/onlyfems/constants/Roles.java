@@ -10,6 +10,10 @@ public enum Roles {
      */
     ROLE_ADMIN,
 
+    /**
+     * Role of a privileged user with permissions.
+     */
+    ROLE_PRIVILEGED_USER,
 
     /**
      * Role of a lambda user connected.

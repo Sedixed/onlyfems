@@ -29,8 +29,12 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsServices;
+
     @Autowired
-    CustomUserDetailsService customUserDetailsServices;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsServices) {
+        this.customUserDetailsServices = customUserDetailsServices;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +46,6 @@ public class SecurityConfig {
                 APIEndpoints.LOGIN_URL,
                 APIEndpoints.REGISTER_URL,
                 APIEndpoints.LOGOUT_URL,
-                APIEndpoints.IS_AUTHENTICATED_URL,
                 APIEndpoints.GET_AUTHENTICATED_USER
             ).permitAll()
             .anyRequest().permitAll()

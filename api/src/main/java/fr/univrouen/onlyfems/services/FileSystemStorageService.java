@@ -2,7 +2,6 @@ package fr.univrouen.onlyfems.services;
 
 import fr.univrouen.onlyfems.exceptions.StorageException;
 import fr.univrouen.onlyfems.exceptions.StorageFileNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,6 @@ public class FileSystemStorageService implements IStorageService {
             }
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
             throw new StorageException("Failed to store file.", e);
         }
     }

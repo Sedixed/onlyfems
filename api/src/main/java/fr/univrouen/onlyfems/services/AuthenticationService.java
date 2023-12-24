@@ -1,7 +1,7 @@
 package fr.univrouen.onlyfems.services;
 
 import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
-import fr.univrouen.onlyfems.dto.user.CreateOrUpdateUserDTO;
+import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,7 +59,7 @@ public class AuthenticationService {
      * @param userDTO Email of the user.
      * @return The user created.
      */
-    public User register(CreateOrUpdateUserDTO userDTO, HttpServletRequest req) {
+    public User register(SaveUserDTO userDTO, HttpServletRequest req) {
         if (!verifyEmail(userDTO.getEmail())) {
             throw new IllegalArgumentException("Email is not well formed.");
         }

@@ -1,6 +1,7 @@
 package fr.univrouen.onlyfems.services;
 
 import fr.univrouen.onlyfems.dto.image.ImageDTO;
+import fr.univrouen.onlyfems.dto.image.ListImageDTO;
 import fr.univrouen.onlyfems.dto.image.UploadImageDTO;
 import fr.univrouen.onlyfems.entities.Image;
 import fr.univrouen.onlyfems.exceptions.StorageException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -36,17 +38,14 @@ public class ImageService {
      *
      * @param id ID of the image.
      * @return The image found.
-     * @throws ObjectNotFoundException
-     * @throws StorageFileNotFoundException
-     * @throws IOException
      */
-    public Image findById(int id) throws ObjectNotFoundException, StorageFileNotFoundException, IOException {
+    public ImageDTO findById(int id) throws ObjectNotFoundException, StorageFileNotFoundException, IOException {
         Optional<Image> optionalImage = imageRepository.findById(id);
         if (optionalImage.isPresent()) {
             Image image = optionalImage.get();
             Resource imageResource = storageService.loadAsResource(getFileName(image));
-            image.setBase64Encoded(getBase64Encoded(imageResource));
-            return image;
+            image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
+            return new ImageDTO(image);
         } else {
             throw new ObjectNotFoundException("Image not found in database", id);
         }
@@ -56,19 +55,17 @@ public class ImageService {
      * Find all the images in database.
      *
      * @return The list of ImageDTO found.
-     * @throws StorageFileNotFoundException
-     * @throws IOException
      */
-    public List<ImageDTO> findALl() throws StorageFileNotFoundException, IOException {
+    public ListImageDTO findALl() throws StorageFileNotFoundException, IOException {
         List<ImageDTO> result = new ArrayList<>();
 
         Resource imageResource;
         for (Image image : imageRepository.findAll()) {
             imageResource = storageService.loadAsResource(getFileName(image));
-            image.setBase64Encoded(getBase64Encoded(imageResource));
+            image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
             result.add(new ImageDTO(image));
         }
-        return result;
+        return new ListImageDTO(result);
     }
 
     /**
@@ -76,24 +73,18 @@ public class ImageService {
      *
      * @param saveRequest Request containing image information and file.
      * @return The image saved.
-     * @throws StorageException
      */
     @Transactional
-    public Image saveImage(UploadImageDTO saveRequest) throws StorageException, IOException {
-        MultipartFile file = saveRequest.getFile();
-        if (isFileValid(file)) {
-            Image image = new Image();
-            image.setName(file.getOriginalFilename());
-
-            image.setDescription(saveRequest.getDescription());
-            image.setPrivacy(saveRequest.isPrivacy());
+    public ImageDTO saveImage(UploadImageDTO saveRequest) throws StorageException, IOException {
+        Image image = new Image(saveRequest.getFileName(), saveRequest.getDescription(), saveRequest.getPrivacy(), saveRequest.getContentType(), saveRequest.getBase64());
+        if (isFileValid(image)) {
 
             Image newImage = imageRepository.save(image);
-            storageService.store(file, getFileName(newImage));
+            storageService.store(image, getFileName(newImage));
 
             Resource imageResource = storageService.loadAsResource(getFileName(newImage));
-            image.setBase64Encoded(getBase64Encoded(imageResource));
-            return newImage;
+            image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
+            return new ImageDTO(newImage);
         } else {
             throw new IllegalArgumentException("File given is not an image.");
         }
@@ -105,33 +96,62 @@ public class ImageService {
      * @param updateRequest Request containing image information and file.
      * @param id ID of the image to update.
      * @return The image updated.
-     * @throws StorageException
-     * @throws IOException
      */
     @Transactional
-    public Image updateImage(UploadImageDTO updateRequest, int id) throws StorageException, IOException {
-        MultipartFile file = updateRequest.getFile();
-        if (isFileValid(file)) {
-            Optional<Image> imageOptional = imageRepository.findById(id);
+    public ImageDTO updateImage(UploadImageDTO updateRequest, int id) throws StorageException, IOException {
+        Image image = imageRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Image not found in database", id));
 
-            if (imageOptional.isPresent()) {
-                Image image = imageOptional.get();
+        // If base 64 is null.
+        if (updateRequest.getBase64() == null || updateRequest.getBase64().equals("")) {
 
+            // If file name has changed.
+            if (!image.getName().equals(updateRequest.getFileName())) {
+
+                Resource oldImageResource = storageService.loadAsResource(getFileName(image));
+                String oldFileName = image.getName();
+
+                image.setName(updateRequest.getFileName());
                 image.setDescription(updateRequest.getDescription());
-                image.setPrivacy(updateRequest.isPrivacy());
+                image.setPrivacy(updateRequest.getPrivacy());
+                image.setContentType(updateRequest.getContentType());
+                image.setBase64(oldImageResource.getContentAsByteArray());
 
-                imageRepository.save(image);
-                storageService.store(file, getFileName(image));
+                if (isFileValid(image)) {
+                    storageService.store(image, getFileName(image));
+                    Image updatedImage = imageRepository.save(image);
+                    storageService.delete(getFileName(new Image(oldFileName, null, true, null, null)));
 
-                Resource imageResource = storageService.loadAsResource(getFileName(image));
-
-                image.setBase64Encoded(getBase64Encoded(imageResource));
-                return image;
+                    return new ImageDTO(updatedImage);
+                } else {
+                    throw new IllegalArgumentException("File given is not an image.");
+                }
+            // File name has not changed.
             } else {
-                throw new ObjectNotFoundException("Image not found in database", id);
+
+                image.setName(updateRequest.getFileName());
+                image.setDescription(updateRequest.getDescription());
+                image.setPrivacy(updateRequest.getPrivacy());
+                image.setContentType(updateRequest.getContentType());
+                Image updatedImage = imageRepository.save(image);
+                return new ImageDTO(updatedImage);
             }
+        // Bytes has changed.
         } else {
-            throw new IllegalArgumentException("File given is not an image.");
+            String oldFileName = image.getName();
+
+            image.setName(updateRequest.getFileName());
+            image.setDescription(updateRequest.getDescription());
+            image.setPrivacy(updateRequest.getPrivacy());
+            image.setContentType(updateRequest.getContentType());
+
+            if (isFileValid(image)) {
+                storageService.store(image, getFileName(image));
+            } else {
+                throw new IllegalArgumentException("File given is not an image.");
+            }
+            Image updatedImage = imageRepository.save(image);
+            storageService.delete(getFileName(new Image(oldFileName, null, true, null, null)));
+            return new ImageDTO(updatedImage);
         }
     }
 
@@ -139,7 +159,6 @@ public class ImageService {
      * Delete the image using its ID.
      *
      * @param id ID of the image to delete.
-     * @throws StorageException
      */
     @Transactional
     public void deleteImage(int id) throws StorageException {
@@ -154,8 +173,6 @@ public class ImageService {
         }
     }
 
-
-
     /**
      * Private method to check multiple verifications related to a MultipartFile object.
      *
@@ -163,24 +180,16 @@ public class ImageService {
      * @return true if the file is valid, false otherwise.
      */
     private boolean isFileValid(MultipartFile file) {
-        // Verify if file is not empty.
-
+        // Check if file is not empty.
         if (file.isEmpty()) {
             return false;
         }
-
         // Check extension of the file.
-        if (
-                file.getContentType().equals("image/png")
+        return file.getContentType().equals("image/png")
                 || file.getContentType().equals("image/jpg")
                 || file.getContentType().equals("image/jpeg")
                 || file.getContentType().equals("image/svg")
-                || file.getContentType().equals("image/gif")
-        ) {
-            return true;
-        }
-
-        return false;
+                || file.getContentType().equals("image/gif");
     }
 
     /**
@@ -194,17 +203,5 @@ public class ImageService {
         int lastDotIndex = fileName.lastIndexOf('.');
         fileName = fileName.substring(0, lastDotIndex ) + "_" + image.getId() + fileName.substring(lastDotIndex);
         return fileName;
-    }
-
-    /**
-     * Private method to get an image encoded in base 64.
-     *
-     * @param resource Image resource.
-     * @return The base 64 encoded image.
-     * @throws IOException
-     */
-    private String getBase64Encoded(Resource resource) throws IOException {
-        byte[] fileContent = Files.readAllBytes(resource.getFile().toPath());
-        return Base64.getEncoder().encodeToString(fileContent);
     }
 }

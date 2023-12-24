@@ -1,19 +1,14 @@
 package fr.univrouen.onlyfems.controllers;
 
-import fr.univrouen.onlyfems.dto.DTO;
 import fr.univrouen.onlyfems.dto.error.ErrorDTO;
-import fr.univrouen.onlyfems.dto.image.ImageDTO;
 import fr.univrouen.onlyfems.dto.image.UploadImageDTO;
 import fr.univrouen.onlyfems.services.ImageService;
-import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
-import org.springframework.web.multipart.MultipartFile;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -33,13 +28,15 @@ public class ImageController {
      * @return The image found.
      */
     @RequestMapping(
-        value = APIEndpoints.IMAGE_URL + "/{id}",
+        value = APIEndpoints.IMAGES_ID_URL,
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<DTO> getImage(@PathVariable Integer id) {
+    public ResponseEntity<Object> getImage(@PathVariable Integer id) {
         try {
-            return ResponseEntity.ok(new ImageDTO(imageService.findById(id)));
+            return ResponseEntity.ok(imageService.findById(id));
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
@@ -68,15 +65,14 @@ public class ImageController {
      * @return The image uploaded.
      */
     @RequestMapping(
-        value = APIEndpoints.IMAGE_URL,
+        value = APIEndpoints.IMAGES_URL,
         method = RequestMethod.POST,
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<DTO> uploadImage(@ModelAttribute UploadImageDTO request) {
+    public ResponseEntity<Object> uploadImage(@RequestBody UploadImageDTO request) {
         try {
-            ImageDTO imageDTO = new ImageDTO(imageService.saveImage(request));
-            return ResponseEntity.ok(imageDTO);
+            return ResponseEntity.ok(imageService.saveImage(request));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
@@ -90,15 +86,16 @@ public class ImageController {
      * @return The image DTO of the updated image.
      */
     @RequestMapping(
-            value = APIEndpoints.IMAGE_URL + "/{id}",
+            value = APIEndpoints.IMAGES_ID_URL,
             method = RequestMethod.PATCH,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<DTO> updateImage(@ModelAttribute UploadImageDTO request, @PathVariable Integer id) {
+    public ResponseEntity<Object> updateImage(@RequestBody UploadImageDTO request, @PathVariable Integer id) {
         try {
-            ImageDTO imageDTO = new ImageDTO(imageService.updateImage(request, id));
-            return ResponseEntity.ok(imageDTO);
+            return ResponseEntity.ok(imageService.updateImage(request, id));
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
@@ -111,14 +108,16 @@ public class ImageController {
      * @return 204.
      */
     @RequestMapping(
-            value = APIEndpoints.IMAGE_URL + "/{id}",
+            value = APIEndpoints.IMAGES_ID_URL,
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> deleteImage(@PathVariable Integer id) {
+    public ResponseEntity<Object> deleteImage(@PathVariable Integer id) {
         try {
             imageService.deleteImage(id);
             return ResponseEntity.noContent().build();
+        } catch (ObjectNotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
