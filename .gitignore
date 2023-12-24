@@ -218,3 +218,4 @@ $RECYCLE.BIN/
 /api/*.iml
 /api/.idea
 /api/.exercism
+/api/upload/
