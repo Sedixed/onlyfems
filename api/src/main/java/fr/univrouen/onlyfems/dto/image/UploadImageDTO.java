@@ -3,14 +3,14 @@ package fr.univrouen.onlyfems.dto.image;
 
 public class UploadImageDTO {
 
-    private String fileName;
+    private String name;
     private String description;
     private Boolean privacy;
     private String contentType;
     private  String base64;
 
-    public UploadImageDTO(String fileName, String description, Boolean privacy, String contentType, String base64) {
-        this.fileName = fileName;
+    public UploadImageDTO(String name, String description, Boolean privacy, String contentType, String base64) {
+        this.name = name;
         this.description = description;
         this.privacy = privacy;
         this.contentType = contentType;
@@ -19,12 +19,12 @@ public class UploadImageDTO {
 
     //public UploadImageDTO() {}
 
-    public String getFileName() {
-        return fileName;
+    public String getName() {
+        return name;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

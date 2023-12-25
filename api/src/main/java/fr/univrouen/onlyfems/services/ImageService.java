@@ -17,10 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -76,7 +74,7 @@ public class ImageService {
      */
     @Transactional
     public ImageDTO saveImage(UploadImageDTO saveRequest) throws StorageException, IOException {
-        Image image = new Image(saveRequest.getFileName(), saveRequest.getDescription(), saveRequest.getPrivacy(), saveRequest.getContentType(), saveRequest.getBase64());
+        Image image = new Image(saveRequest.getName(), saveRequest.getDescription(), saveRequest.getPrivacy(), saveRequest.getContentType(), saveRequest.getBase64());
         if (isFileValid(image)) {
 
             Image newImage = imageRepository.save(image);
@@ -101,16 +99,16 @@ public class ImageService {
     public ImageDTO updateImage(UploadImageDTO updateRequest, int id) throws StorageException, IOException {
         Image image = imageRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Image not found in database", id));
 
-        // If base 64 is null.
+        // If base 64 content has not changed.
         if (updateRequest.getBase64() == null || updateRequest.getBase64().equals("")) {
 
             // If file name has changed.
-            if (!image.getName().equals(updateRequest.getFileName())) {
+            if (updateRequest.getName() != null) {
 
                 Resource oldImageResource = storageService.loadAsResource(getFileName(image));
                 String oldFileName = image.getName();
 
-                image.setName(updateRequest.getFileName());
+                image.setName(updateRequest.getName());
                 image.setDescription(updateRequest.getDescription());
                 image.setPrivacy(updateRequest.getPrivacy());
                 image.setContentType(updateRequest.getContentType());
@@ -119,7 +117,10 @@ public class ImageService {
                 if (isFileValid(image)) {
                     storageService.store(image, getFileName(image));
                     Image updatedImage = imageRepository.save(image);
-                    storageService.delete(getFileName(new Image(oldFileName, null, true, null, null)));
+
+                    Image imageToDelete = new Image(oldFileName, image.getDescription(), image.getPrivacy(), image.getContentType(), image.getBase64String());
+                    imageToDelete.setId(updatedImage.getId());
+                    storageService.delete(getFileName(imageToDelete));
 
                     return new ImageDTO(updatedImage);
                 } else {
@@ -128,21 +129,24 @@ public class ImageService {
             // File name has not changed.
             } else {
 
-                image.setName(updateRequest.getFileName());
                 image.setDescription(updateRequest.getDescription());
                 image.setPrivacy(updateRequest.getPrivacy());
                 image.setContentType(updateRequest.getContentType());
                 Image updatedImage = imageRepository.save(image);
+                Resource imageResource = storageService.loadAsResource(getFileName(image));
+                updatedImage.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
+
                 return new ImageDTO(updatedImage);
             }
         // Bytes has changed.
         } else {
             String oldFileName = image.getName();
 
-            image.setName(updateRequest.getFileName());
+            image.setName(updateRequest.getName());
             image.setDescription(updateRequest.getDescription());
             image.setPrivacy(updateRequest.getPrivacy());
             image.setContentType(updateRequest.getContentType());
+            image.setBase64(updateRequest.getBase64());
 
             if (isFileValid(image)) {
                 storageService.store(image, getFileName(image));
@@ -150,7 +154,13 @@ public class ImageService {
                 throw new IllegalArgumentException("File given is not an image.");
             }
             Image updatedImage = imageRepository.save(image);
-            storageService.delete(getFileName(new Image(oldFileName, null, true, null, null)));
+
+            // If file name has changed.
+            if (updateRequest.getName() != null && !oldFileName.equals(updateRequest.getName())) {
+                Image imageToDelete = new Image(oldFileName, image.getDescription(), image.getPrivacy(), image.getContentType(), image.getBase64String());
+                imageToDelete.setId(updatedImage.getId());
+                storageService.delete(getFileName(imageToDelete));
+            }
             return new ImageDTO(updatedImage);
         }
     }
