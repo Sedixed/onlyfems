@@ -20,8 +20,12 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Method to load a user in database using the username.
@@ -31,17 +35,15 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userRepo = userRepository.findByEmail(username);
-        org.springframework.security.core.userdetails.User userResponse = new org.springframework.security.core.userdetails.User(
+        return new org.springframework.security.core.userdetails.User(
                 userRepo.getEmail(),
                 userRepo.getPassword(),
                 getAuthorities(userRepo.getRoles())
         );
-
-        return userResponse;
     }
 
     /**
-     * Private function to get a list of GrantedAuthority object with a list of String object.
+     * Private method to get a list of GrantedAuthority object with a list of String object.
      *
      * @param roles The list of roles to convert.
      * @return The roles converted in GrantedAuthority.

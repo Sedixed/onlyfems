@@ -2,24 +2,25 @@ package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
-import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
+import fr.univrouen.onlyfems.dto.error.ErrorDTO;
+import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -27,82 +28,79 @@ public class AuthenticationController {
 
     /**
      * Login route.
-     * <p>
-     * Need a request body, example below :
-     * {
-     * "username":"user",
-     * "password":"password"
-     * }
+     *
+     * @param loginRequest Login parameters.
      */
-    @RequestMapping(
+    @PostMapping(
             value = APIEndpoints.LOGIN_URL,
-            method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            )
+    })
     @CrossOrigin(allowCredentials = "true", exposedHeaders = {"Set-Cookie"})
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void login(@RequestBody LoginDTO loginRequest, HttpServletRequest req) {
-        authenticationService.login(loginRequest, req);
+    public ResponseEntity<Object> login(@RequestBody LoginDTO loginRequest, HttpServletRequest req) {
+        try {
+            authenticationService.login(loginRequest, req);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
+        }
     }
 
     /**
      * Logout route.
      */
-    @RequestMapping(
-            value = APIEndpoints.LOGOUT_URL,
-            method = RequestMethod.POST
+    @PostMapping(
+            value = APIEndpoints.LOGOUT_URL
     )
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void logout() {
-        SecurityContextHolder.clearContext();
-    }
-
-    /**
-     * Register route.
-     * <p>
-     * Need a request body, example below :
-     * {
-     * "username": "username",
-     * "password": "password",
-     * "roles": ["ROLE_USER"]
-     * }
-     *
-     * @return The user created.
-     * Response example :
-     * {
-     * "id": 1,
-     * "username": "username",
-     * "password": "$2a$10$m7pwqKM45wJVnLt9p1lv0uUPyT4EMH4N7k/YZ0DOWYqIsxMSyE9fe",
-     * "roles": [
-     * "ROLE_USER"
-     * ]
-     * }
-     */
-    @RequestMapping(
-            value = APIEndpoints.REGISTER_URL,
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Object> register(@RequestBody SaveUserDTO registerRequest, HttpServletRequest req) {
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            )
+    })
+    public ResponseEntity<Object> logout() {
         try {
-            return ResponseEntity.ok(authenticationService.register(registerRequest, req));
+            SecurityContextHolder.clearContext();
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }
     }
 
     /**
      * Route that returns the current user authenticated.
      */
-    @RequestMapping(
+    @GetMapping(
             value = APIEndpoints.GET_AUTHENTICATED_USER,
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            )
+    })
     @CrossOrigin(allowCredentials = "true", exposedHeaders = {"Access-Control-Allow-Credentials"})
     public ResponseEntity<Object> getUserAuthenticated() {
-        Object response = authenticationService.getAuthenticatedUser();
-        return ResponseEntity.ok(response);
+        try {
+            return ResponseEntity.ok(authenticationService.getAuthenticatedUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
+        }
     }
 }

@@ -41,7 +41,7 @@ public class ImageService {
         Optional<Image> optionalImage = imageRepository.findById(id);
         if (optionalImage.isPresent()) {
             Image image = optionalImage.get();
-            Resource imageResource = storageService.loadAsResource(getFileName(image));
+            Resource imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
             image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
             return new ImageDTO(image);
         } else {
@@ -59,7 +59,7 @@ public class ImageService {
 
         Resource imageResource;
         for (Image image : imageRepository.findAll()) {
-            imageResource = storageService.loadAsResource(getFileName(image));
+            imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
             image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
             result.add(new ImageDTO(image));
         }
@@ -78,9 +78,9 @@ public class ImageService {
         if (isFileValid(image)) {
 
             Image newImage = imageRepository.save(image);
-            storageService.store(image, getFileName(newImage));
+            storageService.store(image, getFileName(newImage.getId(), newImage.getName()));
 
-            Resource imageResource = storageService.loadAsResource(getFileName(newImage));
+            Resource imageResource = storageService.loadAsResource(getFileName(newImage.getId(), newImage.getName()));
             image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
             return new ImageDTO(newImage);
         } else {
@@ -105,7 +105,7 @@ public class ImageService {
             // If file name has changed.
             if (updateRequest.getName() != null) {
 
-                Resource oldImageResource = storageService.loadAsResource(getFileName(image));
+                Resource oldImageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
                 String oldFileName = image.getName();
 
                 image.setName(updateRequest.getName());
@@ -115,12 +115,9 @@ public class ImageService {
                 image.setBase64(oldImageResource.getContentAsByteArray());
 
                 if (isFileValid(image)) {
-                    storageService.store(image, getFileName(image));
+                    storageService.store(image, getFileName(image.getId(), image.getName()));
                     Image updatedImage = imageRepository.save(image);
-
-                    Image imageToDelete = new Image(oldFileName, image.getDescription(), image.getPrivacy(), image.getContentType(), image.getBase64String());
-                    imageToDelete.setId(updatedImage.getId());
-                    storageService.delete(getFileName(imageToDelete));
+                    storageService.delete(getFileName(updatedImage.getId(), oldFileName));
 
                     return new ImageDTO(updatedImage);
                 } else {
@@ -133,7 +130,7 @@ public class ImageService {
                 image.setPrivacy(updateRequest.getPrivacy());
                 image.setContentType(updateRequest.getContentType());
                 Image updatedImage = imageRepository.save(image);
-                Resource imageResource = storageService.loadAsResource(getFileName(image));
+                Resource imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
                 updatedImage.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
 
                 return new ImageDTO(updatedImage);
@@ -149,7 +146,7 @@ public class ImageService {
             image.setBase64(updateRequest.getBase64());
 
             if (isFileValid(image)) {
-                storageService.store(image, getFileName(image));
+                storageService.store(image, getFileName(image.getId(), image.getName()));
             } else {
                 throw new IllegalArgumentException("File given is not an image.");
             }
@@ -157,9 +154,7 @@ public class ImageService {
 
             // If file name has changed.
             if (updateRequest.getName() != null && !oldFileName.equals(updateRequest.getName())) {
-                Image imageToDelete = new Image(oldFileName, image.getDescription(), image.getPrivacy(), image.getContentType(), image.getBase64String());
-                imageToDelete.setId(updatedImage.getId());
-                storageService.delete(getFileName(imageToDelete));
+                storageService.delete(getFileName(updatedImage.getId(), oldFileName));
             }
             return new ImageDTO(updatedImage);
         }
@@ -177,7 +172,7 @@ public class ImageService {
         if (imageOptional.isPresent()) {
             Image image = imageOptional.get();
             imageRepository.delete(image);
-            storageService.delete(getFileName(image));
+            storageService.delete(getFileName(image.getId(), image.getName()));
         } else {
             throw new ObjectNotFoundException("Image not found in database", id);
         }
@@ -194,6 +189,7 @@ public class ImageService {
         if (file.isEmpty()) {
             return false;
         }
+
         // Check extension of the file.
         return file.getContentType().equals("image/png")
                 || file.getContentType().equals("image/jpg")
@@ -203,15 +199,16 @@ public class ImageService {
     }
 
     /**
-     * Private method to get the file name.
+     * Private method to get the real file name.
      *
-     * @param image Image containing information.
+     * @param id ID of the image.
+     * @param name Name of the file uploaded.
      * @return The name of the file.
      */
-    private String getFileName(Image image) {
-        String fileName = image.getName();
+    private String getFileName(int id, String name) {
+        String fileName = name;
         int lastDotIndex = fileName.lastIndexOf('.');
-        fileName = fileName.substring(0, lastDotIndex ) + "_" + image.getId() + fileName.substring(lastDotIndex);
+        fileName = fileName.substring(0, lastDotIndex ) + "_" + id + fileName.substring(lastDotIndex);
         return fileName;
     }
 }

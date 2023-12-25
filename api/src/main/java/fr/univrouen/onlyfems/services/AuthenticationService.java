@@ -84,27 +84,6 @@ public class AuthenticationService {
     }
 
     /**
-     * Return true if a user is authenticated, false otherwise.
-     *
-     * @return A boolean.
-     */
-    public Map<String, Object> isAuthenticated() {
-        Map<String, Object> response = new HashMap<>();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            if (authentication instanceof AnonymousAuthenticationToken) {
-                response.put("authenticated", false);
-            } else {
-                response.put("authenticated", true);
-            }
-        } else {
-            response.put("authenticated", false);
-        }
-        return response;
-    }
-
-    /**
      * Return the user currently authenticated.
      * Can return an anonymous user if there is no user authenticated.
      *
@@ -113,23 +92,40 @@ public class AuthenticationService {
     public UserDTO getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // TODO : FINIR CA
         UserDTO userDTO;
-        if ((Boolean) isAuthenticated().get("authenticated")) {
+        if (isAuthenticated()) {
             userDTO = new UserDTO(
                     authentication.getName(),
                     userService.getUserByEmail(authentication.getName()).getUsername(),
-                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
+                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()
             );
         } else {
             userDTO = new UserDTO(
                     null,
                     null,
-                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
+                    authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()
             );
         }
 
         return userDTO;
+    }
+
+
+    // Private methods
+
+    /**
+     * Return true if a user is authenticated, false otherwise.
+     *
+     * @return A boolean.
+     */
+    private boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            return !(authentication instanceof AnonymousAuthenticationToken);
+        } else {
+            return false;
+        }
     }
 
     /**
