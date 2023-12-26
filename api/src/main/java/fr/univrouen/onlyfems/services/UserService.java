@@ -1,10 +1,18 @@
 package fr.univrouen.onlyfems.services;
 
+import fr.univrouen.onlyfems.constants.Roles;
+import fr.univrouen.onlyfems.dto.user.ListUserDTO;
+import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
+import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.repositories.UserRepository;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,16 +21,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Return the list of users in database.
-     *
-     * @return The list of users.
-     */
-    public Iterable<User> listUsers() {
-        return userRepository.findAll();
+
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -31,24 +37,67 @@ public class UserService {
      * @param id ID of a user.
      * @return The user if found.
      */
-    public User getUserById(int id) {
-        Optional<User> user = userRepository.findById(id);
+    public UserDTO getUserById(int id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
 
-        return user.orElse(null);
+        return new UserDTO(user);
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        return new UserDTO(user);
     }
 
     /**
-     * Create or update a user in database.
+     * Return the list of users in database.
      *
-     * @param user The user to create or update.
-     * @return The user created or updated.
+     * @return The list of users.
      */
-    public User createOrUpdateUser(User user) {
-        return userRepository.save(user);
+    public ListUserDTO listUsers() {
+        List<UserDTO> users = new ArrayList<>();
+
+        for (User user : userRepository.findAll()) {
+            users.add(new UserDTO(user));
+        }
+
+        return new ListUserDTO(users);
+    }
+
+    /**
+     * Create a user in database.
+     *
+     * @param createRequest The request containing user data to create.
+     * @return The user created.
+     */
+    public UserDTO createUser(SaveUserDTO createRequest) {
+        User user = new User(createRequest.getEmail(), createRequest.getUsername(), passwordEncoder.encode(createRequest.getPassword()), createRequest.getRoles());
+        checkUserData(user);
+        return new UserDTO(userRepository.save(user));
+    }
+
+    /**
+     * Update a user in database.
+     *
+     * @param id ID of the user to update.
+     * @param updateRequest Update request containing user data.
+     * @return The user updated.
+     */
+    public UserDTO updateUser(int id, SaveUserDTO updateRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
+
+        // Check if email has changed and check if email exists.
+        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) != null)) {
+            throw new IllegalArgumentException("L'email \"" + user.getEmail() + "\" existe déjà.");
+        }
+
+        user.setEmail(updateRequest.getEmail());
+        user.setUsername(updateRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(updateRequest.getRoles());
+
+        checkUserData(user);
+        User updatedUser = userRepository.save(user);
+        return new UserDTO(updatedUser);
     }
 
     /**
@@ -57,6 +106,48 @@ public class UserService {
      * @param id ID of a user.
      */
     public void deleteUserWithId(int id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
+        userRepository.delete(user);
+    }
+
+
+    // Private methods.
+
+    private boolean checkUserData(User user) {
+        if (!verifyEmail(user.getEmail())) {
+            throw new IllegalArgumentException("L'email n'est pas bien formé.");
+        }
+
+        if (!verifyPassword(user.getPassword())) {
+            throw new IllegalArgumentException("Le mot de passe n'est pas bien formé.");
+        }
+
+        return true;
+    }
+
+    /**
+     * Private method to check if a string in parameter is an email.
+     *
+     * @param email Email to check.
+     * @return true if parameter is an email, false otherwise.
+     */
+    private boolean verifyEmail(String email) {
+        String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
+        return email.matches(regex);
+    }
+
+    /**
+     * Private method to check if a password contains at least one letter, one number,
+     * and has at least 8 characters.
+     *
+     * @param password The password to check.
+     * @return true if password is correct, false otherwise.
+     */
+    private boolean verifyPassword(String password) {
+        return password.matches(".*[A-Za-z].*")
+                && password.matches(".*[0-9].*")
+                && password.length() >= 8;
     }
 }

@@ -48,10 +48,10 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @param roles The list of roles to convert.
      * @return The roles converted in GrantedAuthority.
      */
-    private List<GrantedAuthority> getAuthorities(List<Roles> roles) {
+    private List<GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Roles role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.name()));
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;
     }
