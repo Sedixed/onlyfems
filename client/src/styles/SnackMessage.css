@@ -5,27 +5,26 @@
   top: 65px;
   right: 5px;
   border-radius: 12px;
-  border: solid 3px;
+}
+
+.snack-message.full-top {
+  top: 5px;
 }
 
 .snack-message.success {
   background-color: palegreen;
-  border-color: rgb(91, 180, 91);
 }
 
 .snack-message.warning {
   background-color: palegoldenrod;
-  border-color: rgb(163, 158, 98);
 }
 
 .snack-message.error {
   background-color: #FF9494;
-  border-color: rgb(117, 16, 16);
 }
 
 .snack-message.info {
   background-color: rgb(154, 219, 219);
-  border-color: rgb(56, 74, 134);
 }
 
 .snack-message .btn-container {

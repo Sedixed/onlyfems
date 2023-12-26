@@ -5,19 +5,33 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import LoadingCircle from "../LoadingCircle";
 import { SnackMessageType } from "../../types/entityType";
+import { useNavigate } from "react-router-dom";
+import clientPath from "../../utils/clientPath";
+import { isAuthenticated } from "../../utils/user";
+import useGetUser from "../../hooks/useGetUser";
 
 type NoAuthPagePropsType = {
-  refetch: () => void,
-  setSnack: (smt: SnackMessageType) => void
+  setSnack: (smt: SnackMessageType) => void,
 }
 
 const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
-  refetch,
-  setSnack
+  setSnack,
 }) => {
-  const [displayLogin, setDisplayLogin] = useState(false);
+  const [displayLogin, setDisplayLogin] = useState(true);
   const [displayRegister, setDisplayRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { user } = useGetUser()
+  
+  if (!user) {
+    return <LoadingCircle fullscreen />
+  }
+
+  // Redirects to gallery to avoid multiple login
+  if (isAuthenticated(user)) {
+    navigate(clientPath.GALLERY)
+  }
 
   const setLoginTrue = () => {
     setDisplayLogin(true);
@@ -31,29 +45,37 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
 
   const setLoadingState = (state: boolean): void => {
     setIsLoading(state);
-  } 
+  }
 
   return (
     <div className="no-auth-page flex">
-      { isLoading ? <LoadingCircle /> : null }
+      { isLoading ? <LoadingCircle fullscreen /> : null }
       <div className="presentation flex">
         <h1 className="title">OnlyFems</h1>
         <p className="abstract">Un portfolio de ZINZIN <span className="u-cant-c-me">(chokbar de bz)</span></p>
         <div className="buttons-group flex">
           <button onClick={setLoginTrue}>Connexion</button>
           <button onClick={setRegisterTrue}>Inscription</button>
+          <button onClick={() => navigate(clientPath.GALLERY)}>Accéder sans s'authentifier</button>
         </div>
       </div>
-      {
-        displayLogin ?
-        <LoginForm setIsLoading={setLoadingState} refetchLogin={refetch} /> :
-        null
-      }
-      {
-        displayRegister ?
-        <RegisterForm setIsLoading={setLoadingState} refetchLogin={refetch} setSnack={setSnack} /> :
-        null
-      }
+      <div className="forms flex">
+        {
+          displayLogin ?
+          <LoginForm setIsLoading={setLoadingState} /> :
+          null
+        }
+        {
+          displayRegister ?
+          <RegisterForm 
+            removeRegisterCallback={() => setDisplayRegister(false)}
+            putLoginCallback={() => setDisplayLogin(true)}
+            setIsLoading={setLoadingState} 
+            setSnack={setSnack} 
+          /> :
+          null
+        }
+      </div>
     </div>
   );
 };
