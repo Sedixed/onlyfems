@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   height: 100vh;
+  width: 100vw;
   background-image: url('../../public/assets/no_auth_bg_img.svg');
   background-size: cover;
 }
@@ -11,10 +12,10 @@
 }
 
 .no-auth-page .presentation {
-  margin-left: 10%;
-  width: fit-content;
+  width: 50%;
   flex-direction: column;
   justify-content: center;
+  padding-left: 5%;
   gap: 20px;
 }
 
@@ -37,6 +38,8 @@
 .no-auth-page .presentation .buttons-group {
   gap: 20px;
   margin-left: 5px;
+  flex-wrap: wrap;
+  width: 70%;
 }
 
 .no-auth-page .presentation .buttons-group button {
@@ -51,7 +54,7 @@
   transform: scale(1.05);
 }
 
-.no-auth-page .presentation .buttons-group button:last-child {
+.no-auth-page .presentation .buttons-group button:nth-child(2) {
   border: solid white 2px;
   color: white;
   background-color: transparent;
@@ -63,13 +66,24 @@
   background-color: white;
 }
 
+.no-auth-page .presentation .buttons-group button:last-child {
+  padding: 5px 29px;
+}
+
+.no-auth-page .forms {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+
 .no-auth-page .login-form-container,
 .no-auth-page .register-form-container {
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
-  right: 0;
-  transform: translateY(-50%);
   padding: 0 30px 50px 30px;
   color: white;
   background: rgba(0, 7, 12, 0.72);
@@ -90,10 +104,12 @@
 @keyframes slideFromRight {
   from {
     right: -40%;
+    transform: translateY(-50%);
   }
 
   to {
-    right: 15%;
+    right: 50%;
+    transform: translate(50%, -50%);
   }
 }
 
@@ -128,17 +144,45 @@
   background-color: transparent;
 }
 
+.no-auth-page .register-form button:disabled {
+  border: solid rgb(123, 123, 123) 2px;
+  background-color: rgba(41, 41, 41, 0.8);
+  cursor: not-allowed;
+}
+
 .no-auth-page .login-form button {
   background-color: white;
   color: rgb(5, 2, 31);
 }
 
 .no-auth-page .login-form button:hover,
-.no-auth-page .register-form button:hover {
+.no-auth-page .register-form button:not(:disabled):hover {
   transform: scale(1.05);
 }
 
 .no-auth-page .form-title {
   align-self: center;
   font-size: 200%;
+}
+
+.no-auth-page .register-form .criterias {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.no-auth-page .register-form .criteria {
+  gap: 5px;
+  align-items: baseline;
+}
+
+.no-auth-page .register-form .criteria p {
+  margin: 0;
+}
+
+.no-auth-page .register-form .criteria .fa-check {
+  color: rgb(1, 222, 1);
+}
+
+.no-auth-page .register-form .criteria .fa-xmark {
+  color: red; 
 }

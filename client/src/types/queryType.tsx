@@ -2,15 +2,48 @@
  * Login type.
  */
 export interface LoginType {
-  username: string,
+  email: string,
   password: string
 }
 
 /**
- * Register type.
+ * New user type.
  */
-export interface RegisterType {
+export interface NewUserType {
+  email: string,
   username: string,
   password: string,
   roles: string[]
+}
+
+/**
+ * Edit user type.
+ */
+export interface EditUserType {
+  email?: string,
+  username?: string,
+  password?: string,
+  roles?: string[]
+}
+
+/**
+ * New image type.
+ */
+export interface NewImageType {
+  description: string,
+  privacy: boolean,
+  file: string,
+  fileName: string,
+  type: string
+}
+
+/**
+ * Edit image type.
+ */
+export interface EditImageType {
+  description?: string,
+  privacy?: boolean,
+  file?: string,
+  fileName?: string,
+  type?: string,
 }

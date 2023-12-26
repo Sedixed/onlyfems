@@ -1,3 +1,7 @@
+:root {
+  --navbar-height: 60px;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,11 +11,32 @@ body {
   overflow: hidden;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #959595; 
+  border-radius: 16px;
+  transition: all ease 0.3s;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #7d7c7c; 
+}
+
 .app {
   height: 100vh;
   padding: 0;
   margin: 0;
-  background-color: #eeeeee;
+  background-color: #e0dede;
 }
 
 .flex {
@@ -22,3 +47,37 @@ body {
   display: grid;
 }
 
+.empty {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+@keyframes dropdown {
+  from {
+    margin-top: -50%;
+    opacity: 0;
+  }
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
+}
+
+.form-error {
+  margin-top: 10px;
+  background-color: #f3f0f0;
+  color: rgb(117, 16, 16);
+  border: solid 2px rgb(117, 16, 16);
+  height: fit-content;
+  border-radius: 6px;
+}
+
+.form-error p {
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.hidden {
+  visibility: hidden;
+}
