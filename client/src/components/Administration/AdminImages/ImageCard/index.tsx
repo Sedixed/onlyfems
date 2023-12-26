@@ -11,13 +11,13 @@ const ImageCard: React.FC<ImageCardPropsType> = ({
   editCallback,
   deleteCallback
 }) => {
-  const extension = image.fileName.split('.').pop();
+  const extension = image.name.split('.').pop();
   return (
     <div className="image-card flex">
       <div className="image-container flex">
-        <img loading="lazy" src={`data:image/${extension};base64, ${image.base64Encoded}`} alt={image.fileName} />
+        <img loading="lazy" src={`data:image/${extension};base64, ${image.base64}`} alt={image.name} />
       </div>
-      <p className="image-name">{image.fileName}</p>
+      <p className="image-name">{image.name}</p>
       <div className="overlay flex">
         {
           image.public ?

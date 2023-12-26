@@ -9,12 +9,13 @@ const BigImageCard: React.FC<BigImageCardPropsType> = ({
   image,
   even,
 }) => {
+  console.log(image)
   const extension = image.name.split('.').pop();
   return (
     <div className="big-image-card flex">
       { even ?
         <>
-          <img loading="lazy" src={`data:image/${extension};base64, ${image.base64Encoded}`} alt={image.name} />
+          <img loading="lazy" src={`data:image/${extension};base64, ${image.base64}`} alt={image.name} />
           <div className="description-container flex text-start">
             <p className="description">{image.description}</p>
           </div>
@@ -23,7 +24,7 @@ const BigImageCard: React.FC<BigImageCardPropsType> = ({
           <div className="description-container flex text-end">
             <p className="description">{image.description}</p>
           </div>
-          <img loading="lazy" src={`data:image/${extension};base64, ${image.base64Encoded}`} alt={image.name} />
+          <img loading="lazy" src={`data:image/${extension};base64, ${image.base64}`} alt={image.name} />
         </>
       }
       
