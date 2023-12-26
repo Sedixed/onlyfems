@@ -4,6 +4,7 @@ import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
 import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
+import fr.univrouen.onlyfems.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 /**
@@ -29,15 +26,14 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 @Service
 public class AuthenticationService {
 
-    @Autowired
-    private UserService userService;
-
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public AuthenticationService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public AuthenticationService(AuthenticationManager authenticationManager,
+                                 UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -54,36 +50,6 @@ public class AuthenticationService {
     }
 
     /**
-     * Register a new User and log it.
-     *
-     * @param userDTO Email of the user.
-     * @return The user created.
-     */
-    public User register(SaveUserDTO userDTO, HttpServletRequest req) {
-        if (!verifyEmail(userDTO.getEmail())) {
-            throw new IllegalArgumentException("Email is not well formed.");
-        }
-
-        if (!verifyPassword(userDTO.getPassword())) {
-            throw new IllegalArgumentException("Password is not well formed.");
-        }
-
-        if (userService.getUserByEmail(userDTO.getEmail()) != null) {
-            throw new IllegalArgumentException("Email " + userDTO.getEmail() + " already exists");
-        }
-
-        User user = new User(
-                userDTO.getEmail(),
-                userDTO.getUsername(),
-                passwordEncoder.encode(userDTO.getPassword()),
-                userDTO.getRoles()
-        );
-        User userCreated = userService.createOrUpdateUser(user);
-        login(new LoginDTO(userCreated.getEmail(), userDTO.getPassword()), req);
-        return user;
-    }
-
-    /**
      * Return the user currently authenticated.
      * Can return an anonymous user if there is no user authenticated.
      *
@@ -94,13 +60,16 @@ public class AuthenticationService {
 
         UserDTO userDTO;
         if (isAuthenticated()) {
+            User user = userRepository.findByEmail(authentication.getName());
             userDTO = new UserDTO(
+                    user.getId(),
                     authentication.getName(),
-                    userService.getUserByEmail(authentication.getName()).getUsername(),
+                    user.getEmail(),
                     authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()
             );
         } else {
             userDTO = new UserDTO(
+                    null,
                     null,
                     null,
                     authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()
@@ -126,31 +95,5 @@ public class AuthenticationService {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Private method to check if a string in parameter is an email.
-     *
-     * @param email Email to check.
-     * @return true if parameter is an email, false otherwise.
-     */
-    private boolean verifyEmail(String email) {
-        String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-
-        return email.matches(regex);
-    }
-
-    /**
-     * Private method to check if a password contains at least one letter, one number,
-     * and has at least 8 characters.
-     *
-     * @param password The password to check.
-     * @return true if password is correct, false otherwise.
-     */
-    private boolean verifyPassword(String password) {
-        return password.matches(".*[A-Za-z].*")
-                && password.matches(".*[0-9].*")
-                && password.length() >= 8;
     }
 }
