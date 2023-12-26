@@ -201,6 +201,7 @@ Image card
 
 .admin-images .image-card {
   flex-direction: column;
+  min-width: 15%;
   position: relative;
   align-items: center;
   background-color: white;

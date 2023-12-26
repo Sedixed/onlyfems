@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import api from "../apis/api";
 import UserType from "../types/entityType";
-import apiRoute from "../utils/apiRoute";
+import { currentUserQuery } from "../apis/queries";
 
 /**
  * Used to get the current user.
@@ -9,16 +8,8 @@ import apiRoute from "../utils/apiRoute";
 export default function useGetUser() {
   const [user, setUser] = useState<UserType | null>(null);
 
-  const getUser = async () => {
-    const { data } = await api.get(
-      apiRoute.AUTH_USER,
-      { withCredentials: true }
-    );
-    return data as UserType;
-  }
-
   useEffect(() => {
-    getUser().then(
+    currentUserQuery().then(
       user => setUser(user)
     );
   }, [])

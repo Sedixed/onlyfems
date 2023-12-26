@@ -28,7 +28,7 @@ const NoAuthPage: React.FC<NoAuthPagePropsType> = ({
     return <LoadingCircle fullscreen />
   }
 
-  // Redirects to gallery to avoid multiple login etc
+  // Redirects to gallery to avoid multiple login
   if (isAuthenticated(user)) {
     navigate(clientPath.GALLERY)
   }

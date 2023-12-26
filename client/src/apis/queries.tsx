@@ -2,7 +2,6 @@ import UserType, { ImageType } from "../types/entityType";
 import { EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
-import temporaryApi from "./temporaryApi";
 
 
 // ****************************************************************************
@@ -30,13 +29,23 @@ export const logoutQuery = async () => {
   return res;
 }
 
+export const currentUserQuery = async () => {
+  const { data } = await api.get<UserType>(
+    apiRoute.AUTH_USER,
+    {
+      withCredentials: true
+    }
+  )
+  return data
+}
+
 // ****************************************************************************
 // Users
 // ****************************************************************************
 
 export const newUserMutation = async (newUserPayload: NewUserType) => {
   const res = await api.post(
-    apiRoute.AUTH_REGISTER,
+    apiRoute.USERS,
     newUserPayload,
     {
       withCredentials: true
@@ -60,7 +69,7 @@ export const editUserMutation = async (
 }
 
 export const allUsersQuery = async () => {
-  const res = await temporaryApi.get<UserType[]>(
+  const res = await api.get<UserType[]>(
     apiRoute.USERS,
     {
       withCredentials: true
@@ -99,7 +108,7 @@ export const editImageMutation = async (
   editImagePayload: EditImageType
 ) => {
   const res = await api.patch(
-    `${apiRoute.IMAGE}/${imageId}`,
+    `${apiRoute.IMAGES}/${imageId}`,
     editImagePayload,
     {
       withCredentials: true
@@ -120,7 +129,7 @@ export const allImagesQuery = async () => {
 
 export const deleteImageQuery = async (imageId: number) => {
   const res = await api.delete(
-    `${apiRoute.IMAGE}/${imageId}`,
+    `${apiRoute.IMAGES}/${imageId}`,
     {
       withCredentials: true
     }

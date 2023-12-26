@@ -3,16 +3,18 @@ import { useMutation } from "react-query";
 import { EditImageType } from "../../../../types/queryType";
 import { editImageMutation } from "../../../../apis/queries";
 import { toBase64 } from "../../../../utils/file";
-import { ImageType } from "../../../../types/entityType";
+import { ImageType, SnackMessageType } from "../../../../types/entityType";
 
 type EditImageModalPropsType = {
   image: ImageType,
-  closeCallback: () => void
+  closeCallback: () => void,
+  setSnack: (smt: SnackMessageType) => void,
 }
 
 const EditImageModal: React.FC<EditImageModalPropsType> = ({
   image,
   closeCallback,
+  setSnack,
 }) => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const [newDescription, setNewDescription] = useState(image.description);
@@ -28,8 +30,7 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
 
   const addNewImage = async (e : FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // TODO : fix quand mathieu aura fini
-
+    // TODO vérifier que ça marche bien
     const isPrivate = privacyRef.current?.checked as boolean;
 
     const body: EditImageType = {
@@ -47,11 +48,17 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
   }
 
   const handleEditImageSuccess = () => {
-    console.log('TODO : success')
+    setSnack({
+      type: 'success',
+      message: 'Image modifiée avec succès !'
+    })
   }
 
   const handleEditImageFailure = () => {
-    console.log('TODO : failure');
+    setSnack({
+      type: 'error',
+      message: 'Une erreur est survenue lors de l\'édition de l\'image'
+    })
   }
 
   const editImageMut = useMutation(
@@ -68,7 +75,7 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     <div className="fullscreen-dimmer flex">
       <div className="edit-image-modal flex">
         <div className="top-bar flex">
-          <p>Image {image.name}</p>
+          <p>Image {image.fileName}</p>
           <i className="fa fa-times" onClick={closeCallback}></i>
         </div>
 
@@ -87,7 +94,7 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
             >
               Importer une image
             </button>
-            <p className="image-name">{newImage?.name ?? image.name}</p>
+            <p className="image-name">{newImage?.name ?? image.fileName}</p>
           </div>
 
           <div className="field">

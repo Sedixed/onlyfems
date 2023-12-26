@@ -20,7 +20,7 @@ const AdminSidebar = () => {
         setCurrentTab(clientPath.ADMIN_IMAGES)
         navigate(clientPath.ADMIN_IMAGES)
     }
-  }, [])
+  }, [navigate])
 
   return (
     <div className="admin-sidebar flex">

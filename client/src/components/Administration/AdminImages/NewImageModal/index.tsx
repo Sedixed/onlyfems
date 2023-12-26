@@ -3,13 +3,16 @@ import { useMutation } from "react-query";
 import { NewImageType } from "../../../../types/queryType";
 import { newImageMutation } from "../../../../apis/queries";
 import { toBase64 } from "../../../../utils/file";
+import { SnackMessageType } from "../../../../types/entityType";
 
 type NewImageModalPropsType = {
-  closeCallback: () => void
+  closeCallback: () => void,
+  setSnack: (smt: SnackMessageType) => void,
 }
 
 const NewImageModal: React.FC<NewImageModalPropsType> = ({
   closeCallback,
+  setSnack,
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState('');
@@ -28,7 +31,7 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
     if (!image) {
       return
     }
-    // TODO : fix quand mathieu aura fini
+    // TODO : vérifier que ça marche bien
     const isPrivate = privacyRef.current?.checked as boolean;
     const base64image =  await toBase64(image) as string
     
@@ -43,11 +46,17 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
   }
 
   const handleNewImageSuccess = () => {
-    console.log('TODO : success')
+    setSnack({
+      type: 'success',
+      message: 'Image ajoutée avec succès !'
+    })
   }
 
   const handleNewImageFailure = () => {
-    console.log('TODO : failure');
+    setSnack({
+      type: 'error',
+      message: 'Une erreur est survenue lors de la création de l\'image'
+    })
   }
 
   const newImageMut = useMutation(

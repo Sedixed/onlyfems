@@ -29,7 +29,7 @@ const SnackMessage: React.FC<SnackMessageTypeProps> = ({
       }
     )
     setTimeout(closeAction, 5000);
-  }, [])
+  }, [closeAction])
 
   return (
     <div 

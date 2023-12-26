@@ -67,8 +67,8 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
 
   return (
     <div className="admin-images flex">
-      {showNewImageModal && <NewImageModal closeCallback={() => setShowNewImageModal(false)} />}
-      {showEditImageModal && <EditImageModal image={imageToEdit as ImageType} closeCallback={removeEditImageModal} />}
+      {showNewImageModal && <NewImageModal closeCallback={() => setShowNewImageModal(false)} setSnack={setSnack} />}
+      {showEditImageModal && <EditImageModal image={imageToEdit as ImageType} closeCallback={removeEditImageModal} setSnack={setSnack} />}
 
       {
         renderedImages.length > 0 ?

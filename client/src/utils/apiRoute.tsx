@@ -1,16 +1,14 @@
+const AUTH_BASE = '/authentication'
+
 const apiRoute = {
   // Get the current user.
-  AUTH_USER: '/authentication/user',
+  AUTH_USER: `${AUTH_BASE}/user`,
   // Logs in the user.
-  AUTH_LOGIN: '/authentication/login',
-  // Registers the user.
-  AUTH_REGISTER: '/authentication/register',
+  AUTH_LOGIN: `${AUTH_BASE}/login`,
   // Logs out the user.
-  AUTH_LOGOUT: '/authentication/logout',
+  AUTH_LOGOUT: `${AUTH_BASE}/logout`,
   // Images
   IMAGES: '/images',
-  // Tmp image
-  IMAGE: '/image',
   // Users
   USERS: '/users',
 }

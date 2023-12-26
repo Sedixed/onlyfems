@@ -32,8 +32,7 @@ const NewUserModal: React.FC<NewUserModalPropsType> = ({
       roles.push('ROLE_ADMIN')
     }
     if (vipUserCheckboxRef.current?.checked) {
-      //roles.push('ROLE_PRIVILEGED_USER')
-      // TODO vérifier rôle et remettre quand fix en backend
+      roles.push('ROLE_PRIVILEGED_USER')
     }
 
     newUserMut.mutate({ email, username, password, roles});

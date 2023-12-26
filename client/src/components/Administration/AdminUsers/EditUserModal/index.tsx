@@ -37,8 +37,7 @@ const EditUserModal: React.FC<EditUserModalPropsType> = ({
       roles.push('ROLE_ADMIN')
     }
     if (vipUserCheckboxRef.current?.checked) {
-      //roles.push('ROLE_PRIVILEGED_USER')
-      // TODO vérifier rôle et remettre quand fix en backend
+      roles.push('ROLE_PRIVILEGED_USER')
     }
 
     const body: EditUserType = {
