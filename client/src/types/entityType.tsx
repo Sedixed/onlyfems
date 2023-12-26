@@ -23,5 +23,5 @@ export type ImageType = {
   fileName: string,
   description: string,
   public: boolean, 
-  base64Encoded: string
+  base64: string
 }

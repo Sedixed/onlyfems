@@ -55,7 +55,7 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
   const handleNewImageFailure = () => {
     setSnack({
       type: 'error',
-      message: 'Une erreur est survenue lors de la création de l\'image'
+      message: 'Une erreur est survenue lors de l\'ajout de l\'image'
     })
   }
 

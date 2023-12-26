@@ -1,5 +1,5 @@
 import UserType, { ImageType } from "../types/entityType";
-import { EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
+import { AllImagesType, EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
 
@@ -118,13 +118,13 @@ export const editImageMutation = async (
 }
 
 export const allImagesQuery = async () => {
-  const res = await api.get<ImageType[]>(
+  const { data } = await api.get<AllImagesType>(
     apiRoute.IMAGES,
     {
       withCredentials: true
     }
   )
-  return res;
+  return data;
 }
 
 export const deleteImageQuery = async (imageId: number) => {

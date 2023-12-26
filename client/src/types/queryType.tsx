@@ -1,3 +1,5 @@
+import { ImageType } from "./entityType"
+
 /**
  * Login type.
  */
@@ -46,4 +48,11 @@ export interface EditImageType {
   file?: string,
   fileName?: string,
   type?: string,
+}
+
+/**
+ * Get all images type.
+ */
+export type AllImagesType = {
+  images: ImageType[]
 }

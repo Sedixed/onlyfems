@@ -9,7 +9,7 @@ import { ImageType } from "../../types/entityType"
 import { useQuery } from "react-query"
 import { allImagesQuery } from "../../apis/queries"
 import BigImageCard from "./BigImageCard"
-import { useState } from "react"
+import { AllImagesType } from "../../types/queryType"
 
 type GalleryPropsType = {
   vipContent?: boolean
@@ -25,8 +25,8 @@ const Gallery: React.FC<GalleryPropsType> = ({
   const { data: images, isLoading } = useQuery<ImageType[]>({
     queryKey: ['all-images'],
     queryFn: async () => {
-      const { data } = await allImagesQuery()
-      return data
+      const { images } = await allImagesQuery()
+      return images
     }
   })
   
@@ -39,7 +39,6 @@ const Gallery: React.FC<GalleryPropsType> = ({
     //navigate(clientPath.GALLERY)
   }
 
-  console.log(images)
   const renderedImages = images ? 
     images.map(
       (image, index) => <BigImageCard key={image.id} even={index % 2 === 0} image={image} />
