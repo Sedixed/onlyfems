@@ -88,6 +88,10 @@ public class User {
         roles.remove(role.name());
     }
 
+    public void clearRole() {
+        roles.clear();
+    }
+
     @Override
     public String toString() {
         return email;

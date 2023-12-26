@@ -93,7 +93,13 @@ public class UserService {
         user.setEmail(updateRequest.getEmail());
         user.setUsername(updateRequest.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(updateRequest.getRoles());
+        if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
+            user.clearRole();
+
+            for (Roles roles : updateRequest.getRoles()) {
+                user.addRole(roles);
+            }
+        }
 
         checkUserData(user);
         User updatedUser = userRepository.save(user);
