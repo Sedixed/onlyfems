@@ -19,14 +19,14 @@ public class User {
 
     private String password;
 
-    @Enumerated(EnumType.ORDINAL)
-    private List<Roles> roles;
+    @ElementCollection
+    private List<String> roles;
 
     public User(String email, String username, String password, List<Roles> roles) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.roles = roles.stream().map(Enum::name).toList();
     }
 
     public User() {
@@ -44,8 +44,10 @@ public class User {
         return email;
     }
 
-    public void setEmail(String username) {
-        this.email = username;
+    public void setEmail(String email) {
+        if (email != null && !email.equals("")) {
+            this.email = email;
+        }
     }
 
     public String getUsername() {
@@ -53,7 +55,9 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        if (username != null && !username.equals("")) {
+            this.username = username;
+        }
     }
 
     public String getPassword() {
@@ -61,15 +65,31 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password != null && !password.equals("")) {
+            this.password = password;
+        }
     }
 
-    public List<Roles> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
     public void setRoles(List<Roles> roles) {
-        this.roles = roles;
+        if (roles != null && !roles.isEmpty()) {
+            this.roles = roles.stream().map(Enum::name).toList();;
+        }
+    }
+
+    public void addRole(Roles role) {
+        roles.add(role.name());
+    }
+
+    public void removeRole(Roles role) {
+        roles.remove(role.name());
+    }
+
+    public void clearRole() {
+        roles.clear();
     }
 
     @Override
