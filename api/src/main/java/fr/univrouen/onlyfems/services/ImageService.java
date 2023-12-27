@@ -63,15 +63,20 @@ public class ImageService {
      *
      * @return The list of ImageDTO found.
      */
-    public ListImageDTO findALl(String publicity, int page, int size) throws StorageFileNotFoundException, IOException {
+    public ListImageDTO findALl(Boolean publicity, int page, int size) throws StorageFileNotFoundException, IOException {
         Page<Image> p = getPage(publicity, page, size);
+
+        for (Image image : p) {
+            Resource imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
+            image.setBase64(imageResource.getContentAsByteArray());
+        }
 
         return new ListImageDTO(p);
     }
 
-    public Page<Image> getPage(String publicity, int page, int size) {
+    public Page<Image> getPage(Boolean publicity, int page, int size) {
         Page<Image> p;
-        if (publicity.equals("true")) {
+        if (Boolean.TRUE.equals(publicity)) {
             p = imageRepository.findAllByPrivacy(true, Pagination.getPagination(page, size));
         } else {
             p = imageRepository.findAll(Pagination.getPagination(page, size));

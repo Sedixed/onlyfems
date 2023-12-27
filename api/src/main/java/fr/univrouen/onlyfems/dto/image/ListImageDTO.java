@@ -19,7 +19,7 @@ public class ListImageDTO {
     }
 
     public ListImageDTO(Page<Image> page) {
-        this.images = page.getContent().stream().map(ImageDTO::new).collect(Collectors.toList());
+        this.images = page.getContent().stream().map(ImageDTO::new).toList();
         this.totalPages = page.getTotalPages();
         this.totalElements = page.getTotalElements();
     }
