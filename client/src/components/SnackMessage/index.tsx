@@ -33,15 +33,15 @@ const SnackMessage: React.FC<SnackMessageTypeProps> = ({
 
   return (
     <div 
-      className={`snack-message ${snackMessage.type} ${fullTop ? 'full-top' : ''}`}
+      className={`snack-message flex ${snackMessage.type} ${fullTop ? 'full-top' : ''}`}
       ref={snackRef}
     >
+      <p>{snackMessage.message}</p>
       <div className="btn-container">
         <div className="close-btn" onClick={closeAction}>
           <i className="fa fa-times"></i>
         </div>
       </div>
-      <p>{snackMessage.message}</p>
     </div>
   );
 }

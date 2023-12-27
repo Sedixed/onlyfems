@@ -30,7 +30,6 @@ const Profile: React.FC<ProfilePropsType> = ({
 
   const navigate = useNavigate()
 
-  console.log(user)
   const handleEditProfileSuccess = () => {
     setSnack({
       type: 'success',
@@ -40,12 +39,18 @@ const Profile: React.FC<ProfilePropsType> = ({
   }
 
   const handleEditProfileFailure = (error: any) => {
+    let errorMsg = 'Une erreur est survenue.'
+    if (error instanceof AxiosError) {
+      const axiosError = error.response?.data.error
+      if (axiosError.includes('Duplicate')) {
+        errorMsg = 'Adresse email déjà utilisée !'
+      } else {
+        errorMsg = axiosError
+      }
+    }
     setSnack({
       type: 'error',
-      message: 
-        error instanceof AxiosError ?
-        error.response?.data.error : 
-        'Une erreur est survenue.'
+      message: errorMsg
     });
   }
 
