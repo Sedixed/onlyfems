@@ -6,6 +6,8 @@ import fr.univrouen.onlyfems.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -41,14 +44,20 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        http.authorizeHttpRequests((authorize) ->
+        http.authorizeHttpRequests(authorize ->
             authorize.requestMatchers(
                 APIEndpoints.LOGIN_URL,
-                APIEndpoints.REGISTER_URL,
                 APIEndpoints.LOGOUT_URL,
-                APIEndpoints.GET_AUTHENTICATED_USER
+                APIEndpoints.GET_AUTHENTICATED_USER,
+                APIEndpoints.USERS_URL,
+                APIEndpoints.USERS_ID_URL,
+                APIEndpoints.IMAGES_URL,
+                APIEndpoints.IMAGES_ID_URL,
+                "/swagger/**",
+                "/swagger-ui/**",
+                "/api-docs/**"
             ).permitAll()
-            .anyRequest().permitAll()
+            .anyRequest().authenticated()
         );
 
         http.logout(logout ->
@@ -84,7 +93,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.applyPermitDefaultValues();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PATCH", "PUT"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -95,9 +104,19 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        StringBuilder hierarchy = new StringBuilder();
-        hierarchy.append(Roles.ROLE_ADMIN).append(" > ").append(Roles.ROLE_USER).append(" > ").append(Roles.ROLE_ANONYMOUS);
-        roleHierarchy.setHierarchy(hierarchy.toString());
+        String hierarchy = Roles.ROLE_ADMIN + " > " + Roles.ROLE_PRIVILEGED_USER +
+                "\n" +
+                Roles.ROLE_PRIVILEGED_USER + " > " + Roles.ROLE_USER +
+                "\n" +
+                Roles.ROLE_USER + " > " + Roles.ROLE_ANONYMOUS;
+        roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
+    }
+
+    @Bean
+    static MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy);
+        return expressionHandler;
     }
 }

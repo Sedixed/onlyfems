@@ -9,5 +9,4 @@ public class OnlyfemsApplication {
     public static void main(String[] args) {
         SpringApplication.run(OnlyfemsApplication.class, args);
     }
-
 }
