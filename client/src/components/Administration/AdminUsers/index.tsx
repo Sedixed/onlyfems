@@ -45,7 +45,6 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
   }
   
   const deleteUser = async (userToDelete: UserType) => {
-    // TODO revérifier si on récup bien l'id avec le usegetuser
     if (userToDelete.id === user.id && userToDelete.email === user.email) {
       setSnack({
         type: 'warning',
