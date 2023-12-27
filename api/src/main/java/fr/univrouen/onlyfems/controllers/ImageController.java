@@ -80,7 +80,7 @@ public class ImageController {
     public ResponseEntity<Object> getAllImages(
         @RequestParam(defaultValue = "true", required = false) String publicity,
         @RequestParam(defaultValue = "1", required = true) int page,
-        @RequestParam(defaultValue = "10", required = true) int size
+        @RequestParam(defaultValue = "10", required = false) int size
     ) {
         try {
             return ResponseEntity.ok(imageService.findALl(publicity, page, size));
