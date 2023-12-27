@@ -51,6 +51,14 @@ public class UserController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            ),
+            @ApiResponse(
                     responseCode = "404"
             )
     })
@@ -86,6 +94,14 @@ public class UserController {
             ),
             @ApiResponse(
                     responseCode = "400",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            )
+            @ApiResponse(
+                    responseCode = "401",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             )
     })
@@ -151,6 +167,10 @@ public class UserController {
             ),
             @ApiResponse(
                     responseCode = "400",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             ),
             @ApiResponse(
