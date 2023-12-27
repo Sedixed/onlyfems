@@ -34,7 +34,7 @@ const App = () => {
             <Route path={clientPath.HOME} element={<NavbarContainer snackMessage={snackMessage} setSnack={setSnackMessage} />}>
               <Route index path={clientPath.GALLERY} element={<Gallery />} />
                 <Route path={clientPath.VIP_GALLERY} element={<Gallery vipContent />} />
-                <Route path={clientPath.PROFILE} element={<Profile />} />
+                <Route path={clientPath.PROFILE} element={<Profile setSnack={setSnackMessage} />}/>
                 <Route path={clientPath.ADMIN} element={<Administration />}>
                   <Route path={clientPath.ADMIN_USERS} element={<AdminUsers setSnack={setSnackMessage} />} />
                   <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages setSnack={setSnackMessage} />} />

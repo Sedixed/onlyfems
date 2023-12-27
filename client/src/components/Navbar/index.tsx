@@ -40,7 +40,6 @@ const Navbar: React.FC<NavbarPropsType> = ({
   }
 
   const location = window.location.pathname
-  console.log(location)
 
   return (
     <div className="navbar flex">

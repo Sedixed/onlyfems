@@ -7,8 +7,18 @@ import LoadingCircle from "../LoadingCircle"
 
 import '../../styles/Profile.css'
 import { EditUserType } from "../../types/queryType"
+import { useMutation } from "react-query"
+import { editUserMutation } from "../../apis/queries"
+import { AxiosError } from "axios"
+import { SnackMessageType } from "../../types/entityType"
 
-const Profile = () => {
+type ProfilePropsType = {
+  setSnack: (smt: SnackMessageType) => void,
+}
+
+const Profile: React.FC<ProfilePropsType> = ({
+  setSnack,
+}) => {
   const { user } = useGetUser()
   const [email, setEmail] = useState(user?.email);
   const [username, setUsername] = useState(user?.username);
@@ -19,6 +29,35 @@ const Profile = () => {
   const [pwdCharValid, setPwdCharValid] = useState(false);
 
   const navigate = useNavigate()
+
+  console.log(user)
+  const handleEditProfileSuccess = () => {
+    setSnack({
+      type: 'success',
+      message: 'Profil modifié avec succès !'
+    })
+    navigate(clientPath.GALLERY)
+  }
+
+  const handleEditProfileFailure = (error: any) => {
+    setSnack({
+      type: 'error',
+      message: 
+        error instanceof AxiosError ?
+        error.response?.data.error : 
+        'Une erreur est survenue.'
+    });
+  }
+
+  const editProfileMut = useMutation(
+    async (payload: EditUserType) => {
+      return await editUserMutation(user?.id ?? -1, payload)
+    },
+    {
+      onSuccess: handleEditProfileSuccess,
+      onError: error => handleEditProfileFailure(error)
+    }
+  )
 
   if (!user) {
     return <LoadingCircle />
@@ -33,20 +72,28 @@ const Profile = () => {
     setUsername(user.username)
     setCurrentPassword('')
     setNewPassword('')
-  }
+  }  
 
   const editProfile = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Voir pour intégrer le current password / le new etc
+    if (currentPassword === '') {
+      return
+    }
+
     const body: EditUserType = {
       username,
+      confirmPassword: currentPassword,
+    }
+
+    if (newPassword !== '') {
+      body.password = newPassword
     }
 
     if (email !== user.email) {
       body.email = email
     }
-    // TODO avec les mutations
+    editProfileMut.mutate(body)
   }
 
   const updateNewPassword = (newPass: string) => {
@@ -106,7 +153,22 @@ const Profile = () => {
 
           <div className="buttons flex">
             <button className="cancel" onClick={resetFields}>Annuler les modifications</button>
-            <button className="submit" type="submit" disabled={currentPassword === ''}>Enregistrer</button>
+            <button 
+              className="submit" 
+              type="submit"
+              disabled={!(
+                currentPassword !== '' &&
+                email !== '' && 
+                username !== '' &&
+                (newPassword === '' || (
+                  pwdLengthValid &&
+                  pwdCharValid &&
+                  pwdDigitValid
+                )))
+              }
+            >
+              Enregistrer
+            </button>
           </div>
         </form>
       </div>
