@@ -7,12 +7,15 @@ import fr.univrouen.onlyfems.entities.Image;
 import fr.univrouen.onlyfems.exceptions.StorageException;
 import fr.univrouen.onlyfems.exceptions.StorageFileNotFoundException;
 import fr.univrouen.onlyfems.repositories.ImageRepository;
+import fr.univrouen.onlyfems.utils.Pagination;
 import jakarta.transaction.Transactional;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,30 +58,25 @@ public class ImageService {
      * Otherwise, return all the images.
      * 
      * @param publicity The publicity of the image.
+     * @param page The page number.
+     * @param size The size of the page.
      *
      * @return The list of ImageDTO found.
      */
-    public ListImageDTO findALl(String publicity) throws StorageFileNotFoundException, IOException {
-        List<ImageDTO> result = new ArrayList<>();
+    public ListImageDTO findALl(String publicity, int page, int size) throws StorageFileNotFoundException, IOException {
+        Page<Image> p = getPage(publicity, page, size);
 
-        boolean isPublic = publicity.equals("true");
-        Resource imageResource;
+        return new ListImageDTO(p);
+    }
 
-        if (isPublic) {
-            for (Image image : imageRepository.findAllByPrivacy(isPublic)) {
-                imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
-                image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
-                result.add(new ImageDTO(image));
-            }
+    public Page<Image> getPage(String publicity, int page, int size) {
+        Page<Image> p;
+        if (publicity.equals("true")) {
+            p = imageRepository.findAllByPrivacy(true, Pagination.getPagination(page, size));
         } else {
-            for (Image image : imageRepository.findAll()) {
-                imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
-                image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
-                result.add(new ImageDTO(image));
-            }
+            p = imageRepository.findAll(Pagination.getPagination(page, size));
         }
-
-        return new ListImageDTO(result);
+        return p;
     }
 
     /**

@@ -47,7 +47,6 @@ const Gallery: React.FC<GalleryPropsType> = ({
     ) : []
 
   return (
-    console.log("vipContent :", vipContent),
     <div className="gallery-container flex">
       <div className="gallery flex">
         <div className="images flex">
