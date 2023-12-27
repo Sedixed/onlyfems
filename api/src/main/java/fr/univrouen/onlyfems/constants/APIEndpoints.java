@@ -26,6 +26,16 @@ public class APIEndpoints {
     public static final String GET_AUTHENTICATED_USER = "/authentication/user";
 
     /**
+     * URL to create and list users.
+     */
+    public static final String USERS_URL = "/users";
+
+    /**
+     * URL to get, update or delete a user by its ID.
+     */
+    public static final String USERS_ID_URL = "/users/{id}";
+
+    /**
      * URL to create and list images.
      */
     public static final String IMAGES_URL = "/images";
