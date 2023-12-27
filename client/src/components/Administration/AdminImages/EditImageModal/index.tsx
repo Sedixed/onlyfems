@@ -9,12 +9,14 @@ type EditImageModalPropsType = {
   image: ImageType,
   closeCallback: () => void,
   setSnack: (smt: SnackMessageType) => void,
+  refetch: () => void,
 }
 
 const EditImageModal: React.FC<EditImageModalPropsType> = ({
   image,
   closeCallback,
   setSnack,
+  refetch,
 }) => {
   const [newImage, setNewImage] = useState<File | null>(null);
   const [newDescription, setNewDescription] = useState(image.description);
@@ -28,11 +30,9 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     }
   }
 
-  const addNewImage = async (e : FormEvent<HTMLFormElement>) => {
+  const editImage = async (e : FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // TODO vérifier que ça marche bien
     const isPrivate = privacyRef.current?.checked as boolean;
-
     const body: EditImageType = {
       description: newDescription,
       privacy: isPrivate
@@ -40,18 +40,20 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     
     if (newImage) {
       const base64image =  await toBase64(newImage) as string
-      body.file = base64image
-      body.fileName = newImage.name
-      body.type = newImage.type
+      body.base64 = base64image.split(',')[1]
+      body.name = newImage.name
+      body.contentType = newImage.type
     }
     editImageMut.mutate(body)
   }
 
   const handleEditImageSuccess = () => {
+    closeCallback()
     setSnack({
       type: 'success',
       message: 'Image modifiée avec succès !'
     })
+    refetch()
   }
 
   const handleEditImageFailure = () => {
@@ -75,11 +77,11 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     <div className="fullscreen-dimmer flex">
       <div className="edit-image-modal flex">
         <div className="top-bar flex">
-          <p>Image {image.fileName}</p>
+          <p>Image {image.name}</p>
           <i className="fa fa-times" onClick={closeCallback}></i>
         </div>
 
-        <form className="edit-image-form flex" onSubmit={e => addNewImage(e)}>
+        <form className="edit-image-form flex" onSubmit={e => editImage(e)}>
           <div className="field image-input flex">
             <input
               ref={newImageRef}
@@ -90,11 +92,16 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
             />
             <button
               className="import-image-button"
-              onClick={() => newImageRef.current?.click()}
+              onClick={
+                e => { 
+                  e.preventDefault(); 
+                  newImageRef.current?.click()
+                }
+              }
             >
               Importer une image
             </button>
-            <p className="image-name">{newImage?.name ?? image.fileName}</p>
+            <p className="image-name">{newImage?.name ?? image.name}</p>
           </div>
 
           <div className="field">

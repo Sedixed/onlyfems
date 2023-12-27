@@ -39,19 +39,22 @@ const Navbar: React.FC<NavbarPropsType> = ({
     }
   }
 
+  const location = window.location.pathname
+  console.log(location)
+
   return (
     <div className="navbar flex">
       <div className="links flex">
         <Link className="title-link" to={clientPath.GALLERY}>OnlyFems</Link>
-        {isAdmin(user) && <Link className="link" to={clientPath.ADMIN}>Administration</Link>}
-        {isVIP(user) && <Link className="link" to={clientPath.VIP_GALLERY}>Section VIP</Link>}
+        {isAdmin(user) && <Link className={`link ${location.startsWith('/admin') ? 'selected' : ''}`} to={clientPath.ADMIN}>Administration</Link>}
+        {isVIP(user) && <Link className={`link ${location === '/gallery/vip' ? 'selected' : ''}`} to={clientPath.VIP_GALLERY}>Section VIP</Link>}
       </div>
       
       <div className="btns flex">
         {
           authenticated ?
           (
-            <div className="profile-btn btn flex" onClick={() => navigate(clientPath.PROFILE)}>
+            <div className={`profile-btn btn flex ${location === '/profile' ? 'selected' : ''}`} onClick={() => navigate(clientPath.PROFILE)}>
               Profil
               <i className="fa fa-user"></i>
             </div>

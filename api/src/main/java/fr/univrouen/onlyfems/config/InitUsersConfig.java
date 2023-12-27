@@ -36,10 +36,10 @@ public class InitUsersConfig implements CommandLineRunner {
      * @param role Role of the user.
      */
     public void initUser(String userData, Roles role) {
-        User user = userRepository.findByEmail(userData);
+        User user = userRepository.findByEmail(userData + "@onlyfems.com");
         if (user == null) {
             user = new User();
-            user.setEmail(userData);
+            user.setEmail(userData + "@onlyfems.com");
             user.setUsername(userData);
             user.setPassword(passwordEncoder.encode(userData));
             user.setRoles(List.of(role));

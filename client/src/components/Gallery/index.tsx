@@ -9,7 +9,6 @@ import { ImageType } from "../../types/entityType"
 import { useQuery } from "react-query"
 import { allImagesQuery } from "../../apis/queries"
 import BigImageCard from "./BigImageCard"
-import { AllImagesType } from "../../types/queryType"
 
 type GalleryPropsType = {
   vipContent?: boolean
@@ -23,7 +22,7 @@ const Gallery: React.FC<GalleryPropsType> = ({
 
   // TODO adapter selon VIP ou non
   const { data: images, isLoading } = useQuery<ImageType[]>({
-    queryKey: ['all-images'],
+    queryKey: ['all-images', vipContent],
     queryFn: async () => {
       const { images } = await allImagesQuery(
         vipContent
@@ -37,8 +36,7 @@ const Gallery: React.FC<GalleryPropsType> = ({
   }
 
   if (vipContent && !isVIP(user)) {
-    // TODO
-    //navigate(clientPath.GALLERY)
+    navigate(clientPath.GALLERY)
   }
 
   const renderedImages = images ? 
@@ -47,7 +45,6 @@ const Gallery: React.FC<GalleryPropsType> = ({
     ) : []
 
   return (
-    console.log("vipContent :", vipContent),
     <div className="gallery-container flex">
       <div className="gallery flex">
         <div className="images flex">

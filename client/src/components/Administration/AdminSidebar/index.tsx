@@ -10,9 +10,6 @@ const AdminSidebar = () => {
 
   useEffect(() => {
     switch (window.location.pathname) {
-      case `/admin/${clientPath.ADMIN_DOWNLOAD}`:
-        setCurrentTab(clientPath.ADMIN_DOWNLOAD)
-        break
       case `/admin/${clientPath.ADMIN_USERS}`:
         setCurrentTab(clientPath.ADMIN_USERS)
         break
@@ -37,13 +34,6 @@ const AdminSidebar = () => {
         onClick={() => setCurrentTab(clientPath.ADMIN_USERS)}
       >
         Utilisateurs
-      </Link>
-      <Link 
-        className={`admin-link ${currentTab === clientPath.ADMIN_DOWNLOAD && 'current'}`}
-        to={clientPath.ADMIN_DOWNLOAD} 
-        onClick={() => setCurrentTab(clientPath.ADMIN_DOWNLOAD)}
-      >
-        Téléchargements
       </Link>
     </div>
   )

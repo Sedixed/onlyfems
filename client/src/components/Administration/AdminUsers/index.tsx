@@ -26,8 +26,8 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
   const { data: allUsers, refetch: refetchAllUsers } = useQuery<UserType[]>({
     queryKey: ['all-users'],
     queryFn: async () => {
-      const { data } = await allUsersQuery()
-      return data
+      const { users } = await allUsersQuery()
+      return users
     }
   })
 
@@ -45,7 +45,6 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
   }
   
   const deleteUser = async (userToDelete: UserType) => {
-    // TODO revérifier si on récup bien l'id avec le usegetuser
     if (userToDelete.id === user.id && userToDelete.email === user.email) {
       setSnack({
         type: 'warning',
@@ -53,8 +52,7 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
       })
       return
     } 
-
-    await deleteUserQuery(user.id);
+    await deleteUserQuery(userToDelete.id);
     refetchAllUsers()
     setSnack({
       type: 'success',
@@ -82,7 +80,7 @@ const AdminUsers: React.FC<AdminUsersPropsType> = ({
     <div className="admin-users flex">
       {
         showNewUserModal ?
-        <NewUserModal closeCallback={() => setShowNewUserModal(false)} setSnack={setSnack} /> :
+        <NewUserModal closeCallback={() => setShowNewUserModal(false)} setSnack={setSnack} refetchUsers={refetchAllUsers} /> :
         null
       }
       {

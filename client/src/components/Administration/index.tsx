@@ -6,6 +6,7 @@ import { isAdmin } from "../../utils/user";
 import AdminSidebar from "./AdminSidebar";
 
 import '../../styles/Admin/Index.css'
+import clientPath from "../../utils/clientPath";
 
 
 const Administration: React.FC = () => {
@@ -17,8 +18,7 @@ const Administration: React.FC = () => {
   }
 
   if (!isAdmin(user)) {
-    // TODO REMETTRE
-    //navigate(clientPath.HOME)
+    navigate(clientPath.HOME)
   }
 
   return (
