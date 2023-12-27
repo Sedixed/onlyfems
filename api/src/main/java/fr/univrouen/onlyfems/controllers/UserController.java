@@ -1,12 +1,13 @@
 package fr.univrouen.onlyfems.controllers;
 
 import fr.univrouen.onlyfems.constants.APIEndpoints;
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.dto.error.ErrorDTO;
-import fr.univrouen.onlyfems.dto.image.ImageDTO;
-import fr.univrouen.onlyfems.dto.image.ListImageDTO;
 import fr.univrouen.onlyfems.dto.user.ListUserDTO;
 import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.dto.user.UserDTO;
+import fr.univrouen.onlyfems.exceptions.UnauthorizedException;
+import fr.univrouen.onlyfems.services.AuthenticationService;
 import fr.univrouen.onlyfems.services.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,12 +20,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -51,6 +55,12 @@ public class UserController {
             )
     })
     public ResponseEntity<Object> getUser(@PathVariable int id) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             return ResponseEntity.ok(userService.getUserById(id));
         } catch (ObjectNotFoundException e) {
@@ -80,6 +90,12 @@ public class UserController {
             )
     })
     public ResponseEntity<Object> listUser() {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             return ResponseEntity.ok(userService.listUsers());
         } catch (Exception e) {
@@ -142,8 +158,16 @@ public class UserController {
             )
     })
     public ResponseEntity<Object> updateUser(@PathVariable int id, @RequestBody SaveUserDTO request) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_USER)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             return ResponseEntity.ok(userService.updateUser(id, request));
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(403).body(new ErrorDTO(e.getMessage()));
         } catch (ObjectNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
@@ -174,6 +198,12 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> deleteUser(@PathVariable int id) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             userService.deleteUserWithId(id);
             return ResponseEntity.noContent().build();

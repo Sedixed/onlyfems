@@ -1,22 +1,26 @@
 package fr.univrouen.onlyfems.services;
 
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.dto.authentication.LoginDTO;
-import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
@@ -28,12 +32,14 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final RoleHierarchy roleHierarchy;
 
     @Autowired
     public AuthenticationService(AuthenticationManager authenticationManager,
-                                 UserRepository userRepository) {
+                                 UserRepository userRepository, RoleHierarchy roleHierarchy) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.roleHierarchy = roleHierarchy;
     }
 
     /**
@@ -87,7 +93,7 @@ public class AuthenticationService {
      *
      * @return A boolean.
      */
-    private boolean isAuthenticated() {
+    public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -95,5 +101,16 @@ public class AuthenticationService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Check among the role hierarchy if user has access to a role.
+     *
+     * @param role Role to check.
+     * @return True if user has access, false otherwise.
+     */
+    public boolean hasAccess(Roles role) {
+        List<GrantedAuthority> authorities = new ArrayList<>(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        return roleHierarchy.getReachableGrantedAuthorities(authorities).contains(new SimpleGrantedAuthority(role.name()));
     }
 }
