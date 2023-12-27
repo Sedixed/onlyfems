@@ -23,7 +23,7 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
   const { data: allImages, refetch: refetchAllImages } = useQuery<ImageType[]>({
     queryKey: ['all-images'],
     queryFn: async () => {
-      const { images } = await allImagesQuery()
+      const { images } = await allImagesQuery(true)
       return images
     }
   })

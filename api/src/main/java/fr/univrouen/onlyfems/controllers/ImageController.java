@@ -77,9 +77,11 @@ public class ImageController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             )
     })
-    public ResponseEntity<Object> getAllImages() {
+    public ResponseEntity<Object> getAllImages(
+        @RequestParam(defaultValue = "true", required = false) String publicity
+    ) {
         try {
-            return ResponseEntity.ok(imageService.findALl());
+            return ResponseEntity.ok(imageService.findALl(publicity));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }

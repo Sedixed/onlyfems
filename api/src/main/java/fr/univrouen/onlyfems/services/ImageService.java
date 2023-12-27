@@ -50,19 +50,34 @@ public class ImageService {
     }
 
     /**
-     * Find all the images in database.
+     * Find all the images in database based on the publicity.
+     * If publicity is true, return all the public images.
+     * Otherwise, return all the images.
+     * 
+     * @param publicity The publicity of the image.
      *
      * @return The list of ImageDTO found.
      */
-    public ListImageDTO findALl() throws StorageFileNotFoundException, IOException {
+    public ListImageDTO findALl(String publicity) throws StorageFileNotFoundException, IOException {
         List<ImageDTO> result = new ArrayList<>();
 
+        boolean isPublic = publicity.equals("true");
         Resource imageResource;
-        for (Image image : imageRepository.findAll()) {
-            imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
-            image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
-            result.add(new ImageDTO(image));
+
+        if (isPublic) {
+            for (Image image : imageRepository.findAllByPrivacy(isPublic)) {
+                imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
+                image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
+                result.add(new ImageDTO(image));
+            }
+        } else {
+            for (Image image : imageRepository.findAll()) {
+                imageResource = storageService.loadAsResource(getFileName(image.getId(), image.getName()));
+                image.setBase64(Files.readAllBytes(imageResource.getFile().toPath()));
+                result.add(new ImageDTO(image));
+            }
         }
+
         return new ListImageDTO(result);
     }
 

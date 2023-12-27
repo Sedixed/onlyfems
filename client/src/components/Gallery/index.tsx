@@ -25,7 +25,9 @@ const Gallery: React.FC<GalleryPropsType> = ({
   const { data: images, isLoading } = useQuery<ImageType[]>({
     queryKey: ['all-images'],
     queryFn: async () => {
-      const { images } = await allImagesQuery()
+      const { images } = await allImagesQuery(
+        vipContent
+      )
       return images
     }
   })
@@ -45,6 +47,7 @@ const Gallery: React.FC<GalleryPropsType> = ({
     ) : []
 
   return (
+    console.log("vipContent :", vipContent),
     <div className="gallery-container flex">
       <div className="gallery flex">
         <div className="images flex">
