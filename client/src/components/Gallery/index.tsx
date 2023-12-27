@@ -9,6 +9,8 @@ import { ImageType } from "../../types/entityType"
 import { useQuery } from "react-query"
 import { allImagesQuery } from "../../apis/queries"
 import BigImageCard from "./BigImageCard"
+import PaginationTab from "../PaginationTab"
+import { useState } from "react"
 
 type GalleryPropsType = {
   vipContent?: boolean
@@ -17,17 +19,22 @@ type GalleryPropsType = {
 const Gallery: React.FC<GalleryPropsType> = ({
   vipContent = false,
 }) => {
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
+  const [totalElements, setTotalElements] = useState(0)
+  const pageSize = 10
+  
   const navigate = useNavigate()
   const { user } = useGetUser()
 
-  // TODO adapter selon VIP ou non
   const { data: images, isLoading } = useQuery<ImageType[]>({
-    queryKey: ['all-images', vipContent],
+    queryKey: ['all-images', vipContent, totalPage, currentPage],
     queryFn: async () => {
-      const { images } = await allImagesQuery(
-        vipContent
-      )
-      return images
+      const data = await allImagesQuery(vipContent, currentPage, pageSize)
+      setTotalPage(data.totalPages)
+      setTotalElements(data.totalElements)
+      return data.images
     }
   })
   
@@ -49,6 +56,15 @@ const Gallery: React.FC<GalleryPropsType> = ({
       <div className="gallery flex">
         <div className="images flex">
           {renderedImages}
+        </div>
+        <div className="pagination-container">
+          <PaginationTab 
+            currentPage={currentPage} 
+            totalPages={totalPage} 
+            totalElements={totalElements}
+            pageSize={pageSize}
+            setPage={setCurrentPage} 
+          />
         </div>
       </div>
     </div>

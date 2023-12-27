@@ -55,7 +55,9 @@ export interface EditImageType {
  * Get all images type.
  */
 export type AllImagesType = {
-  images: ImageType[]
+  images: ImageType[],
+  totalElements: number,
+  totalPages: number
 }
 
 /**

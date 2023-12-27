@@ -8,6 +8,7 @@ import { allImagesQuery, deleteImageQuery } from "../../../apis/queries";
 import LoadingCircle from "../../LoadingCircle";
 import ImageCard from "./ImageCard";
 import EditImageModal from "./EditImageModal";
+import PaginationTab from "../../PaginationTab";
 
 type AdminImagesPropsType = {
   setSnack: (snackMessage: SnackMessageType) => void
@@ -16,15 +17,23 @@ type AdminImagesPropsType = {
 const AdminImages: React.FC<AdminImagesPropsType> = ({
   setSnack,
 }) => {
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPage, setTotalPage] = useState(1)
+  const [totalElements, setTotalElements] = useState(0)
+  const pageSize = 10
+
   const [showNewImageModal, setShowNewImageModal] = useState(false);
   const [showEditImageModal, setShowEditImageModal] = useState(false);
   const [imageToEdit, setImageToEdit] = useState<ImageType | null>(null);
 
   const { data: allImages, refetch: refetchAllImages } = useQuery<ImageType[]>({
-    queryKey: ['all-images'],
+    queryKey: ['all-images', totalPage, currentPage],
     queryFn: async () => {
-      const { images } = await allImagesQuery(true)
-      return images
+      const data = await allImagesQuery(true, currentPage, pageSize)
+      setTotalPage(data.totalPages)
+      setTotalElements(data.totalElements)
+      return data.images
     }
   })
 
@@ -84,6 +93,15 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
             </div>
             <div className="images flex">
               {renderedImages}
+            </div>
+            <div className="pagination-container">
+              <PaginationTab 
+                currentPage={currentPage} 
+                totalPages={totalPage}
+                totalElements={totalElements}
+                pageSize={pageSize}
+                setPage={setCurrentPage} 
+              />
             </div>
           </>
         ) : (

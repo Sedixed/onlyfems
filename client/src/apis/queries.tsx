@@ -117,12 +117,18 @@ export const editImageMutation = async (
   return res;
 }
 
-export const allImagesQuery = async (publicity: boolean) => {
+export const allImagesQuery = async (
+  publicity: boolean,
+  page: number,
+  pageSize: number
+) => {
   const { data } = await api.get<AllImagesType>(
     apiRoute.IMAGES,
     {
       params: {
-        publicity: !publicity //Un peu tricky, mais étant donné que si on veut les images VIP, on doit envoyer "false" vu que on veut les images avec la publicity "false"/privée
+        publicity: !publicity, //Un peu tricky, mais étant donné que si on veut les images VIP, on doit envoyer "false" vu que on veut les images avec la publicity "false"/privée
+        page: page,
+        size: pageSize
       },
       withCredentials: true
     }

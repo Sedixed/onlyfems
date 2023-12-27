@@ -9,6 +9,7 @@
 .gallery-container .gallery {
   width: 70%;
   margin: auto;
+  flex-direction: column;
 }
 
 .gallery-container .gallery .images {

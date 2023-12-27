@@ -77,6 +77,10 @@ const Profile: React.FC<ProfilePropsType> = ({
     setUsername(user.username)
     setCurrentPassword('')
     setNewPassword('')
+    setSnack({
+      type: 'info',
+      message: 'Les modifications ont été annulées'
+    })
   }  
 
   const editProfile = (e : React.FormEvent<HTMLFormElement>) => {

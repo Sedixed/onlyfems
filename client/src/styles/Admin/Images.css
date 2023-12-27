@@ -353,3 +353,7 @@ Image card
   margin: 2vh 0;
   font-size: 120%;
 }
+
+.admin-images .pagination-container {
+  margin-top: 5vh;
+}
