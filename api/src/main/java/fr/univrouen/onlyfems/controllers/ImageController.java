@@ -1,9 +1,11 @@
 package fr.univrouen.onlyfems.controllers;
 
+import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.dto.error.ErrorDTO;
 import fr.univrouen.onlyfems.dto.image.ImageDTO;
 import fr.univrouen.onlyfems.dto.image.ListImageDTO;
 import fr.univrouen.onlyfems.dto.image.UploadImageDTO;
+import fr.univrouen.onlyfems.services.AuthenticationService;
 import fr.univrouen.onlyfems.services.ImageService;
 import fr.univrouen.onlyfems.constants.APIEndpoints;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,10 +23,12 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController {
 
     private final ImageService imageService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public ImageController(ImageService imageService) {
+    public ImageController(ImageService imageService, AuthenticationService authenticationService) {
         this.imageService = imageService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -78,10 +82,13 @@ public class ImageController {
             )
     })
     public ResponseEntity<Object> getAllImages(
-        @RequestParam(defaultValue = "true", required = false) String publicity,
+        @RequestParam(defaultValue = "false", required = false) Boolean publicity,
         @RequestParam(defaultValue = "1", required = true) int page,
         @RequestParam(defaultValue = "10", required = false) int size
     ) {
+        if (!authenticationService.hasAccess(Roles.ROLE_PRIVILEGED_USER)) {
+            publicity = true;
+        }
         try {
             return ResponseEntity.ok(imageService.findALl(publicity, page, size));
         } catch (Exception e) {
@@ -108,9 +115,21 @@ public class ImageController {
             @ApiResponse(
                     responseCode = "400",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
-            )
+            ),
+            @ApiResponse(
+                    responseCode = "401"
+            ),
+            @ApiResponse(
+                    responseCode = "403"
+            ),
     })
     public ResponseEntity<Object> uploadImage(@RequestBody UploadImageDTO request) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             return ResponseEntity.ok(imageService.saveImage(request));
         } catch (Exception e) {
@@ -140,10 +159,22 @@ public class ImageController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             ),
             @ApiResponse(
+                    responseCode = "401"
+            ),
+            @ApiResponse(
+                    responseCode = "403"
+            ),
+            @ApiResponse(
                     responseCode = "404"
             )
     })
     public ResponseEntity<Object> updateImage(@RequestBody UploadImageDTO request, @PathVariable Integer id) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             return ResponseEntity.ok(imageService.updateImage(request, id));
         } catch (ObjectNotFoundException e) {
@@ -168,6 +199,12 @@ public class ImageController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))
             ),
             @ApiResponse(
+                    responseCode = "401"
+            ),
+            @ApiResponse(
+                    responseCode = "403"
+            ),
+            @ApiResponse(
                     responseCode = "404"
             )
     })
@@ -176,6 +213,12 @@ public class ImageController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> deleteImage(@PathVariable Integer id) {
+        if (!authenticationService.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            return ResponseEntity.status(403).build();
+        }
         try {
             imageService.deleteImage(id);
             return ResponseEntity.noContent().build();
