@@ -16,11 +16,6 @@ public class APIEndpoints {
     public static final String LOGOUT_URL = "/authentication/logout";
 
     /**
-     * Register URL
-     */
-    public static final String REGISTER_URL = "authentication/register";
-
-    /**
      * URL to get the current user logged.
      */
     public static final String GET_AUTHENTICATED_USER = "/authentication/user";

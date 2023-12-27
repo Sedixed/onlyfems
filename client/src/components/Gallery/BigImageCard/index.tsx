@@ -9,7 +9,6 @@ const BigImageCard: React.FC<BigImageCardPropsType> = ({
   image,
   even,
 }) => {
-  console.log(image)
   const extension = image.name.split('.').pop();
   return (
     <div className="big-image-card flex">

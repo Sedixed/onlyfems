@@ -11,7 +11,9 @@ const LoadingCircle = ({
       <div className="loading-circle"></div>
     </div>
   ) : (
-    <div className="loading-circle"></div>
+    <div className="loading-circle-container flex">
+      <div className="loading-circle"></div>
+    </div>
   )
 }
 

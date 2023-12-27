@@ -4,6 +4,7 @@ import { useMutation } from "react-query"
 import { EditUserType } from "../../../../types/queryType"
 import { editUserMutation } from "../../../../apis/queries"
 import FormError from "../../../FormError"
+import { AxiosError } from "axios"
 
 type EditUserModalPropsType = {
   user: UserType,
@@ -41,13 +42,15 @@ const EditUserModal: React.FC<EditUserModalPropsType> = ({
     }
 
     const body: EditUserType = {
-      email,
       username,
       roles
     }
 
     if (passwordToUpdate) {
       body.password = password
+    }
+    if (email !== user.email) {
+      body.email = email
     }
 
     editUserMut.mutate(body);
@@ -69,11 +72,11 @@ const EditUserModal: React.FC<EditUserModalPropsType> = ({
     refetchUsers()
   }
 
-  const handleEditUserFailure = () => {
+  const handleEditUserFailure = (error: any) => {
     setErrorMessage(
-      email === user.email ? 
-      'Une erreur est survenue.' :
-      'Adresse email déjà utilisée !'
+      error instanceof AxiosError ?
+      error.response?.data.error : 
+      'Une erreur est survenue.'
     );
   }
 
@@ -83,7 +86,7 @@ const EditUserModal: React.FC<EditUserModalPropsType> = ({
     },
     {
       onSuccess: handleEditUserSuccess,
-      onError: handleEditUserFailure
+      onError: error => handleEditUserFailure(error)
     }
   )
 

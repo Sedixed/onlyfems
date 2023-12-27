@@ -1,5 +1,5 @@
-import UserType, { ImageType } from "../types/entityType";
-import { AllImagesType, EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
+import UserType from "../types/entityType";
+import { AllImagesType, AllUsersType, EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";
 
@@ -69,13 +69,13 @@ export const editUserMutation = async (
 }
 
 export const allUsersQuery = async () => {
-  const res = await api.get<UserType[]>(
+  const { data } = await api.get<AllUsersType>(
     apiRoute.USERS,
     {
       withCredentials: true
     }
   )
-  return res;
+  return data;
 }
 
 export const deleteUserQuery = async (userId: number) => {

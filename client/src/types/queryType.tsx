@@ -1,4 +1,4 @@
-import { ImageType } from "./entityType"
+import UserType, { ImageType } from "./entityType"
 
 /**
  * Login type.
@@ -34,9 +34,9 @@ export interface EditUserType {
 export interface NewImageType {
   description: string,
   privacy: boolean,
-  file: string,
-  fileName: string,
-  type: string
+  base64: string,
+  name: string,
+  contentType: string
 }
 
 /**
@@ -45,9 +45,9 @@ export interface NewImageType {
 export interface EditImageType {
   description?: string,
   privacy?: boolean,
-  file?: string,
-  fileName?: string,
-  type?: string,
+  base64?: string,
+  name?: string,
+  contentType?: string,
 }
 
 /**
@@ -55,4 +55,11 @@ export interface EditImageType {
  */
 export type AllImagesType = {
   images: ImageType[]
+}
+
+/**
+ * Get all users type.
+ */
+export type AllUsersType = {
+  users: UserType[]
 }

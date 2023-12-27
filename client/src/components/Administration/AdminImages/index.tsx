@@ -58,18 +58,18 @@ const AdminImages: React.FC<AdminImagesPropsType> = ({
 
   const renderedImages = allImages.map(image => 
     <ImageCard 
-      key={image.id} 
+      key={`${image.id}/${image.description}/${image.public}/${image.name}`} 
       image={image} 
       editCallback={() => editImage(image)}
       deleteCallback={() => deleteImage(image)}
+      setSnack={setSnack}
     />
   )
 
   return (
     <div className="admin-images flex">
-      {showNewImageModal && <NewImageModal closeCallback={() => setShowNewImageModal(false)} setSnack={setSnack} />}
-      {showEditImageModal && <EditImageModal image={imageToEdit as ImageType} closeCallback={removeEditImageModal} setSnack={setSnack} />}
-
+      {showNewImageModal && <NewImageModal closeCallback={() => setShowNewImageModal(false)} setSnack={setSnack} refetch={refetchAllImages} />}
+      {showEditImageModal && <EditImageModal image={imageToEdit as ImageType} closeCallback={removeEditImageModal} setSnack={setSnack} refetch={refetchAllImages} />}
       {
         renderedImages.length > 0 ?
         ( 

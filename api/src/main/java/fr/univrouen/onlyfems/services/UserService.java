@@ -5,6 +5,7 @@ import fr.univrouen.onlyfems.dto.user.ListUserDTO;
 import fr.univrouen.onlyfems.dto.user.SaveUserDTO;
 import fr.univrouen.onlyfems.dto.user.UserDTO;
 import fr.univrouen.onlyfems.entities.User;
+import fr.univrouen.onlyfems.exceptions.UnauthorizedException;
 import fr.univrouen.onlyfems.repositories.UserRepository;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -82,28 +84,65 @@ public class UserService {
      * @param updateRequest Update request containing user data.
      * @return The user updated.
      */
-    public UserDTO updateUser(int id, SaveUserDTO updateRequest) {
+    public UserDTO updateUser(int id, SaveUserDTO updateRequest) throws UnauthorizedException {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
 
         // Check if email has changed and check if email exists.
-        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) != null)) {
+        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) == null)) {
             throw new IllegalArgumentException("L'email \"" + user.getEmail() + "\" existe déjà.");
         }
 
-        user.setEmail(updateRequest.getEmail());
-        user.setUsername(updateRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
-            user.clearRole();
+        // An admin update an user.
+        if (authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            user.setEmail(updateRequest.getEmail());
+            user.setUsername(updateRequest.getUsername());
 
-            for (Roles roles : updateRequest.getRoles()) {
-                user.addRole(roles);
+            // Check il password has changed.
+            if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
             }
-        }
 
-        checkUserData(user);
-        User updatedUser = userRepository.save(user);
-        return new UserDTO(updatedUser);
+            // If roles have changed.
+            if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
+                user.clearRole();
+
+                for (Roles roles : updateRequest.getRoles()) {
+                    user.addRole(roles);
+                }
+            }
+
+            checkUserData(user);
+            User updatedUser = userRepository.save(user);
+            return new UserDTO(updatedUser);
+
+        // User is not admin.
+        } else {
+            // If user attempt to change the roles.
+            if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
+                throw new UnauthorizedException("Aucune autorisation pour modifier les rôles d'un utilisateur.");
+            }
+
+            // Check if the password confirmation is the same as user password.
+            if (updateRequest.getConfirmPassword() == null) {
+                throw new IllegalArgumentException("Le mot de passe de confirmation est vide" +
+                        ".");
+            }
+            if (passwordEncoder.matches(updateRequest.getConfirmPassword(), user.getPassword())) {
+
+                user.setEmail(updateRequest.getEmail());
+                user.setUsername(updateRequest.getUsername());
+
+                // Check il password has changed.
+                if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                }
+
+                checkUserData(user);
+                User updatedUser = userRepository.save(user);
+                return new UserDTO(updatedUser);
+            }
+            throw new IllegalArgumentException("Le mot de passe de vérification n'est pas correcte.");
+        }
     }
 
     /**

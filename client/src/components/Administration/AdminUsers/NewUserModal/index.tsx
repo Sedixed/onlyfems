@@ -7,12 +7,14 @@ import FormError from "../../../FormError"
 
 type NewUserModalPropsType = {
   closeCallback: () => void
-  setSnack: (smt : SnackMessageType) => void
+  setSnack: (smt : SnackMessageType) => void,
+  refetchUsers: () => void,
 }
 
 const NewUserModal: React.FC<NewUserModalPropsType> = ({
   closeCallback, 
-  setSnack
+  setSnack,
+  refetchUsers,
 }) => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('')
@@ -51,6 +53,7 @@ const NewUserModal: React.FC<NewUserModalPropsType> = ({
       type: 'success',
       message: 'Utilisateur créé avec succès !'
     })
+    refetchUsers()
   }
 
   const handleNewUserFailure = () => {

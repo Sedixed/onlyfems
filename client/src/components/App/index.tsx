@@ -10,7 +10,6 @@ import Profile from "../Profile";
 import Administration from "../Administration";
 import AdminUsers from "../Administration/AdminUsers";
 import AdminImages from "../Administration/AdminImages";
-import AdminDownload from "../Administration/AdminDownload";
 import Gallery from "../Gallery";
 import NavbarContainer from "../NavbarContainer";
 
@@ -26,7 +25,8 @@ const App = () => {
             <Route
               path={clientPath.HOME} 
               element={
-                <NoAuthPage 
+                <NoAuthPage
+                  snackMessage={snackMessage}
                   setSnack={setSnackMessage}
                 />
               } 
@@ -38,7 +38,6 @@ const App = () => {
                 <Route path={clientPath.ADMIN} element={<Administration />}>
                   <Route path={clientPath.ADMIN_USERS} element={<AdminUsers setSnack={setSnackMessage} />} />
                   <Route path={clientPath.ADMIN_IMAGES} element={<AdminImages setSnack={setSnackMessage} />} />
-                  <Route path={clientPath.ADMIN_DOWNLOAD} element={<AdminDownload setSnack={setSnackMessage} />} />
                 </Route>
             </Route>
           </Routes>

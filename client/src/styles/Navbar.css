@@ -25,7 +25,9 @@
   transition: all ease 0.3s;
 }
 
-.navbar .links .link:hover {
+.navbar .links .link:hover,
+.navbar .links .link.selected,
+.navbar .profile-btn.selected {
   color: rgb(255, 72, 0);
 }
 

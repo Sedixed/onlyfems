@@ -35,6 +35,10 @@
   padding: 3px 8px 0 0;
 }
 
+.snack-message .btn-container .close-btn {
+  cursor: pointer;
+}
+
 .snack-message p {
   margin: 0;
   padding: 0 12px 8px 12px;
