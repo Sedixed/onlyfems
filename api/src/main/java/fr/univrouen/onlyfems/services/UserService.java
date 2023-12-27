@@ -88,35 +88,61 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
 
         // Check if email has changed and check if email exists.
-        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) != null)) {
-            throw new IllegalArgumentException("L'email \"" + user.getEmail() + "\" existe déjà.");
+        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(updateRequest.getEmail()) != null)) {
+            throw new IllegalArgumentException("L'email '" + updateRequest.getEmail() + "' existe déjà.");
         }
 
-        user.setEmail(updateRequest.getEmail());
-        user.setUsername(updateRequest.getUsername());
+        // An admin update an user.
+        if (authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
+            user.setEmail(updateRequest.getEmail());
+            user.setUsername(updateRequest.getUsername());
 
-        // Check il password has changed.
-        if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+            // Check il password has changed.
+            if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
 
-        // If roles have changed.
-        if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
-            if (authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
-
+            // If roles have changed.
+            if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
                 user.clearRole();
 
                 for (Roles roles : updateRequest.getRoles()) {
                     user.addRole(roles);
                 }
-            } else {
+            }
+
+            checkUserData(user);
+            User updatedUser = userRepository.save(user);
+            return new UserDTO(updatedUser);
+
+        // User is not admin.
+        } else {
+            // If user attempt to change the roles.
+            if (updateRequest.getRoles() != null && !updateRequest.getRoles().isEmpty()) {
                 throw new UnauthorizedException("Aucune autorisation pour modifier les rôles d'un utilisateur.");
             }
-        }
 
-        checkUserData(user);
-        User updatedUser = userRepository.save(user);
-        return new UserDTO(updatedUser);
+            // Check if the password confirmation is the same as user password.
+            if (updateRequest.getConfirmPassword() == null) {
+                throw new IllegalArgumentException("Le mot de passe de confirmation est vide" +
+                        ".");
+            }
+            if (passwordEncoder.matches(updateRequest.getConfirmPassword(), user.getPassword())) {
+
+                user.setEmail(updateRequest.getEmail());
+                user.setUsername(updateRequest.getUsername());
+
+                // Check il password has changed.
+                if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                }
+
+                checkUserData(user);
+                User updatedUser = userRepository.save(user);
+                return new UserDTO(updatedUser);
+            }
+            throw new IllegalArgumentException("Le mot de passe de vérification n'est pas correcte.");
+        }
     }
 
     /**
