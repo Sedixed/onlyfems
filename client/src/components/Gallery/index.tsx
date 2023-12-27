@@ -9,7 +9,6 @@ import { ImageType } from "../../types/entityType"
 import { useQuery } from "react-query"
 import { allImagesQuery } from "../../apis/queries"
 import BigImageCard from "./BigImageCard"
-import { AllImagesType } from "../../types/queryType"
 
 type GalleryPropsType = {
   vipContent?: boolean

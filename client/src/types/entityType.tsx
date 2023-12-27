@@ -19,8 +19,6 @@ export type SnackMessageType = {
 export type ImageType = {
   id: number,
   name: string,
-  // TODO remettre fileName au lieu de name dans des entités
-  fileName: string,
   description: string,
   public: boolean, 
   base64: string

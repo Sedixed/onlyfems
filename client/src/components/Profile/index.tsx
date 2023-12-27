@@ -52,7 +52,7 @@ const Profile = () => {
           </div>
 
           <div className="field first-password-field">
-            <label htmlFor="currentPassword">Mot de passe actuel</label>
+            <label htmlFor="currentPassword">Mot de passe actuel<span className="red">*</span></label>
             <input type="password" name="currentPassword" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
           </div>
 

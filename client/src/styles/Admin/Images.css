@@ -201,7 +201,7 @@ Image card
 
 .admin-images .image-card {
   flex-direction: column;
-  min-width: 15%;
+  min-width: 250px;
   position: relative;
   align-items: center;
   background-color: white;
@@ -259,8 +259,9 @@ Image card
 
 .admin-images .image-card .overlay .actions {
   color: white;
-  justify-content: center;
-  gap: 20px;
+  justify-content: flex-start;
+  padding-left: 10px;
+  gap: 10px;
   width: 100%;
   font-size: 130%;
 }
@@ -283,6 +284,15 @@ Image card
   color: rgb(224, 184, 3);
 }
 
+.admin-images .image-card .overlay .actions i.fa-lock:hover,
+.admin-images .image-card .overlay .actions i.fa-lock-open:hover {
+  color: rgb(184, 184, 184);
+}
+
+.admin-images .image-card .overlay .actions i.fa-download:hover {
+  color: rgb(87, 255, 87);
+}
+
 .admin-images .image-card .overlay .privacy {
   position: absolute;
   right: -40px;
@@ -291,6 +301,21 @@ Image card
   background-color: rgb(228, 95, 95);
   color: white;
   transform: rotate(45deg);
+  animation: appear 0.5s ease forwards;
+}
+
+.admin-images .image-card .overlay .privacy.inactive {
+  animation: disappear 0.5s ease forwards;
+}
+
+@keyframes appear {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes disappear {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .admin-images .image-card .overlay .description {

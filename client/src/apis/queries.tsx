@@ -1,4 +1,4 @@
-import UserType, { ImageType } from "../types/entityType";
+import UserType from "../types/entityType";
 import { AllImagesType, EditImageType, EditUserType, LoginType, NewImageType, NewUserType } from "../types/queryType";
 import apiRoute from "../utils/apiRoute";
 import api from "./api";

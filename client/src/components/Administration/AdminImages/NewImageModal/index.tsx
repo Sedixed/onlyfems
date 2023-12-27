@@ -8,11 +8,13 @@ import { SnackMessageType } from "../../../../types/entityType";
 type NewImageModalPropsType = {
   closeCallback: () => void,
   setSnack: (smt: SnackMessageType) => void,
+  refetch: () => void,
 }
 
 const NewImageModal: React.FC<NewImageModalPropsType> = ({
   closeCallback,
   setSnack,
+  refetch,
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState('');
@@ -31,16 +33,14 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
     if (!image) {
       return
     }
-    // TODO : vérifier que ça marche bien
     const isPrivate = privacyRef.current?.checked as boolean;
     const base64image =  await toBase64(image) as string
-    
     newImageMut.mutate({
       description,
       privacy: isPrivate,
-      file: base64image,
-      fileName: image.name,
-      type: image.type
+      base64: base64image.split(',')[1],
+      name: image.name,
+      contentType: image.type
     })
     
   }
@@ -50,6 +50,8 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
       type: 'success',
       message: 'Image ajoutée avec succès !'
     })
+    closeCallback()
+    refetch()
   }
 
   const handleNewImageFailure = () => {

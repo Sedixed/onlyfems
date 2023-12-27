@@ -14,8 +14,6 @@ const clientPath = {
   ADMIN_USERS: "users",
   // Admin images management page.
   ADMIN_IMAGES: "images",
-  // Admin images download page.
-  ADMIN_DOWNLOAD: "download",
 
 }
 
