@@ -86,7 +86,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
 
         // Check if email has changed and check if email exists.
-        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) != null)) {
+        if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) == null)) {
             throw new IllegalArgumentException("L'email \"" + user.getEmail() + "\" existe déjà.");
         }
 

@@ -25,7 +25,8 @@ const App = () => {
             <Route
               path={clientPath.HOME} 
               element={
-                <NoAuthPage 
+                <NoAuthPage
+                  snackMessage={snackMessage}
                   setSnack={setSnackMessage}
                 />
               } 

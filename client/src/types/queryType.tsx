@@ -1,4 +1,4 @@
-import { ImageType } from "./entityType"
+import UserType, { ImageType } from "./entityType"
 
 /**
  * Login type.
@@ -55,4 +55,11 @@ export interface EditImageType {
  */
 export type AllImagesType = {
   images: ImageType[]
+}
+
+/**
+ * Get all users type.
+ */
+export type AllUsersType = {
+  users: UserType[]
 }

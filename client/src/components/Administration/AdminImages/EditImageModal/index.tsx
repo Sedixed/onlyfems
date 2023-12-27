@@ -48,11 +48,11 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
   }
 
   const handleEditImageSuccess = () => {
+    closeCallback()
     setSnack({
       type: 'success',
       message: 'Image modifiée avec succès !'
     })
-    closeCallback()
     refetch()
   }
 

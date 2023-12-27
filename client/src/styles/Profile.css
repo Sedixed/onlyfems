@@ -30,8 +30,36 @@
   width: 80%;
 }
 
-.profile .content .profile-form .field.first-password-field {
+.profile .content .profile-form .passwords-container {
+  width: 80%;
   margin-top: 50px;
+  align-items: flex-end;
+}
+
+.profile .content .profile-form .passwords-container .passwords {
+  flex-direction: column;
+}
+
+.profile .content .profile-form .passwords-container .criterias {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile .content .profile-form .passwords-container .criterias .criteria {
+  align-items: baseline;
+  gap: 5px;
+}
+
+.profile .content .profile-form .passwords-container .criterias .criteria p {
+  margin: 0;
+}
+
+.profile .content .profile-form .passwords-container .criterias .criteria .fa-check {
+  color: rgb(1, 222, 1);
+}
+
+.profile .content .profile-form .passwords-container .criterias .criteria .fa-xmark {
+  color: red; 
 }
 
 .profile .content .profile-form input,
