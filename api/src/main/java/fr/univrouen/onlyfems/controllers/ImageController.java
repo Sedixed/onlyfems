@@ -78,10 +78,12 @@ public class ImageController {
             )
     })
     public ResponseEntity<Object> getAllImages(
-        @RequestParam(defaultValue = "true", required = false) String publicity
+        @RequestParam(defaultValue = "true", required = false) String publicity,
+        @RequestParam(defaultValue = "1", required = true) int page,
+        @RequestParam(defaultValue = "10", required = false) int size
     ) {
         try {
-            return ResponseEntity.ok(imageService.findALl(publicity));
+            return ResponseEntity.ok(imageService.findALl(publicity, page, size));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
         }

@@ -70,7 +70,7 @@ public class AuthenticationService {
             userDTO = new UserDTO(
                     user.getId(),
                     authentication.getName(),
-                    user.getEmail(),
+                    user.getUsername(),
                     authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()
             );
         } else {
