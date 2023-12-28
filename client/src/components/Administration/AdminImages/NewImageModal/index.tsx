@@ -37,7 +37,7 @@ const NewImageModal: React.FC<NewImageModalPropsType> = ({
     const base64image =  await toBase64(image) as string
     newImageMut.mutate({
       description,
-      privacy: isPrivate,
+      privacy: !isPrivate,
       base64: base64image.split(',')[1],
       name: image.name,
       contentType: image.type
