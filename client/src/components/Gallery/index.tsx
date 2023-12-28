@@ -54,18 +54,27 @@ const Gallery: React.FC<GalleryPropsType> = ({
   return (
     <div className="gallery-container flex">
       <div className="gallery flex">
-        <div className="images flex">
-          {renderedImages}
-        </div>
-        <div className="pagination-container">
-          <PaginationTab 
-            currentPage={currentPage} 
-            totalPages={totalPage} 
-            totalElements={totalElements}
-            pageSize={pageSize}
-            setPage={setCurrentPage} 
-          />
-        </div>
+        {renderedImages.length > 0 ?
+          <>
+            <div className="images flex">
+              {renderedImages}
+            </div>
+            <div className="pagination-container">
+              <PaginationTab 
+                currentPage={currentPage} 
+                totalPages={totalPage} 
+                totalElements={totalElements}
+                pageSize={pageSize}
+                setPage={setCurrentPage} 
+              />
+            </div>
+          </> : 
+          <div className="no-images flex">
+            <img src={`${process.env.PUBLIC_URL}/assets/admin-no-content.png`} alt="no-content" />
+            <p className="title">Il n'y a aucun élément dans le portfolio !</p>
+            <p className="subtitle">(Pour l'instant... 😉)</p>
+          </div>
+        }
       </div>
     </div>
   )
