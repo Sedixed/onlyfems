@@ -140,24 +140,22 @@ const Profile: React.FC<ProfilePropsType> = ({
               </div>
             </div>
 
-            <div className="criterias flex">
-            <div className="criteria flex">
-              <i className={`fa fa-${pwdLengthValid ? 'check' : 'xmark'}`}></i>
-              <p>8 caractères minimum</p>
+            <div className={`criterias flex ${newPassword === '' ? 'inactive' : ''}`}>
+              <div className="criteria flex">
+                <i className={`fa fa-${pwdLengthValid ? 'check' : 'xmark'}`}></i>
+                <p>8 caractères minimum</p>
+              </div>
+
+              <div className="criteria flex">
+                <i className={`fa fa-${pwdDigitValid ? 'check' : 'xmark'}`}></i>
+                <p>Au moins un chiffre</p>
+              </div>
+
+              <div className="criteria flex">
+                <i className={`fa fa-${pwdCharValid ? 'check' : 'xmark'}`}></i>
+                <p>Au moins une lettre</p>
+              </div>
             </div>
-
-            <div className="criteria flex">
-              <i className={`fa fa-${pwdDigitValid ? 'check' : 'xmark'}`}></i>
-              <p>Au moins un chiffre</p>
-            </div>
-
-            <div className="criteria flex">
-              <i className={`fa fa-${pwdCharValid ? 'check' : 'xmark'}`}></i>
-              <p>Au moins une lettre</p>
-            </div>
-          </div>
-
-
           </div>
 
           <div className="buttons flex">

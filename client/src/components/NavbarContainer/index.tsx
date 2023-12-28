@@ -1,7 +1,5 @@
 import React from "react";
-import useGetUser from "../../hooks/useGetUser";
 import { Outlet } from "react-router-dom";
-import LoadingCircle from "../LoadingCircle";
 import Navbar from "../Navbar";
 
 import '../../styles/Admin/Index.css'
@@ -17,12 +15,6 @@ const NavbarContainer: React.FC<NavbarContainerPropsType> = ({
   snackMessage,
   setSnack,
 }) => {
-  const { user } = useGetUser();
-
-  if (!user) {
-    return <LoadingCircle />
-  }
-
   return (
     <div>
       <Navbar setSnack={setSnack} />
