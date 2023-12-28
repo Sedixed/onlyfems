@@ -55,6 +55,19 @@ public class AuthenticationService {
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
+    public void reLogin(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
+        for (String role : user.getRoles()) {
+            updatedAuthorities.add(new SimpleGrantedAuthority(role));
+        }
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(user.getEmail(), auth.getCredentials(), updatedAuthorities);
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+    }
+
     /**
      * Return the user currently authenticated.
      * Can return an anonymous user if there is no user authenticated.
@@ -65,8 +78,8 @@ public class AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         UserDTO userDTO;
-        if (isAuthenticated()) {
-            User user = userRepository.findByEmail(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName());
+        if (isAuthenticated() && user != null) {
             userDTO = new UserDTO(
                     user.getId(),
                     authentication.getName(),

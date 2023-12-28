@@ -1,6 +1,5 @@
 package fr.univrouen.onlyfems.services;
 
-import fr.univrouen.onlyfems.constants.Roles;
 import fr.univrouen.onlyfems.entities.User;
 import fr.univrouen.onlyfems.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @param username Username of the user.
      * @return UserDetails object.
      */
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userRepo = userRepository.findByEmail(username);
         return new org.springframework.security.core.userdetails.User(

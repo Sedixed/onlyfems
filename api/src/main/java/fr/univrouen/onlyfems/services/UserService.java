@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service to interact with users in database.
@@ -87,17 +86,22 @@ public class UserService {
     public UserDTO updateUser(int id, SaveUserDTO updateRequest) throws UnauthorizedException {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, User.class.getName()));
 
+        boolean reAuth = false;
+        if (user.getEmail().equals(authenticationService.getAuthenticatedUser().getEmail())) {
+            reAuth = true;
+        }
+
         // Check if email has changed and check if email exists.
         if ((updateRequest.getEmail() != null) && !user.getEmail().equals(updateRequest.getEmail()) && (userRepository.findByEmail(user.getEmail()) == null)) {
             throw new IllegalArgumentException("L'email \"" + user.getEmail() + "\" existe déjà.");
         }
 
-        // An admin update an user.
+        // An admin update a user.
         if (authenticationService.hasAccess(Roles.ROLE_ADMIN)) {
             user.setEmail(updateRequest.getEmail());
             user.setUsername(updateRequest.getUsername());
 
-            // Check il password has changed.
+            // Check if password has changed.
             if (updateRequest.getPassword() != null && !updateRequest.getPassword().equals("")) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
             }
@@ -113,6 +117,12 @@ public class UserService {
 
             checkUserData(user);
             User updatedUser = userRepository.save(user);
+
+            // Re authenticate the current user.
+            if (reAuth) {
+                authenticationService.reLogin(updatedUser);
+            }
+
             return new UserDTO(updatedUser);
 
         // User is not admin.
@@ -139,6 +149,12 @@ public class UserService {
 
                 checkUserData(user);
                 User updatedUser = userRepository.save(user);
+
+                // Re authenticate the current user.
+                if (reAuth) {
+                    authenticationService.reLogin(updatedUser);
+                }
+
                 return new UserDTO(updatedUser);
             }
             throw new IllegalArgumentException("Le mot de passe de vérification n'est pas correcte.");
@@ -158,7 +174,12 @@ public class UserService {
 
     // Private methods.
 
-    private boolean checkUserData(User user) {
+    /**
+     * Check if user data are consistent.
+     *
+     * @param user User to check.
+     */
+    private void checkUserData(User user) {
         if (!verifyEmail(user.getEmail())) {
             throw new IllegalArgumentException("L'email n'est pas bien formé.");
         }
@@ -166,8 +187,6 @@ public class UserService {
         if (!verifyPassword(user.getPassword())) {
             throw new IllegalArgumentException("Le mot de passe n'est pas bien formé.");
         }
-
-        return true;
     }
 
     /**
