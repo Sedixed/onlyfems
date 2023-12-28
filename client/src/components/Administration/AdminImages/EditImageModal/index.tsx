@@ -35,7 +35,7 @@ const EditImageModal: React.FC<EditImageModalPropsType> = ({
     const isPrivate = privacyRef.current?.checked as boolean;
     const body: EditImageType = {
       description: newDescription,
-      privacy: isPrivate
+      privacy: !isPrivate
     }
     
     if (newImage) {
