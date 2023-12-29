@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarPropsType> = ({
     return <LoadingCircle />
   }
 
-  const authenticated = isAuthenticated(user)
+  const authenticated = user && isAuthenticated(user)
 
   const logout = async () => {
     const res = await logoutQuery();
@@ -45,8 +45,13 @@ const Navbar: React.FC<NavbarPropsType> = ({
     <div className="navbar flex">
       <div className="links flex">
         <Link className="title-link" to={clientPath.GALLERY}>OnlyFems</Link>
-        {isAdmin(user) && <Link className={`link ${location.startsWith('/admin') ? 'selected' : ''}`} to={clientPath.ADMIN}>Administration</Link>}
-        {isVIP(user) && <Link className={`link ${location === '/gallery/vip' ? 'selected' : ''}`} to={clientPath.VIP_GALLERY}>Section VIP</Link>}
+        {user ?
+          <>
+            {isAdmin(user) && <Link className={`link ${location.startsWith('/admin') ? 'selected' : ''}`} to={clientPath.ADMIN}>Administration</Link>}
+            {isVIP(user) && <Link className={`link ${location === '/gallery/vip' ? 'selected' : ''}`} to={clientPath.VIP_GALLERY}>Section VIP</Link>}
+          </> :
+          <LoadingCircle />
+        }
       </div>
       
       <div className="btns flex">
