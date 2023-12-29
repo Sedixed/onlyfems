@@ -7,5 +7,7 @@ RUN mvn -f /home/app/pom.xml clean package -DskipTests
 # Stage 2: Run the application
 FROM eclipse-temurin:17-jre
 COPY --from=build /home/app/target/*.jar /usr/local/lib/my-app.jar
+# The application needs a uploads folder to store the uploaded files, so we create it next to the jar file
+RUN mkdir /upload
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/local/lib/my-app.jar"]
